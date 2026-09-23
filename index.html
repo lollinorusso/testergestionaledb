@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestione Borgo Don Bosco</title>
-    <!-- Tailwind CSS -->
+    <title>Borgo Don Bosco - Gestione APS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- jsPDF per generazione Ricevute -->
+    <!-- Libreria per creare PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <script>
@@ -30,7 +27,7 @@
     </script>
     <style>
         body { background-color: #f3f4f6; overflow: hidden; }
-        .view-section { display: none; height: 100%; overflow-y: auto; padding-bottom: 5rem; }
+        .view-section { display: none; height: 100%; overflow-y: auto; padding-bottom: 2rem; }
         .view-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -40,87 +37,92 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* Sidebar Nav Item Active State */
         .nav-item.active { background-color: #002266; border-left: 4px solid #FFD100; }
         
+        /* Inner Tabs (per il modale Atleta) */
         .inner-tab-content { display: none; }
-        .inner-tab-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+        .inner-tab-content.active { display: block; }
         .inner-tab-btn.active { border-bottom: 2px solid #0033A0; color: #0033A0; font-weight: bold; }
-        
-        /* Utility per tabelle responsive */
-        .table-container { overflow-x: auto; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border-radius: 0.75rem; background: white; }
     </style>
 </head>
-<body class="text-gray-800 h-screen w-screen flex flex-col md:flex-row">
+<body class="text-gray-800 h-screen w-screen flex">
 
-    <!-- ==================== AUTH SCREEN ==================== -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-blue z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             <div class="bg-bdb-gray p-6 text-center border-b border-gray-200">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?utm_source=it.wikipedia.org&utm_campaign=index&utm_content=original" alt="Logo" class="w-28 h-28 rounded-full border-4 border-bdb-yellow mx-auto mb-3 object-cover shadow-lg bg-white">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?utm_source=it.wikipedia.org&utm_campaign=index&utm_content=original" alt="Logo" class="w-24 h-24 rounded-full border-4 border-bdb-yellow mx-auto mb-4 object-cover shadow-md">
                 <h1 class="text-2xl font-bold text-bdb-blue">Borgo Don Bosco</h1>
-                <p class="text-gray-500 text-sm font-medium mt-1">Gestione APS</p>
+                <p class="text-gray-500 text-sm">Gestione APS</p>
             </div>
             <div class="p-6 space-y-4">
                 <div id="authError" class="hidden bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-200"></div>
+                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="authEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bdb-blue outline-none">
+                    <input type="email" id="authEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bdb-blue focus:border-transparent outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="authPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bdb-blue outline-none">
+                    <input type="password" id="authPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bdb-blue focus:border-transparent outline-none">
                 </div>
+                
                 <div class="flex gap-3 pt-2">
                     <button onclick="app.login()" class="flex-1 bg-bdb-blue text-white font-bold py-2.5 rounded-lg hover:bg-bdb-blue-dark transition">Accedi</button>
                     <button onclick="app.register()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 transition">Registrati</button>
                 </div>
+                
                 <div class="relative flex items-center py-2">
                     <div class="flex-grow border-t border-gray-300"></div>
                     <span class="flex-shrink-0 mx-4 text-gray-400 text-sm">oppure</span>
                     <div class="flex-grow border-t border-gray-300"></div>
                 </div>
+
                 <button onclick="app.googleLogin()" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-2.5 rounded-lg shadow-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
                     Accedi con Google
                 </button>
+                
+                <div class="text-center pt-2">
+                    <button onclick="app.resetPassword()" class="text-sm text-bdb-blue hover:underline">Password dimenticata?</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== MAIN APP ==================== -->
     <div id="mainApp" class="hidden w-full h-full flex flex-col md:flex-row">
         
-        <!-- SIDEBAR -->
-        <aside class="w-full md:w-64 bg-bdb-blue text-white flex flex-col shrink-0 shadow-xl z-20 transition-all md:h-full">
+        <aside class="w-full md:w-64 bg-bdb-blue text-white flex flex-col md:h-full shrink-0 shadow-xl z-20 transition-all">
             <div class="p-4 flex items-center justify-between md:justify-center border-b border-white/10">
                 <div class="flex items-center gap-3">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?utm_source=it.wikipedia.org&utm_campaign=index&utm_content=original" alt="Logo" class="w-10 h-10 rounded-full border-2 border-bdb-yellow object-cover bg-white">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?utm_source=it.wikipedia.org&utm_campaign=index&utm_content=original" alt="Logo" class="w-10 h-10 rounded-full border-2 border-bdb-yellow object-cover">
                     <span class="font-bold text-lg hidden md:block">Gestione BDB</span>
                 </div>
-                <button class="md:hidden text-white p-2" onclick="document.getElementById('navMenu').classList.toggle('hidden')">
+                <button class="md:hidden text-white" onclick="document.getElementById('navMenu').classList.toggle('hidden')">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
             </div>
             
             <nav id="navMenu" class="hidden md:flex flex-col gap-1 p-3 overflow-y-auto flex-grow">
                 <button onclick="app.switchTab('dashboard')" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
-                    <i class="fa-solid fa-chart-pie w-5 text-center"></i> <span>Dashboard</span>
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i> <span>Dashboard</span>
                 </button>
                 <button onclick="app.switchTab('anagrafica')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
-                    <i class="fa-solid fa-users w-5 text-center"></i> <span>Fascicoli Tesserati</span>
+                    <i class="fa-solid fa-users w-5 text-center"></i> <span>Anagrafica</span>
                 </button>
-                <button onclick="app.switchTab('finanza')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
-                    <i class="fa-solid fa-euro-sign w-5 text-center"></i> <span>Contabilità & Quote</span>
+                <!-- Visibili solo agli admin, gestiti via JS in initAuth -->
+                <button id="nav-finanza" onclick="app.switchTab('finanza')" class="hidden nav-item items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
+                    <i class="fa-solid fa-wallet w-5 text-center"></i> <span>Finanza</span>
                 </button>
-                <button onclick="app.switchTab('eventi')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
-                    <i class="fa-solid fa-calendar-check w-5 text-center"></i> <span>Calendario & Appelli</span>
+                <button id="nav-eventi" onclick="app.switchTab('eventi')" class="hidden nav-item items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
+                    <i class="fa-solid fa-calendar-days w-5 text-center"></i> <span>Calendario</span>
                 </button>
-                <button onclick="app.switchTab('magazzino')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
-                    <i class="fa-solid fa-boxes-stacked w-5 text-center"></i> <span>Magazzino</span>
+                <button id="nav-magazzino" onclick="app.switchTab('magazzino')" class="hidden nav-item items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition text-left">
+                    <i class="fa-solid fa-box-open w-5 text-center"></i> <span>Magazzino</span>
                 </button>
             </nav>
 
-            <div class="p-4 border-t border-white/10 md:block hidden">
+            <div class="p-4 border-t border-white/10 hidden md:block">
                 <div class="flex items-center gap-3 mb-3">
                     <div class="w-8 h-8 rounded-full bg-bdb-yellow text-bdb-blue flex items-center justify-center font-bold" id="userInitial">U</div>
                     <div class="overflow-hidden">
@@ -129,21 +131,19 @@
                     </div>
                 </div>
                 <button onclick="app.logout()" class="w-full py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition">
-                    <i class="fa-solid fa-sign-out-alt mr-2"></i> Esci
+                    <i class="fa-solid fa-sign-out-alt mr-2"></i> Disconnetti
                 </button>
             </div>
         </aside>
 
-        <!-- MAIN VIEWS -->
         <main class="flex-grow flex flex-col h-full bg-gray-50 overflow-hidden relative">
-            
             <div id="views-container" class="flex-grow relative h-full">
                 
-                <!-- 1. DASHBOARD -->
+                <!-- DASHBOARD -->
                 <div id="view-dashboard" class="view-section active p-4 md:p-8">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6">Dashboard e Comunicazioni</h2>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                             <div><p class="text-gray-500 text-sm">Tesserati Attivi</p><h3 class="text-2xl font-bold text-gray-800" id="dash-tesserati">0</h3></div>
@@ -151,10 +151,6 @@
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl"><i class="fa-solid fa-file-medical"></i></div>
                             <div><p class="text-gray-500 text-sm">Certificati Scaduti</p><h3 class="text-2xl font-bold text-gray-800" id="dash-scaduti">0</h3></div>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-euro-sign"></i></div>
-                            <div><p class="text-gray-500 text-sm">Incasso Totale Anno</p><h3 class="text-2xl font-bold text-gray-800" id="dash-incassi">€ 0</h3></div>
                         </div>
                     </div>
 
@@ -164,108 +160,112 @@
                             <button id="btnAddNews" onclick="app.promptNews()" class="hidden text-sm bg-bdb-blue text-white px-3 py-1.5 rounded hover:bg-bdb-blue-dark transition">Nuovo Avviso</button>
                         </div>
                         <div id="newsFeed" class="p-4 space-y-4">
-                            <!-- News will be populated here -->
                             <div class="text-center text-gray-400 py-8">Caricamento bacheca...</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. ANAGRAFICA -->
+                <!-- ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <h2 class="text-2xl font-bold text-gray-800">Archivio Tesserati</h2>
+                        <h2 class="text-2xl font-bold text-gray-800">Fascicolo Tesserati</h2>
                         <div class="flex gap-2 w-full md:w-auto">
-                            <input type="text" id="searchAnagrafica" placeholder="Cerca nome o ruolo..." class="flex-grow md:w-64 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-bdb-blue outline-none" oninput="app.renderAnagrafica()">
+                            <input type="text" id="searchAnagrafica" placeholder="Cerca..." class="flex-grow md:w-64 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-bdb-blue outline-none" oninput="app.renderAnagrafica()">
                             <button onclick="app.openTesseratoModal()" class="bg-bdb-blue text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-bdb-blue-dark transition shrink-0">
                                 <i class="fa-solid fa-plus mr-1"></i> Nuovo
                             </button>
                         </div>
                     </div>
 
-                    <div class="table-container">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
-                                <tr>
-                                    <th class="p-4 font-semibold">Nominativo</th>
-                                    <th class="p-4 font-semibold">Ruolo</th>
-                                    <th class="p-4 font-semibold">Stato Medico</th>
-                                    <th class="p-4 font-semibold">Documenti</th>
-                                    <th class="p-4 font-semibold text-right">Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody id="anagraficaTableBody" class="divide-y divide-gray-100"></tbody>
-                        </table>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm whitespace-nowrap">
+                                <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                                    <tr>
+                                        <th class="p-4 font-semibold">Nominativo</th>
+                                        <th class="p-4 font-semibold">Ruolo</th>
+                                        <th class="p-4 font-semibold">Stato Medico</th>
+                                        <th class="p-4 font-semibold">Documenti</th>
+                                        <th class="p-4 font-semibold text-right">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="anagraficaTableBody" class="divide-y divide-gray-100">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 3. FINANZA -->
+                <!-- FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <h2 class="text-2xl font-bold text-gray-800">Contabilità e Quote</h2>
-                        <button onclick="app.openQuotaModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-green-700 transition w-full md:w-auto">
-                            <i class="fa-solid fa-plus mr-1"></i> Registra Pagamento/Quota
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Gestione Quote e Contabilità</h2>
+                        <button onclick="app.openQuotaModal()" class="bg-bdb-blue text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-bdb-blue-dark transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Nuova Quota
                         </button>
                     </div>
-
+                    
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="finanzaStats">
-                        <!-- Populated by JS -->
+                        <!-- Popolato via JS -->
                     </div>
 
-                    <div class="table-container">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
-                                <tr>
-                                    <th class="p-4 font-semibold">Data</th>
-                                    <th class="p-4 font-semibold">Tesserato</th>
-                                    <th class="p-4 font-semibold">Causale</th>
-                                    <th class="p-4 font-semibold">Importo Totale</th>
-                                    <th class="p-4 font-semibold">Versato</th>
-                                    <th class="p-4 font-semibold">Stato</th>
-                                    <th class="p-4 font-semibold text-right">Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody id="finanzaTableBody" class="divide-y divide-gray-100"></tbody>
-                        </table>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm whitespace-nowrap">
+                                <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                                    <tr>
+                                        <th class="p-4 font-semibold">Data</th>
+                                        <th class="p-4 font-semibold">Tesserato</th>
+                                        <th class="p-4 font-semibold">Causale</th>
+                                        <th class="p-4 font-semibold">Totale (€)</th>
+                                        <th class="p-4 font-semibold">Versato (€)</th>
+                                        <th class="p-4 font-semibold">Stato</th>
+                                        <th class="p-4 font-semibold text-right">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="finanzaTableBody" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 4. EVENTI & PRESENZE -->
+                <!-- EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <h2 class="text-2xl font-bold text-gray-800">Calendario Eventi & Appelli</h2>
-                        <button onclick="app.openEventoModal()" class="bg-bdb-blue text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-bdb-blue-dark transition w-full md:w-auto">
-                            <i class="fa-solid fa-calendar-plus mr-1"></i> Nuovo Evento
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Calendario & Presenze</h2>
+                        <button onclick="app.openEventoModal()" class="bg-bdb-blue text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-bdb-blue-dark transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Nuovo Evento
                         </button>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="eventiGrid">
-                        <!-- Cards populate via JS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventiGrid">
+                        <!-- Popolato via JS -->
                     </div>
                 </div>
 
-                <!-- 5. MAGAZZINO -->
+                <!-- MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <h2 class="text-2xl font-bold text-gray-800">Inventario Magazzino</h2>
-                        <button onclick="app.openItemModal()" class="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-black transition w-full md:w-auto">
-                            <i class="fa-solid fa-box-open mr-1"></i> Nuovo Articolo
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Inventario Materiale</h2>
+                        <button onclick="app.openItemModal()" class="bg-bdb-blue text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-bdb-blue-dark transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Nuovo Articolo
                         </button>
                     </div>
-
-                    <div class="table-container">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
-                                <tr>
-                                    <th class="p-4 font-semibold">Nome Articolo</th>
-                                    <th class="p-4 font-semibold">Categoria</th>
-                                    <th class="p-4 font-semibold">Totale</th>
-                                    <th class="p-4 font-semibold">In Uso</th>
-                                    <th class="p-4 font-semibold">Disponibili</th>
-                                    <th class="p-4 font-semibold text-right">Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody id="magazzinoTableBody" class="divide-y divide-gray-100"></tbody>
-                        </table>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm whitespace-nowrap">
+                                <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                                    <tr>
+                                        <th class="p-4 font-semibold">Nome Articolo</th>
+                                        <th class="p-4 font-semibold">Categoria</th>
+                                        <th class="p-4 font-semibold">Quantità Totale</th>
+                                        <th class="p-4 font-semibold">In Uso</th>
+                                        <th class="p-4 font-semibold">Disponibili</th>
+                                        <th class="p-4 font-semibold text-right">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="magazzinoTableBody" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -273,32 +273,33 @@
         </main>
     </div>
 
-    <!-- ==================== MODALS ==================== -->
-
-    <!-- Modal 1: TESSERATO (Fascicolo ERP) -->
+    <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[90vh] overflow-hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden">
+            
             <div class="p-4 md:p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
                 <h3 class="text-xl font-bold text-bdb-blue" id="modalTesseratoTitle">Nuovo Tesserato</h3>
-                <button onclick="app.closeTesseratoModal()" class="text-gray-400 hover:text-gray-700 transition"><i class="fa-solid fa-times text-xl"></i></button>
+                <button onclick="app.closeTesseratoModal()" class="text-gray-400 hover:text-gray-700 transition">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
             </div>
             
             <div class="flex overflow-x-auto border-b border-gray-200 px-4 md:px-6 bg-white shrink-0">
                 <button onclick="app.switchInnerTab('tab-base')" id="btn-tab-base" class="inner-tab-btn active px-4 py-3 text-sm font-medium text-gray-600 hover:text-bdb-blue whitespace-nowrap">Dati Base</button>
                 <button onclick="app.switchInnerTab('tab-medico')" id="btn-tab-medico" class="inner-tab-btn px-4 py-3 text-sm font-medium text-gray-600 hover:text-bdb-blue whitespace-nowrap">Area Medica</button>
-                <button onclick="app.switchInnerTab('tab-docs')" id="btn-tab-docs" class="inner-tab-btn px-4 py-3 text-sm font-medium text-gray-600 hover:text-bdb-blue whitespace-nowrap">Documenti / Foto</button>
+                <button onclick="app.switchInnerTab('tab-docs')" id="btn-tab-docs" class="inner-tab-btn px-4 py-3 text-sm font-medium text-gray-600 hover:text-bdb-blue whitespace-nowrap">Documenti</button>
                 <button onclick="app.switchInnerTab('tab-tecnico')" id="btn-tab-tecnico" class="inner-tab-btn px-4 py-3 text-sm font-medium text-gray-600 hover:text-bdb-blue whitespace-nowrap">Area Tecnica</button>
             </div>
 
             <div class="p-4 md:p-6 overflow-y-auto flex-grow bg-white">
                 <input type="hidden" id="t_id">
                 
-                <!-- Base -->
+                <!-- Tab: Base -->
                 <div id="tab-base" class="inner-tab-content active space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-xs font-bold text-gray-700 mb-1">Nome e Cognome *</label><input type="text" id="t_nome" class="w-full p-2 border rounded bg-gray-50" required></div>
                         <div><label class="block text-xs font-bold text-gray-700 mb-1">Data di Nascita *</label><input type="date" id="t_nascita" class="w-full p-2 border rounded bg-gray-50" required></div>
-                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Ruolo Associativo</label>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Ruolo Principale</label>
                             <select id="t_ruolo" class="w-full p-2 border rounded bg-gray-50">
                                 <option value="Atleta">Atleta</option>
                                 <option value="Sbandieratore">Sbandieratore</option>
@@ -309,89 +310,60 @@
                                 <option value="Socio Sostenitore">Socio Sostenitore</option>
                             </select>
                         </div>
-                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Cellulare / Contatto *</label><input type="tel" id="t_tel" class="w-full p-2 border rounded bg-gray-50" required></div>
-                        <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-700 mb-1">Genitore/Tutore (se minorenne)</label><input type="text" id="t_genitore" class="w-full p-2 border rounded bg-gray-50"></div>
-                        <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-700 mb-1">Codice Fiscale</label><input type="text" id="t_codicefiscale" class="w-full p-2 border rounded bg-gray-50 uppercase"></div>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Cellulare *</label><input type="tel" id="t_tel" class="w-full p-2 border rounded bg-gray-50" required></div>
+                        <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-700 mb-1">Genitore (se minorenne)</label><input type="text" id="t_genitore" class="w-full p-2 border rounded bg-gray-50"></div>
                     </div>
                 </div>
 
-                <!-- Medico -->
+                <!-- Tab: Medico -->
                 <div id="tab-medico" class="inner-tab-content space-y-4">
                     <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4">
-                        <h4 class="font-bold text-bdb-blue mb-2"><i class="fa-solid fa-heart-pulse"></i> Certificato Medico Attuale</h4>
+                        <h4 class="font-bold text-bdb-blue mb-2"><i class="fa-solid fa-heart-pulse"></i> Certificato Medico Sportivo</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div><label class="block text-xs font-bold text-gray-700 mb-1">Data Emissione</label><input type="date" id="t_cert_emiss" class="w-full p-2 border rounded bg-white"></div>
                             <div><label class="block text-xs font-bold text-gray-700 mb-1 text-red-600">Data Scadenza *</label><input type="date" id="t_cert_scad" class="w-full p-2 border border-red-300 rounded bg-white" required></div>
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Note Mediche Vitali (Allergie, Asma, Precedenti)</label>
-                        <textarea id="t_note_mediche" rows="3" placeholder="Informazioni mediche importanti da sapere sul campo..." class="w-full p-2 border rounded bg-gray-50"></textarea>
-                    </div>
-                    <div class="mt-4 pt-4 border-t">
-                        <h4 class="font-bold text-gray-600 text-sm mb-2">Storico Certificati (In Sviluppo)</h4>
-                        <p class="text-xs text-gray-400">I vecchi certificati verranno salvati qui per l'archivio storico una volta aggiornati.</p>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Note Mediche (Allergie, Asma, Precedenti)</label>
+                        <textarea id="t_note_mediche" rows="3" class="w-full p-2 border rounded bg-gray-50"></textarea>
                     </div>
                 </div>
 
-                <!-- Docs -->
-                <div id="tab-docs" class="inner-tab-content space-y-6">
-                    <div class="bg-yellow-50 p-3 rounded text-sm text-yellow-800 border border-yellow-200">
-                        <i class="fa-solid fa-cloud-arrow-up mr-2"></i> L'upload fisico dei file (Foto/PDF) sarà abilitato al collegamento del modulo Firebase Storage. Per ora, spunta i documenti consegnati fisicamente o via email.
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Spunte manuali -->
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-gray-700 border-b pb-1">Checklist Consegna</h4>
-                            <label class="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
-                                <input type="checkbox" id="t_doc_privacy" class="w-5 h-5 text-bdb-blue rounded focus:ring-bdb-blue">
-                                <div><p class="font-bold text-sm">Modello Privacy Firmato</p></div>
-                            </label>
-                            <label class="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
-                                <input type="checkbox" id="t_doc_ci" class="w-5 h-5 text-bdb-blue rounded focus:ring-bdb-blue">
-                                <div><p class="font-bold text-sm">Carta Identità</p></div>
-                            </label>
-                            <label class="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
-                                <input type="checkbox" id="t_doc_cf" class="w-5 h-5 text-bdb-blue rounded focus:ring-bdb-blue">
-                                <div><p class="font-bold text-sm">Tessera Sanitaria</p></div>
-                            </label>
-                        </div>
-                        
-                        <!-- Uploads (UI solo per dimostrazione ERP) -->
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-gray-700 border-b pb-1">Upload Digitale (Prossimamente)</h4>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Foto Tessera (per distinte/tesserini)</label>
-                                <input type="file" disabled class="text-sm w-full border p-1 rounded bg-gray-100 cursor-not-allowed">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Scansione Carta Identità (PDF/JPG)</label>
-                                <input type="file" disabled class="text-sm w-full border p-1 rounded bg-gray-100 cursor-not-allowed">
-                            </div>
-                        </div>
+                <!-- Tab: Documenti -->
+                <div id="tab-docs" class="inner-tab-content space-y-4">
+                    <p class="text-sm text-gray-500 mb-4"><i class="fa-solid fa-info-circle"></i> Spunta i documenti raccolti. Il caricamento fisico dei file (PDF) sarà sbloccato nel prossimo step.</p>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="t_doc_privacy" class="w-5 h-5 text-bdb-blue rounded focus:ring-bdb-blue">
+                            <div><p class="font-bold text-sm">Modello Privacy Firmato</p></div>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="t_doc_ci" class="w-5 h-5 text-bdb-blue rounded focus:ring-bdb-blue">
+                            <div><p class="font-bold text-sm">Carta Identità (Fronte/Retro)</p></div>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="t_doc_cf" class="w-5 h-5 text-bdb-blue rounded focus:ring-bdb-blue">
+                            <div><p class="font-bold text-sm">Tessera Sanitaria</p></div>
+                        </label>
                     </div>
                 </div>
 
-                <!-- Tecnico -->
+                <!-- Tab: Tecnico -->
                 <div id="tab-tecnico" class="inner-tab-content space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">Taglia Abbigliamento (Materiale Tecnico)</label>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Taglia Abbigliamento</label>
                             <select id="t_taglia" class="w-full p-2 border rounded bg-gray-50">
                                 <option value="">Seleziona...</option>
-                                <option value="YXS">YXS (Bambino)</option><option value="YS">YS</option><option value="YM">YM</option><option value="YL">YL</option>
+                                <option value="YXS">YXS (Bimbo)</option><option value="YS">YS</option><option value="YM">YM</option><option value="YL">YL</option>
                                 <option value="S">S (Adulto)</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option><option value="XXL">XXL</option>
                             </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">Categoria / Gruppo / Squadra</label>
-                            <input type="text" id="t_squadra" placeholder="Es. Esordienti, Musici Senior..." class="w-full p-2 border rounded bg-gray-50">
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3 shrink-0">
                 <button onclick="app.closeTesseratoModal()" class="px-5 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-200 transition">Annulla</button>
                 <button onclick="app.saveTesserato()" class="px-5 py-2.5 rounded-lg bg-bdb-blue text-white font-bold hover:bg-bdb-blue-dark transition shadow-md">Salva Fascicolo</button>
@@ -399,132 +371,100 @@
         </div>
     </div>
 
-    <!-- Modal 2: QUOTA FINANZIARIA -->
+    <!-- MODAL QUOTA (FINANZA) -->
     <div id="modalQuota" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-4 border-b bg-gray-50 flex justify-between">
-                <h3 class="font-bold text-gray-800">Registra Quota / Pagamento</h3>
-                <button onclick="app.closeQuotaModal()"><i class="fa-solid fa-times"></i></button>
-            </div>
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-4 border-b bg-gray-50 flex justify-between items-center"><h3 class="font-bold text-bdb-blue">Assegna Quota</h3></div>
             <div class="p-4 space-y-4">
                 <input type="hidden" id="q_id">
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Tesserato *</label>
-                    <select id="q_tesserato" class="w-full p-2 border rounded bg-gray-50" required></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Causale (Tipo di Quota) *</label>
-                    <select id="q_causale" class="w-full p-2 border rounded bg-gray-50">
+                <div><label class="block text-xs font-bold mb-1">Tesserato *</label><select id="q_tesserato" class="w-full p-2 border rounded"></select></div>
+                <div><label class="block text-xs font-bold mb-1">Causale *</label>
+                    <select id="q_causale" class="w-full p-2 border rounded">
                         <option value="Quota Iscrizione Annuale">Quota Iscrizione Annuale</option>
                         <option value="Kit Abbigliamento">Kit Abbigliamento</option>
-                        <option value="Multa / Sanzione">Multa / Sanzione</option>
-                        <option value="Altro">Altro</option>
+                        <option value="Quota Evento/Cena">Quota Evento/Cena</option>
+                        <option value="Multa/Sanzione">Multa/Sanzione</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Importo Totale (€) *</label>
-                        <input type="number" id="q_totale" class="w-full p-2 border rounded bg-gray-50" min="0" step="0.5" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Già Versato (€) *</label>
-                        <input type="number" id="q_versato" class="w-full p-2 border rounded bg-gray-50" min="0" step="0.5" value="0">
-                        <p class="text-[10px] text-gray-500 mt-1">Puoi versare un acconto e saldare dopo.</p>
-                    </div>
+                    <div><label class="block text-xs font-bold mb-1">Importo Totale (€) *</label><input type="number" id="q_totale" class="w-full p-2 border rounded"></div>
+                    <div><label class="block text-xs font-bold mb-1">Già Versato (€)</label><input type="number" id="q_versato" class="w-full p-2 border rounded" value="0"></div>
                 </div>
             </div>
             <div class="p-4 border-t bg-gray-50 flex justify-end gap-2">
-                <button onclick="app.closeQuotaModal()" class="px-4 py-2 rounded text-gray-600 bg-gray-200">Annulla</button>
-                <button onclick="app.saveQuota()" class="px-4 py-2 rounded bg-green-600 text-white font-bold">Salva e Genera Ricevuta</button>
+                <button onclick="app.closeQuotaModal()" class="px-4 py-2 rounded bg-gray-200">Annulla</button>
+                <button onclick="app.saveQuota()" class="px-4 py-2 rounded bg-bdb-blue text-white font-bold">Salva</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal 3: EVENTO CALENDARIO -->
+    <!-- MODAL EVENTO E APPELLO -->
     <div id="modalEvento" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-4 border-b bg-gray-50 flex justify-between">
-                <h3 class="font-bold text-gray-800">Nuovo Evento</h3>
-                <button onclick="document.getElementById('modalEvento').classList.add('hidden')"><i class="fa-solid fa-times"></i></button>
-            </div>
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-4 border-b bg-gray-50"><h3 class="font-bold text-bdb-blue">Nuovo Evento</h3></div>
             <div class="p-4 space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Titolo Evento *</label>
-                    <input type="text" id="e_titolo" placeholder="Es. Allenamento Musici" class="w-full p-2 border rounded bg-gray-50" required>
-                </div>
+                <div><label class="block text-xs font-bold mb-1">Titolo *</label><input type="text" id="e_titolo" class="w-full p-2 border rounded" placeholder="Es. Allenamento Sbandieratori"></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Data *</label><input type="date" id="e_data" class="w-full p-2 border rounded bg-gray-50" required></div>
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Ora</label><input type="time" id="e_ora" class="w-full p-2 border rounded bg-gray-50"></div>
+                    <div><label class="block text-xs font-bold mb-1">Data *</label><input type="date" id="e_data" class="w-full p-2 border rounded"></div>
+                    <div><label class="block text-xs font-bold mb-1">Ora</label><input type="time" id="e_ora" class="w-full p-2 border rounded"></div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Tipo</label>
-                    <select id="e_tipo" class="w-full p-2 border rounded bg-gray-50">
+                <div><label class="block text-xs font-bold mb-1">Tipo Evento</label>
+                    <select id="e_tipo" class="w-full p-2 border rounded">
                         <option value="Allenamento">Allenamento</option>
-                        <option value="Gara / Competizione">Gara / Competizione</option>
-                        <option value="Esibizione / Sfilata">Esibizione / Sfilata</option>
-                        <option value="Riunione / Assemblea">Riunione / Assemblea</option>
-                        <option value="Evento Sociale (Cena/Festa)">Evento Sociale (Cena/Festa)</option>
+                        <option value="Gara/Competizione">Gara/Competizione</option>
+                        <option value="Esibizione/Sfilata">Esibizione/Sfilata</option>
+                        <option value="Evento Sociale">Evento Sociale</option>
                     </select>
                 </div>
             </div>
             <div class="p-4 border-t bg-gray-50 flex justify-end gap-2">
-                <button onclick="app.saveEvento()" class="px-4 py-2 rounded bg-bdb-blue text-white font-bold">Salva Evento</button>
+                <button onclick="document.getElementById('modalEvento').classList.add('hidden')" class="px-4 py-2 rounded bg-gray-200">Annulla</button>
+                <button onclick="app.saveEvento()" class="px-4 py-2 rounded bg-bdb-blue text-white font-bold">Crea Evento</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal 4: APPELLO PRESENZE -->
-    <div id="modalAppello" class="fixed inset-0 bg-black/60 z-[100] hidden flex flex-col items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b bg-bdb-blue text-white flex justify-between items-center rounded-t-xl">
-                <div>
-                    <h3 class="font-bold text-lg" id="appelloTitle">Appello Evento</h3>
-                    <p class="text-xs text-white/80" id="appelloDate"></p>
-                </div>
-                <button onclick="document.getElementById('modalAppello').classList.add('hidden')" class="text-white hover:text-gray-200"><i class="fa-solid fa-times text-xl"></i></button>
+    <div id="modalAppello" class="fixed inset-0 bg-black/60 z-[110] hidden flex flex-col p-0 md:p-4 backdrop-blur-sm">
+        <div class="bg-gray-100 w-full h-full md:rounded-xl shadow-2xl flex flex-col md:max-w-2xl md:mx-auto">
+            <div class="p-4 bg-bdb-blue text-white flex justify-between items-center md:rounded-t-xl shrink-0">
+                <div><h3 class="font-bold text-lg" id="appelloTitle">Appello</h3><p class="text-xs text-bdb-yellow" id="appelloDate">Data</p></div>
+                <button onclick="document.getElementById('modalAppello').classList.add('hidden')" class="text-white hover:text-gray-300 text-2xl"><i class="fa-solid fa-times"></i></button>
             </div>
-            <div class="p-4 overflow-y-auto flex-grow bg-gray-50" id="appelloList">
-                <!-- Lista tesserati per appello via JS -->
-            </div>
-            <div class="p-4 border-t bg-white flex justify-end">
-                <button onclick="document.getElementById('modalAppello').classList.add('hidden')" class="px-4 py-2 rounded bg-green-600 text-white font-bold shadow">Finito (Salvataggio automatico)</button>
+            <div class="p-4 flex-grow overflow-y-auto" id="appelloList">
+                <!-- Popolato via JS con gli switch -->
             </div>
         </div>
     </div>
 
-    <!-- Modal 5: MAGAZZINO ITEM -->
+    <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-4 border-b bg-gray-50 flex justify-between">
-                <h3 class="font-bold text-gray-800">Nuovo Articolo Magazzino</h3>
-                <button onclick="document.getElementById('modalItem').classList.add('hidden')"><i class="fa-solid fa-times"></i></button>
-            </div>
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-4 border-b bg-gray-50"><h3 class="font-bold text-bdb-blue">Nuovo Articolo in Magazzino</h3></div>
             <div class="p-4 space-y-4">
-                <div><label class="block text-xs font-bold text-gray-700 mb-1">Nome Articolo *</label><input type="text" id="i_nome" class="w-full p-2 border rounded bg-gray-50" required></div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Categoria</label>
-                    <select id="i_cat" class="w-full p-2 border rounded bg-gray-50">
-                        <option value="Abbigliamento di Rappresentanza">Abbigliamento di Rappresentanza</option>
-                        <option value="Costume Storico">Costume Storico</option>
-                        <option value="Strumento (Tamburo/Chiarina)">Strumento (Tamburo/Chiarina)</option>
+                <div><label class="block text-xs font-bold mb-1">Nome Articolo *</label><input type="text" id="i_nome" class="w-full p-2 border rounded" placeholder="Es. Tamburo Imperiale"></div>
+                <div><label class="block text-xs font-bold mb-1">Categoria</label>
+                    <select id="i_cat" class="w-full p-2 border rounded">
                         <option value="Attrezzatura (Bandiere/Aste/Pesi)">Attrezzatura (Bandiere/Aste/Pesi)</option>
+                        <option value="Strumenti Musicali">Strumenti Musicali</option>
+                        <option value="Costumi Storici">Costumi Storici</option>
+                        <option value="Abbigliamento Rappresentanza">Abbigliamento Rappresentanza</option>
                     </select>
                 </div>
-                <div><label class="block text-xs font-bold text-gray-700 mb-1">Quantità Totale Posseduta *</label><input type="number" id="i_tot" class="w-full p-2 border rounded bg-gray-50" min="1" value="1" required></div>
+                <div><label class="block text-xs font-bold mb-1">Quantità Totale *</label><input type="number" id="i_tot" class="w-full p-2 border rounded" value="1"></div>
             </div>
             <div class="p-4 border-t bg-gray-50 flex justify-end gap-2">
-                <button onclick="app.saveItem()" class="px-4 py-2 rounded bg-gray-800 text-white font-bold">Salva Articolo</button>
+                <button onclick="document.getElementById('modalItem').classList.add('hidden')" class="px-4 py-2 rounded bg-gray-200">Annulla</button>
+                <button onclick="app.saveItem()" class="px-4 py-2 rounded bg-bdb-blue text-white font-bold">Salva</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== SCRIPT (FIREBASE & LOGIC) ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // NOTA: Usa lo stesso config precedente
+        // ATTENZIONE: Questo è il database di test. Nel prossimo step inserirai le TUE chiavi qui!
         const firebaseConfig = {
             apiKey: "AIzaSyAolrSgri9xiAtiPZw4NauRD49vKKcV7PY",
             authDomain: "gestionaletesseramenti.firebaseapp.com",
@@ -540,36 +480,45 @@
         const googleProvider = new GoogleAuthProvider();
 
         const app = {
-            state: {
-                user: null, isAdmin: false,
-                atleti: [], news: [], quote: [], eventi: [], magazzino: []
-            },
+            state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [] },
 
-            // ================= AUTHENTICATION =================
+            // --- AUTHENTICATION ---
             initAuth: function() {
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         this.state.user = user;
-                        this.state.isAdmin = (user.email === 'segreteria@borgodonbosco.com'); // Manteniamo la tua logica di Admin
+                        this.state.isAdmin = (user.email === 'segreteria@borgodonbosco.com');
                         
                         document.getElementById('authScreen').classList.add('hidden');
                         document.getElementById('mainApp').classList.remove('hidden');
                         
                         document.getElementById('userEmailDisplay').innerText = user.email || user.displayName;
-                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Amministratore ERP' : 'Utente Standard';
+                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Amministratore' : 'Utente Standard';
                         document.getElementById('userInitial').innerText = (user.email || user.displayName || 'U').charAt(0).toUpperCase();
                         
-                        if(this.state.isAdmin) document.getElementById('btnAddNews').classList.remove('hidden');
+                        if(this.state.isAdmin) {
+                            document.getElementById('btnAddNews').classList.remove('hidden');
+                            document.getElementById('nav-finanza').classList.remove('hidden');
+                            document.getElementById('nav-eventi').classList.remove('hidden');
+                            document.getElementById('nav-magazzino').classList.remove('hidden');
+                            document.getElementById('nav-finanza').classList.add('flex');
+                            document.getElementById('nav-eventi').classList.add('flex');
+                            document.getElementById('nav-magazzino').classList.add('flex');
+                        }
 
                         this.loadData();
                     } else {
-                        this.state.user = null; this.state.isAdmin = false;
+                        this.state.user = null;
+                        this.state.isAdmin = false;
                         document.getElementById('authScreen').classList.remove('hidden');
                         document.getElementById('mainApp').classList.add('hidden');
                     }
                 });
             },
-            showAuthErr: (msg) => { const el = document.getElementById('authError'); el.innerText = msg; el.classList.remove('hidden'); },
+            showAuthErr: (msg) => {
+                const el = document.getElementById('authError');
+                el.innerText = msg; el.classList.remove('hidden');
+            },
             login: function() {
                 const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
                 signInWithEmailAndPassword(auth, e, p).catch(err => this.showAuthErr("Login fallito: " + err.message));
@@ -578,20 +527,21 @@
                 const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
                 createUserWithEmailAndPassword(auth, e, p).catch(err => this.showAuthErr("Registrazione fallita: " + err.message));
             },
-            googleLogin: function() { signInWithPopup(auth, googleProvider).catch(err => this.showAuthErr("Google Login fallito.")); },
+            googleLogin: function() {
+                signInWithPopup(auth, googleProvider).catch(err => this.showAuthErr("Google Login fallito: L'amministratore deve abilitare questo metodo su Firebase."));
+            },
             resetPassword: function() {
                 const e = document.getElementById('authEmail').value;
-                if(!e) return this.showAuthErr("Inserisci email.");
-                sendPasswordResetEmail(auth, e).then(() => alert("Email inviata.")).catch(err => this.showAuthErr(err.message));
+                if(!e) { this.showAuthErr("Inserisci la tua email per il recupero."); return; }
+                sendPasswordResetEmail(auth, e).then(() => alert("Email inviata. Controlla lo spam.")).catch(err => this.showAuthErr(err.message));
             },
             logout: () => signOut(auth),
 
-            // ================= NAVIGATION =================
+            // --- NAVIGATION ---
             switchTab: function(tabId) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 event.currentTarget.classList.add('active');
                 if(window.innerWidth < 768) document.getElementById('navMenu').classList.add('hidden');
-                
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('view-' + tabId).classList.add('active');
             },
@@ -602,50 +552,41 @@
                 document.getElementById('btn-' + tabId).classList.add('active');
             },
 
-            // ================= DATA LOADING =================
+            // --- DATA LOADING ---
             loadData: function() {
-                // 1. Fascicoli
+                // Load Athletes
                 const qAtleti = this.state.isAdmin ? query(collection(db, "fascicoli")) : query(collection(db, "fascicoli"), where("ownerUid", "==", this.state.user.uid));
                 onSnapshot(qAtleti, (snap) => {
                     this.state.atleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                    // Sort by name alphabetically
                     this.state.atleti.sort((a,b) => (a.nome || '').localeCompare(b.nome || ''));
                     this.renderAnagrafica();
                     this.updateDashboardStats();
-                    this.populateTesseratiSelects(); // Aggiorna i menu a tendina
+                    this.populateTesseratiSelects();
                 });
 
-                // 2. Bacheca News
+                // Load News
                 onSnapshot(query(collection(db, "news"), orderBy("date", "desc")), (snap) => {
                     this.state.news = snap.docs.map(d => ({id: d.id, ...d.data()}));
                     this.renderNews();
                 });
 
-                // 3. Finanza (Quote)
+                // Admin Only Data (Finanza, Eventi, Magazzino)
                 if(this.state.isAdmin) {
                     onSnapshot(collection(db, "finanza"), (snap) => {
                         this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()}));
                         this.renderFinanza();
-                        this.updateDashboardStats();
                     });
-                }
-
-                // 4. Eventi (Calendario)
-                if(this.state.isAdmin) {
                     onSnapshot(query(collection(db, "eventi"), orderBy("data", "desc")), (snap) => {
                         this.state.eventi = snap.docs.map(d => ({id: d.id, ...d.data()}));
                         this.renderEventi();
                     });
-                }
-
-                // 5. Magazzino
-                if(this.state.isAdmin) {
                     onSnapshot(collection(db, "magazzino"), (snap) => {
                         this.state.magazzino = snap.docs.map(d => ({id: d.id, ...d.data()}));
                         this.renderMagazzino();
                     });
                 }
             },
+            
             populateTesseratiSelects: function() {
                 const selects = [document.getElementById('q_tesserato')];
                 let opts = `<option value="">-- Seleziona Tesserato --</option>`;
@@ -653,109 +594,41 @@
                 selects.forEach(s => { if(s) s.innerHTML = opts; });
             },
 
-            // ================= DASHBOARD & BACHECA =================
+            // --- DASHBOARD LOGIC ---
             updateDashboardStats: function() {
                 document.getElementById('dash-tesserati').innerText = this.state.atleti.length;
-                let scaduti = 0; const oggi = new Date(); oggi.setHours(0,0,0,0);
+                let scaduti = 0;
+                const oggi = new Date(); oggi.setHours(0,0,0,0);
                 this.state.atleti.forEach(a => {
-                    if(a.cert_scad && new Date(a.cert_scad) < oggi) scaduti++;
+                    if(a.cert_scad) {
+                        if(new Date(a.cert_scad) < oggi) scaduti++;
+                    }
                 });
                 document.getElementById('dash-scaduti').innerText = scaduti;
-                
-                let incasso = 0;
-                this.state.quote.forEach(q => { incasso += Number(q.versato || 0); });
-                document.getElementById('dash-incassi').innerText = `€ ${incasso.toFixed(2)}`;
             },
             renderNews: function() {
-                const c = document.getElementById('newsFeed');
-                if(!this.state.news.length) return c.innerHTML = '<div class="text-center text-gray-400 py-4">Nessun avviso.</div>';
-                c.innerHTML = this.state.news.map(n => `
+                const container = document.getElementById('newsFeed');
+                if(this.state.news.length === 0) return container.innerHTML = '<div class="text-center text-gray-400 py-4">Nessun avviso presente.</div>';
+                container.innerHTML = this.state.news.map(n => `
                     <div class="border-l-4 border-bdb-yellow pl-4 py-2">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-gray-800">${n.title}</h4>
-                            ${this.state.isAdmin ? `<button onclick="app.deleteDoc('news', '${n.id}')" class="text-red-400"><i class="fa-solid fa-trash text-xs"></i></button>` : ''}
+                            ${this.state.isAdmin ? `<button onclick="app.deleteDocRef('news', '${n.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-xs"></i></button>` : ''}
                         </div>
                         <p class="text-sm text-gray-600 mt-1">${n.content}</p>
                         <span class="text-xs text-gray-400 mt-2 block">${new Date(n.date).toLocaleDateString()}</span>
-                    </div>`).join('');
+                    </div>
+                `).join('');
             },
             promptNews: async function() {
-                const title = prompt("Titolo Avviso:"); if(!title) return;
-                const content = prompt("Testo:"); if(!content) return;
-                await addDoc(collection(db, "news"), { title, content, date: new Date().toISOString() });
+                const title = prompt("Titolo Avviso:"); const content = prompt("Testo Avviso:");
+                if(title && content) await addDoc(collection(db, "news"), { title, content, date: new Date().toISOString() });
             },
-            deleteDoc: async function(collectionName, id) {
-                if(confirm("Eliminare definitivamente?")) await deleteDoc(doc(db, collectionName, id));
-            },
-
-            // ================= ANAGRAFICA & FASCICOLO =================
-            renderAnagrafica: function() {
-                const tbody = document.getElementById('anagraficaTableBody');
-                const s = document.getElementById('searchAnagrafica').value.toLowerCase();
-                const oggi = new Date(); oggi.setHours(0,0,0,0);
-                
-                tbody.innerHTML = this.state.atleti.filter(a => 
-                    (a.nome||'').toLowerCase().includes(s) || (a.ruolo||'').toLowerCase().includes(s)
-                ).map(a => {
-                    let cert = `<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">Assente</span>`;
-                    if(a.cert_scad) {
-                        const sc = new Date(a.cert_scad); const diff = Math.ceil((sc - oggi) / (1000*60*60*24));
-                        if(diff < 0) cert = `<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Scaduto</span>`;
-                        else if(diff <= 30) cert = `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Scade tra ${diff}gg</span>`;
-                        else cert = `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Valido</span>`;
-                    }
-                    const docsOk = a.doc_privacy && a.doc_ci && a.doc_cf;
-                    const docs = docsOk ? `<i class="fa-solid fa-check-circle text-green-500"></i>` : `<i class="fa-solid fa-exclamation-circle text-orange-400"></i> Manca Doc`;
-
-                    return `
-                        <tr class="hover:bg-gray-50 transition cursor-pointer" onclick="app.editTesserato('${a.id}')">
-                            <td class="p-4"><div class="font-bold text-gray-800">${a.nome}</div><div class="text-xs text-gray-500">${a.nascita||'-'}</div></td>
-                            <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-bdb-blue rounded text-xs border border-blue-100">${a.ruolo || 'Atleta'}</span></td>
-                            <td class="p-4">${cert}</td><td class="p-4 text-sm">${docs}</td>
-                            <td class="p-4 text-right">
-                                <button class="text-gray-400 hover:text-bdb-blue p-2" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid fa-pen"></i></button>
-                                ${this.state.isAdmin ? `<button class="text-gray-400 hover:text-red-500 p-2" onclick="event.stopPropagation(); app.deleteDoc('fascicoli', '${a.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
-                            </td>
-                        </tr>`;
-                }).join('');
-            },
-            openTesseratoModal: function() {
-                document.getElementById('t_id').value = '';
-                document.querySelectorAll('#modalTesserato input:not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
-                document.querySelectorAll('#modalTesserato input[type=checkbox]').forEach(el => el.checked = false);
-                document.getElementById('t_ruolo').value = 'Atleta';
-                document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
-                this.switchInnerTab('tab-base');
-                document.getElementById('modalTesserato').classList.remove('hidden');
-            },
-            closeTesseratoModal: () => document.getElementById('modalTesserato').classList.add('hidden'),
-            editTesserato: function(id) {
-                const a = this.state.atleti.find(x => x.id === id); if(!a) return;
-                ['id','nome','nascita','ruolo','tel','genitore','codicefiscale','cert_emiss','cert_scad','note_mediche','taglia','squadra'].forEach(f => {
-                    if(document.getElementById('t_'+f)) document.getElementById('t_'+f).value = a[f] || '';
-                });
-                ['doc_privacy','doc_ci','doc_cf'].forEach(f => { document.getElementById('t_'+f).checked = !!a[f]; });
-                document.getElementById('modalTesseratoTitle').innerText = 'Fascicolo: ' + a.nome;
-                this.switchInnerTab('tab-base');
-                document.getElementById('modalTesserato').classList.remove('hidden');
-            },
-            saveTesserato: async function() {
-                const id = document.getElementById('t_id').value;
-                const data = { ownerUid: this.state.user.uid };
-                ['nome','nascita','ruolo','tel','genitore','codicefiscale','cert_emiss','cert_scad','note_mediche','taglia','squadra'].forEach(f => {
-                    data[f] = document.getElementById('t_'+f).value;
-                });
-                ['doc_privacy','doc_ci','doc_cf'].forEach(f => { data[f] = document.getElementById('t_'+f).checked; });
-
-                if(!data.nome || !data.nascita) return alert("Nome e Nascita obbligatori.");
-                try {
-                    if(id) { const { ownerUid, ...upd } = data; await updateDoc(doc(db, "fascicoli", id), upd); }
-                    else { await addDoc(collection(db, "fascicoli"), data); }
-                    this.closeTesseratoModal();
-                } catch(e) { alert("Errore: " + e.message); }
+            deleteDocRef: async function(colName, id) {
+                if(confirm("Eliminare definitivamente?")) await deleteDoc(doc(db, colName, id));
             },
 
-            // ================= FINANZA & PDF =================
+            // --- FINANZA LOGIC ---
             renderFinanza: function() {
                 const tbody = document.getElementById('finanzaTableBody');
                 let totPrevisto = 0, totIncassato = 0;
@@ -780,7 +653,7 @@
                         <td class="p-4 text-right">
                             ${diff > 0 ? `<button class="text-green-600 hover:text-green-800 mr-3 text-xs border border-green-600 px-2 py-1 rounded" onclick="app.aggiungiAcconto('${q.id}', ${diff})">+ Versamento</button>` : ''}
                             <button class="text-gray-500 hover:text-bdb-blue mr-3" title="Scarica Ricevuta PDF" onclick="app.generaRicevutaPDF('${nome}', '${q.causale}', ${q.versato})"><i class="fa-solid fa-file-pdf"></i></button>
-                            <button class="text-red-400 hover:text-red-600" onclick="app.deleteDoc('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
+                            <button class="text-red-400 hover:text-red-600" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
                 }).join('');
@@ -797,21 +670,15 @@
             },
             closeQuotaModal: () => document.getElementById('modalQuota').classList.add('hidden'),
             saveQuota: async function() {
-                const t = document.getElementById('q_tesserato').value;
-                const c = document.getElementById('q_causale').value;
-                const tot = document.getElementById('q_totale').value;
-                const v = document.getElementById('q_versato').value;
+                const t = document.getElementById('q_tesserato').value; const c = document.getElementById('q_causale').value;
+                const tot = document.getElementById('q_totale').value; const v = document.getElementById('q_versato').value;
                 if(!t || !tot) return alert("Compila i campi obbligatori.");
-                
                 try {
-                    await addDoc(collection(db, "finanza"), {
-                        tesseratoId: t, causale: c, totale: Number(tot), versato: Number(v), dataCreazione: new Date().toISOString()
-                    });
+                    await addDoc(collection(db, "finanza"), { tesseratoId: t, causale: c, totale: Number(tot), versato: Number(v), dataCreazione: new Date().toISOString() });
                     this.closeQuotaModal();
-                    
                     if(Number(v) > 0) {
                         const nome = this.state.atleti.find(a => a.id === t).nome;
-                        this.generaRicevutaPDF(nome, c, v); // Genera subito il PDF se c'è un versamento
+                        if(confirm("Vuoi scaricare la ricevuta per questo versamento?")) this.generaRicevutaPDF(nome, c, v);
                     }
                 } catch(e) { alert("Errore: " + e.message); }
             },
@@ -821,67 +688,54 @@
                     const q = this.state.quote.find(x => x.id === id);
                     await updateDoc(doc(db, "finanza", id), { versato: Number(q.versato) + Number(importo) });
                     const nome = this.state.atleti.find(a => a.id === q.tesseratoId).nome;
-                    this.generaRicevutaPDF(nome, "Acconto: " + q.causale, importo);
+                    if(confirm("Vuoi scaricare la ricevuta dell'acconto?")) this.generaRicevutaPDF(nome, "Acconto: " + q.causale, importo);
                 }
             },
             generaRicevutaPDF: function(nome, causale, importo) {
+                if(typeof window.jspdf === 'undefined') return alert("Libreria PDF non ancora caricata, attendi un secondo.");
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
-                // Design Base Ricevuta
-                doc.setFontSize(22);
-                doc.setTextColor(0, 51, 160); // BDB Blue
+                // Intestazione
+                doc.setFontSize(22); doc.setTextColor(0, 51, 160);
                 doc.text("Borgo Don Bosco", 105, 20, { align: "center" });
+                doc.setFontSize(14); doc.setTextColor(100);
+                doc.text("Ricevuta di Pagamento Associazione", 105, 30, { align: "center" });
+                doc.setLineWidth(0.5); doc.line(20, 35, 190, 35);
                 
-                doc.setFontSize(14);
-                doc.setTextColor(100);
-                doc.text("Ricevuta di Pagamento ERP", 105, 30, { align: "center" });
+                // Corpo
+                doc.setTextColor(0); doc.setFontSize(12);
+                doc.text(`Data Emissione: ${new Date().toLocaleDateString()}`, 20, 50);
+                doc.text(`Riceviamo da:`, 20, 65); doc.setFont(undefined, 'bold'); doc.text(nome, 60, 65);
+                doc.setFont(undefined, 'normal'); doc.text(`Causale:`, 20, 80); doc.text(causale, 60, 80);
+                doc.text(`Importo Versato:`, 20, 95); doc.setFontSize(16); doc.setFont(undefined, 'bold');
+                doc.text(`Euro ${Number(importo).toFixed(2)}`, 60, 95);
                 
-                doc.setLineWidth(0.5);
-                doc.line(20, 35, 190, 35);
-                
-                doc.setTextColor(0);
-                doc.setFontSize(12);
-                doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 50);
-                doc.text(`Riceviamo da:`, 20, 60);
-                doc.setFont(undefined, 'bold');
-                doc.text(nome, 60, 60);
-                
-                doc.setFont(undefined, 'normal');
-                doc.text(`Causale:`, 20, 75);
-                doc.text(causale, 60, 75);
-                
-                doc.text(`Importo Versato:`, 20, 90);
-                doc.setFontSize(16);
-                doc.setFont(undefined, 'bold');
-                doc.text(`€ ${Number(importo).toFixed(2)}`, 60, 90);
-                
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
-                doc.text("Il Segretario / L'Incaricato", 140, 120);
-                doc.line(130, 130, 190, 130);
+                // Firma
+                doc.setFontSize(10); doc.setFont(undefined, 'normal');
+                doc.text("La Segreteria", 150, 130); doc.line(130, 140, 190, 140);
                 
                 doc.save(`Ricevuta_${nome.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`);
             },
 
-            // ================= EVENTI & PRESENZE =================
+            // --- EVENTI LOGIC ---
             renderEventi: function() {
                 const grid = document.getElementById('eventiGrid');
-                if(!this.state.eventi.length) return grid.innerHTML = '<p class="text-gray-400">Nessun evento in calendario.</p>';
+                if(!this.state.eventi.length) return grid.innerHTML = '<p class="text-gray-400 col-span-full">Nessun evento in calendario.</p>';
                 
                 grid.innerHTML = this.state.eventi.map(e => {
                     const presenzeCount = e.presenze ? Object.values(e.presenze).filter(v => v === true).length : 0;
                     return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition">
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-xs font-bold px-2 py-1 bg-gray-100 rounded text-bdb-blue">${e.tipo}</span>
-                            <button onclick="app.deleteDoc('eventi', '${e.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+                            <button onclick="app.deleteDocRef('eventi', '${e.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
                         </div>
                         <h3 class="font-bold text-gray-800 text-lg">${e.titolo}</h3>
                         <p class="text-sm text-gray-500 mb-4"><i class="fa-regular fa-calendar mr-1"></i> ${new Date(e.data).toLocaleDateString()} ${e.ora ? '- '+e.ora : ''}</p>
                         <div class="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
                             <span class="text-sm text-gray-500"><strong>${presenzeCount}</strong> Presenti</span>
-                            <button onclick="app.openAppello('${e.id}')" class="bg-bdb-yellow text-bdb-blue-dark px-3 py-1.5 rounded font-bold text-sm hover:brightness-95">Fai Appello <i class="fa-solid fa-clipboard-check ml-1"></i></button>
+                            <button onclick="app.openAppello('${e.id}')" class="bg-bdb-yellow text-bdb-blue-dark px-3 py-1.5 rounded font-bold text-sm hover:brightness-95 shadow-sm">Fai Appello <i class="fa-solid fa-clipboard-check ml-1"></i></button>
                         </div>
                     </div>`;
                 }).join('');
@@ -891,11 +745,8 @@
                 document.getElementById('modalEvento').classList.remove('hidden');
             },
             saveEvento: async function() {
-                const titolo = document.getElementById('e_titolo').value;
-                const data = document.getElementById('e_data').value;
-                const ora = document.getElementById('e_ora').value;
-                const tipo = document.getElementById('e_tipo').value;
-                
+                const titolo = document.getElementById('e_titolo').value; const data = document.getElementById('e_data').value;
+                const ora = document.getElementById('e_ora').value; const tipo = document.getElementById('e_tipo').value;
                 if(!titolo || !data) return alert("Titolo e Data obbligatori.");
                 try {
                     await addDoc(collection(db, "eventi"), { titolo, data, ora, tipo, presenze: {} });
@@ -908,7 +759,6 @@
                 document.getElementById('appelloDate').innerText = new Date(evento.data).toLocaleDateString();
                 
                 const list = document.getElementById('appelloList');
-                // Mostra tutti i tesserati. Se sono nell'oggetto presenze ed è true, checked.
                 list.innerHTML = this.state.atleti.map(a => {
                     const isPresente = evento.presenze && evento.presenze[a.id] === true;
                     return `
@@ -923,44 +773,126 @@
                         </label>
                     </div>`;
                 }).join('');
-                
                 document.getElementById('modalAppello').classList.remove('hidden');
             },
             togglePresenza: async function(eventoId, tesseratoId, isPresente) {
-                // Salvataggio immediato in Firestore per evitare perdita dati se cade la linea a bordo campo
                 const eventoRef = doc(db, "eventi", eventoId);
-                const updatePath = `presenze.${tesseratoId}`;
-                await updateDoc(eventoRef, { [updatePath]: isPresente });
+                await updateDoc(eventoRef, { [`presenze.${tesseratoId}`]: isPresente });
             },
 
-            // ================= MAGAZZINO =================
+            // --- MAGAZZINO LOGIC ---
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
                 tbody.innerHTML = this.state.magazzino.map(i => {
-                    // Calcolo di quanti ne sono stati assegnati (per ora è mockato o contato se aggiungiamo array)
                     const inUso = i.assegnazioni ? i.assegnazioni.length : 0;
                     const disp = i.totale - inUso;
                     return `<tr>
                         <td class="p-4 font-bold">${i.nome}</td>
-                        <td class="p-4"><span class="text-xs bg-gray-100 px-2 py-1 rounded">${i.categoria}</span></td>
+                        <td class="p-4"><span class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">${i.categoria}</span></td>
                         <td class="p-4">${i.totale}</td>
                         <td class="p-4 text-orange-600">${inUso}</td>
                         <td class="p-4 font-bold text-green-600">${disp}</td>
                         <td class="p-4 text-right">
-                            <button onclick="alert('Funzione Assegnazione Materiale in arrivo nella v3')" class="text-bdb-blue text-xs border border-bdb-blue px-2 py-1 rounded mr-2">Assegna</button>
-                            <button onclick="app.deleteDoc('magazzino', '${i.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
                 }).join('');
             },
             openItemModal: () => document.getElementById('modalItem').classList.remove('hidden'),
             saveItem: async function() {
-                const nome = document.getElementById('i_nome').value;
-                const cat = document.getElementById('i_cat').value;
+                const nome = document.getElementById('i_nome').value; const cat = document.getElementById('i_cat').value;
                 const tot = document.getElementById('i_tot').value;
                 if(!nome) return;
                 await addDoc(collection(db, "magazzino"), { nome, categoria: cat, totale: Number(tot), assegnazioni: [] });
                 document.getElementById('modalItem').classList.add('hidden');
+            },
+
+            // --- ANAGRAFICA LOGIC (Base) ---
+            renderAnagrafica: function() {
+                const tbody = document.getElementById('anagraficaTableBody');
+                const search = document.getElementById('searchAnagrafica').value.toLowerCase();
+                const oggi = new Date(); oggi.setHours(0,0,0,0);
+                
+                tbody.innerHTML = this.state.atleti.filter(a => 
+                    (a.nome || '').toLowerCase().includes(search) || (a.genitore || '').toLowerCase().includes(search)
+                ).map(a => {
+                    let certStatusHTML = `<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">Assente</span>`;
+                    if(a.cert_scad) {
+                        const scadeIl = new Date(a.cert_scad);
+                        const diff = Math.ceil((scadeIl - oggi) / (1000 * 60 * 60 * 24));
+                        if(diff < 0) certStatusHTML = `<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Scaduto</span>`;
+                        else if(diff <= 30) certStatusHTML = `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Scade tra ${diff}gg</span>`;
+                        else certStatusHTML = `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Valido</span>`;
+                    }
+                    const docsOk = a.doc_privacy && a.doc_ci && a.doc_cf;
+                    const docsHTML = docsOk ? `<i class="fa-solid fa-check-circle text-green-500"></i>` : `<i class="fa-solid fa-exclamation-circle text-orange-400"></i>`;
+
+                    return `
+                        <tr class="hover:bg-gray-50 transition cursor-pointer" onclick="app.editTesserato('${a.id}')">
+                            <td class="p-4"><div class="font-bold text-gray-800">${a.nome}</div><div class="text-xs text-gray-500">${a.nascita}</div></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-bdb-blue rounded text-xs border border-blue-100">${a.ruolo || 'Atleta'}</span></td>
+                            <td class="p-4">${certStatusHTML}</td>
+                            <td class="p-4 text-center">${docsHTML}</td>
+                            <td class="p-4 text-right">
+                                <button class="text-gray-400 hover:text-bdb-blue p-2" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid fa-pen"></i></button>
+                                ${this.state.isAdmin ? `<button class="text-gray-400 hover:text-red-500 p-2" onclick="event.stopPropagation(); app.deleteDocRef('fascicoli', '${a.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            },
+
+            openTesseratoModal: function() {
+                document.getElementById('t_id').value = '';
+                document.querySelectorAll('#modalTesserato input:not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
+                document.querySelectorAll('#modalTesserato input[type=checkbox]').forEach(el => el.checked = false);
+                document.getElementById('t_ruolo').value = 'Atleta';
+                document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
+                this.switchInnerTab('tab-base');
+                document.getElementById('modalTesserato').classList.remove('hidden');
+            },
+            closeTesseratoModal: function() { document.getElementById('modalTesserato').classList.add('hidden'); },
+            editTesserato: function(id) {
+                const a = this.state.atleti.find(x => x.id === id);
+                if(!a) return;
+                document.getElementById('t_id').value = a.id;
+                document.getElementById('t_nome').value = a.nome || '';
+                document.getElementById('t_nascita').value = a.nascita || '';
+                document.getElementById('t_ruolo').value = a.ruolo || 'Atleta';
+                document.getElementById('t_tel').value = a.tel || '';
+                document.getElementById('t_genitore').value = a.genitore || '';
+                document.getElementById('t_cert_emiss').value = a.cert_emiss || '';
+                document.getElementById('t_cert_scad').value = a.cert_scad || '';
+                document.getElementById('t_note_mediche').value = a.note_mediche || '';
+                document.getElementById('t_taglia').value = a.taglia || '';
+                
+                document.getElementById('t_doc_privacy').checked = !!a.doc_privacy;
+                document.getElementById('t_doc_ci').checked = !!a.doc_ci;
+                document.getElementById('t_doc_cf').checked = !!a.doc_cf;
+
+                document.getElementById('modalTesseratoTitle').innerText = 'Fascicolo: ' + a.nome;
+                this.switchInnerTab('tab-base');
+                document.getElementById('modalTesserato').classList.remove('hidden');
+            },
+            saveTesserato: async function() {
+                const id = document.getElementById('t_id').value;
+                const data = {
+                    nome: document.getElementById('t_nome').value, nascita: document.getElementById('t_nascita').value,
+                    ruolo: document.getElementById('t_ruolo').value, tel: document.getElementById('t_tel').value,
+                    genitore: document.getElementById('t_genitore').value, cert_emiss: document.getElementById('t_cert_emiss').value,
+                    cert_scad: document.getElementById('t_cert_scad').value, note_mediche: document.getElementById('t_note_mediche').value,
+                    taglia: document.getElementById('t_taglia').value, doc_privacy: document.getElementById('t_doc_privacy').checked,
+                    doc_ci: document.getElementById('t_doc_ci').checked, doc_cf: document.getElementById('t_doc_cf').checked,
+                    ownerUid: this.state.user.uid
+                };
+                if(!data.nome || !data.nascita) return alert("Nome e Data di nascita sono obbligatori.");
+                try {
+                    if(id) {
+                        const { ownerUid, ...updateData } = data;
+                        await updateDoc(doc(db, "fascicoli", id), updateData);
+                    } else { await addDoc(collection(db, "fascicoli"), data); }
+                    this.closeTesseratoModal();
+                } catch(e) { alert("Errore salvataggio: " + e.message); }
             }
         };
 
