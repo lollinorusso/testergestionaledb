@@ -226,7 +226,10 @@
                         <button onclick="app.requestNotificationPermission()" class="w-full md:w-auto px-6 py-3 bg-white text-bdb-blue font-extrabold rounded-xl shadow-md hover:bg-gray-50 transition shrink-0">Attiva Ora</button>
                     </div>
 
-                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+                    <!-- User Finance Alert Box -->
+                    <div id="userFinanceBox"></div>
+
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden mt-8">
                         <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Avvisi Direttivo</h3>
                             <button onclick="app.promptNews()" class="admin-only hidden text-sm bg-bdb-blue text-white px-4 py-2 rounded-xl font-bold hover:bg-bdb-blue-dark transition shadow-md"><i class="fa-solid fa-plus md:hidden"></i><span class="hidden md:inline">Crea Avviso</span></button>
@@ -803,6 +806,8 @@
                     if(this.state.isAdmin) {
                         this.updateDashboardStats();
                         this.updateQuotaDropdown();
+                    } else {
+                        this.renderUserFinance();
                     }
                 }, (err) => this.ui.error("Errore Dati", "Impossibile caricare i fascicoli: " + err.message)));
 
@@ -848,8 +853,10 @@
                     this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()})); 
                     if(this.state.isAdmin) {
                         this.renderFinanza(); 
+                        this.updateQuotaDropdown();
+                    } else {
+                        this.renderUserFinance();
                     }
-                    this.updateQuotaDropdown();
                 }, (err) => { if(this.state.isAdmin) this.ui.error("Errore Dati", "Impossibile caricare la contabilità: " + err.message); }));
 
                 if(this.state.isAdmin) {
@@ -906,6 +913,59 @@
                 const today = new Date();
                 if(date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) return "Oggi";
                 return date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
+            },
+
+            renderUserFinance: function() {
+                const box = document.getElementById('userFinanceBox');
+                if (this.state.isAdmin || !box) {
+                    if (box) box.innerHTML = '';
+                    return;
+                }
+
+                const myAtletiIds = this.state.atleti.map(a => a.id);
+                const myQuotes = this.state.quote.filter(q => myAtletiIds.includes(q.tesseratoId));
+                
+                if(myQuotes.length === 0) {
+                    box.innerHTML = '';
+                    return;
+                }
+
+                let html = '<div class="space-y-4 mb-8">';
+                html += '<h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2 mb-4"><i class="fa-solid fa-file-invoice-dollar text-bdb-blue"></i> La tua situazione contabile</h3>';
+                
+                myQuotes.forEach(q => {
+                    const tesserato = this.state.atleti.find(a => a.id === q.tesseratoId);
+                    const nome = tesserato ? tesserato.nome : 'Sconosciuto';
+                    const diff = Number(q.totale) - Number(q.versato);
+                    const isSaldato = diff <= 0;
+                    
+                    if (!isSaldato) {
+                        html += `
+                        <div class="bg-orange-50 border border-orange-200 p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm hover:shadow-md transition">
+                            <div>
+                                <p class="text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">Da Saldare</p>
+                                <h4 class="font-extrabold text-gray-800 text-lg">${this.esc(q.causale)} - ${this.esc(nome)}</h4>
+                                <p class="text-sm text-gray-600 mt-1">Importo richiesto: <span class="font-bold text-gray-800">${formatter.format(q.totale)}</span> | Versato: <span class="font-bold text-gray-800">${formatter.format(q.versato)}</span></p>
+                            </div>
+                            <div class="bg-white px-5 py-3 rounded-xl font-extrabold text-orange-600 shadow-sm whitespace-nowrap border border-orange-100">
+                                Restante: ${formatter.format(diff)}
+                            </div>
+                        </div>`;
+                    } else {
+                        html += `
+                        <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm opacity-90 hover:opacity-100 transition">
+                            <div>
+                                <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1"><i class="fa-solid fa-check-circle mr-1"></i>Saldato</p>
+                                <h4 class="font-extrabold text-gray-800 text-lg">${this.esc(q.causale)} - ${this.esc(nome)}</h4>
+                            </div>
+                            <button onclick="app.generaRicevutaPDF('${this.esc(nome)}', '${this.esc(q.causale)}', ${q.versato}, ${q.totale})" class="bg-white px-5 py-3 rounded-xl font-extrabold text-emerald-600 shadow-sm whitespace-nowrap hover:bg-emerald-100 transition border border-emerald-100 flex items-center gap-2">
+                                <i class="fa-solid fa-download"></i> Scarica Ricevuta
+                            </button>
+                        </div>`;
+                    }
+                });
+                html += '</div>';
+                box.innerHTML = html;
             },
 
             renderNews: function() {
