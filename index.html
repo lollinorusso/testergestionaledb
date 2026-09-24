@@ -14,7 +14,7 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- External Libraries (PDF generation & SweetAlert2 Modals) -->
+    <!-- External Libraries (jspdf & SweetAlert2 Modals) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -41,36 +41,28 @@
     
     <style>
         body { background-color: #F8FAFC; overflow: hidden; height: 100dvh; }
-        
         .view-section { display: none; height: 100%; overflow-y: auto; padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
         .view-section.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Sidebar Styling */
         .nav-item { position: relative; overflow: hidden; }
         .nav-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background-color: #FFD100; transform: scaleY(0); transition: transform 0.2s ease; border-radius: 0 4px 4px 0; }
         .nav-item.active { background-color: rgba(255, 255, 255, 0.1); color: white; font-weight: 600; }
         .nav-item.active::before { transform: scaleY(1); }
         
-        /* Inner Tabs */
         .inner-tab-content { display: none; animation: fadeIn 0.2s ease; }
         .inner-tab-content.active { display: block; }
         .inner-tab-btn { border-bottom: 2px solid transparent; transition: all 0.2s; }
         .inner-tab-btn.active { border-bottom: 2px solid #0033A0; color: #0033A0; font-weight: 700; }
 
-        /* Glassmorphism */
         .glass-modal { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
-        
         tbody tr { transition: all 0.15s ease; }
         tbody tr:hover { background-color: #F1F5F9; }
-
-        /* SweetAlert Font Fix */
         .swal2-popup { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 1.5rem !important; }
     </style>
 </head>
@@ -78,7 +70,6 @@
 
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
-            
             <div class="w-full md:w-5/12 bg-bdb-blue p-8 flex flex-col items-center justify-center text-white relative overflow-hidden hidden md:flex">
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg" alt="Logo BDB" class="w-32 h-32 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 relative z-10 object-cover">
@@ -128,7 +119,6 @@
     </div>
 
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
-        
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
         
         <!-- Sidebar Navigation -->
@@ -309,7 +299,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Inventario Magazzino</h2>
-                            <p class="text-gray-500 text-sm">Giacenze strumenti e divise storiche.</p>
+                            <p class="text-gray-500 text-sm">Gestione puntuale strumenti, costumi e attrezzatura.</p>
                         </div>
                         <button onclick="app.openItemModal()" class="w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2 hover:-translate-y-0.5">
                             <i class="fa-solid fa-box-open"></i> Nuovo Articolo
@@ -322,9 +312,8 @@
                                     <tr>
                                         <th class="p-5">Articolo</th>
                                         <th class="p-5">Categoria</th>
-                                        <th class="p-5 text-center">Totale</th>
-                                        <th class="p-5 text-center">In Uso</th>
-                                        <th class="p-5 text-center">Liberi</th>
+                                        <th class="p-5">Dettaglio / Nome / N.</th>
+                                        <th class="p-5 text-center">Quantità</th>
                                         <th class="p-5 text-right">Azioni</th>
                                     </tr>
                                 </thead>
@@ -341,7 +330,6 @@
     <!-- MODAL FASCICOLO TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
-            
             <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-user-astronaut"></i></div>
@@ -354,7 +342,6 @@
                 <button onclick="app.switchInnerTab('tab-base')" id="btn-tab-base" class="inner-tab-btn active px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-id-card mr-2 hidden md:inline"></i>Dati Base</button>
                 <button onclick="app.switchInnerTab('tab-medico')" id="btn-tab-medico" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-staff-snake mr-2 hidden md:inline"></i>Area Medica</button>
                 <button onclick="app.switchInnerTab('tab-docs')" id="btn-tab-docs" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-folder-open mr-2 hidden md:inline"></i>Documenti</button>
-                <button onclick="app.switchInnerTab('tab-tecnico')" id="btn-tab-tecnico" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-shirt mr-2 hidden md:inline"></i>Taglia</button>
             </div>
             
             <div class="p-5 md:p-8 overflow-y-auto flex-grow bg-white">
@@ -450,25 +437,6 @@
                         </label>
                     </div>
                 </div>
-
-                <div id="tab-tecnico" class="inner-tab-content">
-                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Taglia Abbigliamento Sociale</label>
-                        <select id="t_taglia" class="w-full p-4 border border-gray-300 rounded-xl text-base font-bold outline-none focus:ring-2 focus:ring-bdb-blue bg-white cursor-pointer transition">
-                            <option value="">-- Seleziona Taglia --</option>
-                            <option value="YXS">Bambino (YXS)</option>
-                            <option value="YS">Bambino (YS)</option>
-                            <option value="YM">Bambino (YM)</option>
-                            <option value="YL">Bambino (YL)</option>
-                            <option value="S">Adulto (S)</option>
-                            <option value="M">Adulto (M)</option>
-                            <option value="L">Adulto (L)</option>
-                            <option value="XL">Adulto (XL)</option>
-                            <option value="XXL">Adulto (XXL)</option>
-                        </select>
-                        <p class="text-xs text-gray-400 mt-3 leading-relaxed"><i class="fa-solid fa-circle-info text-bdb-blue mr-1"></i> Utile per ottimizzare gli ordini di magazzino e i costumi di rappresentanza.</p>
-                    </div>
-                </div>
             </div>
             
             <div class="p-5 border-t border-gray-100 flex justify-end gap-3 shrink-0 bg-gray-50 rounded-b-[2rem]">
@@ -485,8 +453,17 @@
             <div class="p-6 space-y-5 bg-gray-50">
                 <input type="hidden" id="q_id">
                 <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tesserato <span class="text-red-500">*</span></label><select id="q_tesserato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"></select></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Causale <span class="text-red-500">*</span></label><select id="q_causale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"><option value="Quota Iscrizione Annuale">Quota Iscrizione Annuale</option><option value="Kit Abbigliamento">Kit Abbigliamento</option><option value="Sanzione/Multa">Sanzione/Multa</option></select></div>
-                <div class="grid grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Totale Dovuto <span class="text-red-500">*</span></label><input type="number" id="q_totale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" placeholder="€ 0.00"></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Acconto</label><input type="number" id="q_versato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="0"></div></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Causale e Importo <span class="text-red-500">*</span></label>
+                    <select id="q_causale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" onchange="app.autoFillQuotaAmount()">
+                        <option value="Comitato">Comitato - 50,00 €</option>
+                        <option value="Fisb + Comitato">Fisb + Comitato - 100,00 €</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Totale Dovuto <span class="text-red-500">*</span></label><input type="number" id="q_totale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="50"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Acconto</label><input type="number" id="q_versato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="0"></div>
+                </div>
             </div>
             <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button onclick="app.closeModal('modalQuota')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button onclick="app.saveQuota()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Registra</button></div>
         </div>
@@ -518,11 +495,26 @@
     <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo</h3><button onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
             <div class="p-6 space-y-5 bg-gray-50">
-                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nome Articolo <span class="text-red-500">*</span></label><input type="text" id="i_nome" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" placeholder="Es. Tamburo Storico"></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Categoria</label><select id="i_cat" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"><option value="Attrezzatura">Attrezzatura (Bandiere/Aste)</option><option value="Strumenti Musicali">Strumenti Musicali</option><option value="Costumi Storici">Costumi Storici</option><option value="Abbigliamento">Abbigliamento Rappresentanza</option></select></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quantità Totale <span class="text-red-500">*</span></label><input type="number" id="i_tot" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="1" min="1"></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nome Articolo <span class="text-red-500">*</span></label><input type="text" id="i_nome" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" placeholder="Es. Tamburo Principale"></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Categoria</label>
+                    <select id="i_cat" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" onchange="app.toggleItemFields()">
+                        <option value="Tamburi">Tamburi</option>
+                        <option value="Chiarine">Chiarine</option>
+                        <option value="Bandiere">Bandiere</option>
+                        <option value="Stivali">Stivali</option>
+                        <option value="Cappelli">Cappelli</option>
+                        <option value="Camicie">Camicie</option>
+                        <option value="Ponchi">Ponchi</option>
+                        <option value="Mantelli">Mantelli</option>
+                    </select>
+                </div>
+                <div id="field-desc" class="block"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Descrizione</label><input type="text" id="i_desc" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Specifiche tecniche..."></div>
+                <div id="field-num" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Numero Stivale</label><input type="text" id="i_num" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Es. 42"></div>
+                <div id="field-prop" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assegnato A (Nome)</label><input type="text" id="i_prop" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Nome proprietario..."></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quantità <span class="text-red-500">*</span></label><input type="number" id="i_tot" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="1" min="1"></div>
             </div>
             <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button onclick="app.closeModal('modalItem')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button onclick="app.saveItem()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Salva</button></div>
         </div>
@@ -541,9 +533,7 @@
                 <span class="bg-white/20 px-4 py-1.5 rounded-full text-sm font-extrabold backdrop-blur-sm shadow-inner" id="appelloGruppo">Gruppo</span>
             </div>
         </div>
-        
         <div class="flex-grow overflow-y-auto p-4 md:p-8 pb-32" id="appelloList"></div>
-        
         <div class="absolute bottom-[env(safe-area-inset-bottom)] left-0 w-full p-5 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
             <button onclick="app.terminaAppello()" class="w-full bg-bdb-blue text-white font-extrabold py-4 rounded-2xl shadow-lg hover:bg-bdb-blue-dark text-lg hover:-translate-y-1 transition-transform flex items-center justify-center gap-2">
                 <i class="fa-solid fa-check-double"></i> Salva & Termina Appello
@@ -595,7 +585,6 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         this.state.user = user;
-                        
                         const adminEmails = ['lollinorusso@icloud.com', 'segreteria@borgodonbosco.com'];
                         this.state.isAdmin = adminEmails.includes((user.email || '').toLowerCase());
                         
@@ -629,11 +618,9 @@
                         this.state.user = null; this.state.isAdmin = false;
                         document.getElementById('authScreen').classList.remove('hidden');
                         document.getElementById('mainApp').classList.add('hidden');
-                        
                         document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
                         document.getElementById('nav-finanza').classList.remove('flex');
                         document.getElementById('nav-magazzino').classList.remove('flex');
-                        
                         document.getElementById('authEmail').value = '';
                         document.getElementById('authPassword').value = '';
                     }
@@ -648,9 +635,9 @@
             },
 
             login: () => { const e=document.getElementById('authEmail').value, p=document.getElementById('authPassword').value; if(!e||!p) return app.ui.error("Dati mancanti", "Inserisci email e password."); signInWithEmailAndPassword(auth, e, p).catch(err => app.ui.error("Accesso Negato", "Credenziali errate o utente non trovato.")); },
-            register: () => { const e=document.getElementById('authEmail').value, p=document.getElementById('authPassword').value; if(!e||!p) return app.ui.error("Dati mancanti", "Inserisci email e password per creare l'account."); createUserWithEmailAndPassword(auth, e, p).catch(err => app.ui.error("Errore", err.message)); },
+            register: () => { const e=document.getElementById('authEmail').value, p=document.getElementById('authPassword').value; if(!e||!p) return app.ui.error("Dati mancanti", "Inserisci email e password."); createUserWithEmailAndPassword(auth, e, p).catch(err => app.ui.error("Errore", err.message)); },
             googleLogin: () => signInWithPopup(auth, googleProvider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') app.ui.error("Errore Google", err.message); }),
-            resetPassword: () => { const e=document.getElementById('authEmail').value; if(!e) return app.ui.error("Recupero Password", "Inserisci prima la tua email nel modulo."); sendPasswordResetEmail(auth, e).then(()=>app.ui.toast("Email di ripristino inviata!")).catch(err=>app.ui.error("Errore", err.message)); },
+            resetPassword: () => { const e=document.getElementById('authEmail').value; if(!e) return app.ui.error("Recupero Password", "Inserisci prima la tua email."); sendPasswordResetEmail(auth, e).then(()=>app.ui.toast("Email inviata!")).catch(err=>app.ui.error("Errore", err.message)); },
             logout: () => signOut(auth),
 
             switchTab: function(tabId) {
@@ -726,9 +713,7 @@
                 const { value: formValues } = await Swal.fire({ 
                     title: 'Crea Avviso', 
                     html: '<input id="swal-input1" class="swal2-input font-bold" placeholder="Titolo"><textarea id="swal-input2" class="swal2-textarea" placeholder="Testo..."></textarea>', 
-                    focusConfirm: false, 
-                    confirmButtonColor: '#0033A0',
-                    confirmButtonText: 'Pubblica',
+                    focusConfirm: false, confirmButtonColor: '#0033A0', confirmButtonText: 'Pubblica',
                     preConfirm: () => {
                         const t = document.getElementById('swal-input1').value;
                         if(!t) Swal.showValidationMessage("Il titolo è obbligatorio");
@@ -774,11 +759,25 @@
                 const oggi = new Date(); oggi.setHours(0,0,0,0);
                 tbody.innerHTML = filtered.map(a => {
                     let certStatus = `<span class="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold">Assente</span>`;
+                    let whatsappBtn = '';
+
                     if(a.cert_scad) {
                         const diff = Math.ceil((new Date(a.cert_scad) - oggi) / (1000 * 60 * 60 * 24));
-                        if(diff < 0) certStatus = `<span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-red-100">Scaduto</span>`;
-                        else if(diff <= 30) certStatus = `<span class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-orange-100">${diff} gg</span>`;
-                        else certStatus = `<span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-emerald-100">Valido</span>`;
+                        if(diff < 0) {
+                            certStatus = `<span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-red-100">Scaduto</span>`;
+                            if(this.state.isAdmin && a.tel) {
+                                const msg = encodeURIComponent(`Ciao ${a.nome}, ti ricordiamo che il certificato medico per Borgo Don Bosco risulta SCADUTO. Ti chiediamo di provvedere al rinnovo al più presto. Grazie!`);
+                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp Scadenza"><i class="fa-brands fa-whatsapp text-sm"></i> Sollecita</a>`;
+                            }
+                        } else if(diff <= 30) {
+                            certStatus = `<span class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-orange-100">${diff} gg</span>`;
+                            if(this.state.isAdmin && a.tel) {
+                                const msg = encodeURIComponent(`Ciao ${a.nome}, ti ricordiamo che il certificato medico per Borgo Don Bosco scadrà tra ${diff} giorni (${a.cert_scad}). Ti chiediamo di provvedere al rinnovo. Grazie!`);
+                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp Scadenza"><i class="fa-brands fa-whatsapp text-sm"></i> Sollecita</a>`;
+                            }
+                        } else {
+                            certStatus = `<span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-emerald-100">Valido</span>`;
+                        }
                     }
                     
                     const docsHTML = (a.doc_privacy && a.doc_ci && a.doc_cf) ? `<i class="fa-solid fa-circle-check text-emerald-500 text-xl" title="Completo"></i>` : `<i class="fa-solid fa-circle-exclamation text-orange-400 text-xl" title="Documenti mancanti"></i>`;
@@ -787,7 +786,7 @@
                         <tr class="cursor-pointer group" onclick="app.editTesserato('${a.id}')">
                             <td class="p-5"><div class="font-extrabold text-gray-800 text-base">${a.nome}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${a.nascita}</div></td>
                             <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${a.ruolo || 'Atleta'}</span></td>
-                            <td class="p-5">${certStatus}</td>
+                            <td class="p-5 flex items-center">${certStatus} ${whatsappBtn}</td>
                             <td class="p-5 text-center">${docsHTML}</td>
                             <td class="p-5 text-right">
                                 <button class="text-gray-400 hover:text-bdb-blue p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid fa-pen"></i></button>
@@ -814,7 +813,7 @@
             editTesserato: function(id) {
                 const a = this.state.atleti.find(x => x.id === id); if(!a) return;
                 document.getElementById('t_id').value = a.id;
-                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche','taglia'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
+                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
                 ['privacy','ci','cf'].forEach(k => {
                     const isUp = a['doc_'+k] === true || a['doc_'+k] === 'true';
                     document.getElementById('t_doc_'+k).value = isUp ? 'true' : 'false';
@@ -837,7 +836,7 @@
             saveTesserato: async function() {
                 const id = document.getElementById('t_id').value;
                 const d = {};
-                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche','taglia'].forEach(k => d[k] = document.getElementById('t_'+k).value);
+                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => d[k] = document.getElementById('t_'+k).value);
                 ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value === 'true');
                 
                 if(!d.nome || d.nome.trim() === '') return this.ui.error("Attenzione", "Il campo Nome e Cognome è obbligatorio.");
@@ -861,7 +860,7 @@
                         document.getElementById('icon-'+type).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition scale-110";
                         document.getElementById('name-'+type).innerText = "✅ " + file.name.substring(0, 20);
                         setTimeout(() => document.getElementById('icon-'+type).classList.remove('scale-110'), 200);
-                        this.ui.toast("Documento acquisito con successo!");
+                        this.ui.toast("Documento acquisito!");
                     };
                     reader.readAsDataURL(file);
                 }
@@ -897,7 +896,17 @@
                     <div class="bg-white p-6 rounded-3xl shadow-soft border-l-4 border-orange-400"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Crediti Aperti</p><h3 class="text-3xl font-extrabold text-orange-500">${formatter.format(prev - inc)}</h3></div>`;
             },
             
-            openQuotaModal: () => { document.getElementById('q_id').value=''; document.getElementById('q_totale').value=''; document.getElementById('q_versato').value='0'; document.getElementById('modalQuota').classList.remove('hidden'); },
+            openQuotaModal: () => { 
+                document.getElementById('q_id').value=''; 
+                document.getElementById('q_causale').value='Comitato'; 
+                document.getElementById('q_totale').value='50'; 
+                document.getElementById('q_versato').value='0'; 
+                document.getElementById('modalQuota').classList.remove('hidden'); 
+            },
+            autoFillQuotaAmount: () => {
+                const c = document.getElementById('q_causale').value;
+                document.getElementById('q_totale').value = c === 'Fisb + Comitato' ? '100' : '50';
+            },
             saveQuota: async function() {
                 const t = document.getElementById('q_tesserato').value, c = document.getElementById('q_causale').value, tot = document.getElementById('q_totale').value, v = document.getElementById('q_versato').value;
                 if(!t || !tot || tot <= 0) return this.ui.error("Errore", "Verifica i campi obbligatori.");
@@ -1047,24 +1056,46 @@
 
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
-                if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="6">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
+                if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
                 tbody.innerHTML = this.state.magazzino.map(i => {
-                    const u = i.assegnazioni ? i.assegnazioni.length : 0, disp = i.totale - u;
+                    let det = i.descrizione || '-';
+                    if(i.categoria === 'Stivali' && i.numero) det = `Numero: <strong>${i.numero}</strong>`;
+                    if((i.categoria === 'Ponchi' || i.categoria === 'Mantelli') && i.proprietario) det = `Assegnato a: <strong>${i.proprietario}</strong>`;
                     return `<tr>
                         <td class="p-5 font-extrabold text-gray-800">${i.nome}</td>
-                        <td class="p-5"><span class="text-[10px] font-bold uppercase bg-gray-100 px-3 py-1.5 rounded-lg text-gray-500">${i.categoria}</span></td>
-                        <td class="p-5 text-center font-bold text-gray-600">${i.totale}</td>
-                        <td class="p-5 text-center text-orange-500 font-bold">${u}</td>
-                        <td class="p-5 text-center font-extrabold ${disp>0?'text-emerald-600':'text-red-500'}">${disp}</td>
+                        <td class="p-5"><span class="text-[10px] font-bold uppercase bg-blue-50 text-bdb-blue px-3 py-1.5 rounded-lg">${i.categoria}</span></td>
+                        <td class="p-5 text-gray-600">${det}</td>
+                        <td class="p-5 text-center font-extrabold text-gray-800">${i.totale}</td>
                         <td class="p-5 text-right"><button onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-gray-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>`;
                 }).join('');
             },
             
-            openItemModal: () => { document.getElementById('i_nome').value=''; document.getElementById('modalItem').classList.remove('hidden'); },
+            openItemModal: () => { 
+                document.getElementById('i_nome').value=''; 
+                document.getElementById('i_desc').value='';
+                document.getElementById('i_num').value='';
+                document.getElementById('i_prop').value='';
+                document.getElementById('modalItem').classList.remove('hidden'); 
+                app.toggleItemFields();
+            },
+            toggleItemFields: () => {
+                const cat = document.getElementById('i_cat').value;
+                document.getElementById('field-desc').style.display = ['Tamburi','Chiarine','Bandiere'].includes(cat) ? 'block' : 'none';
+                document.getElementById('field-num').style.display = cat === 'Stivali' ? 'block' : 'none';
+                document.getElementById('field-prop').style.display = ['Ponchi','Mantelli'].includes(cat) ? 'block' : 'none';
+            },
             saveItem: async function() {
                 const n = document.getElementById('i_nome').value; if(!n) return;
-                await addDoc(collection(db, "magazzino"), { nome: n, categoria: document.getElementById('i_cat').value, totale: Number(document.getElementById('i_tot').value), assegnazioni: [] });
+                const cat = document.getElementById('i_cat').value;
+                await addDoc(collection(db, "magazzino"), { 
+                    nome: n, 
+                    categoria: cat, 
+                    descrizione: document.getElementById('i_desc').value,
+                    numero: document.getElementById('i_num').value,
+                    proprietario: document.getElementById('i_prop').value,
+                    totale: Number(document.getElementById('i_tot').value) 
+                });
                 this.closeModal('modalItem'); this.ui.toast("Articolo aggiunto.");
             }
         };
