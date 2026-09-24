@@ -104,7 +104,10 @@
                     </div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div>
-                        <input type="password" id="authPassword" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-bdb-blue outline-none transition text-base" placeholder="Password (es. donbosco)">
+                        <input type="password" id="authPassword" class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-bdb-blue outline-none transition text-base" placeholder="Password (es. donbosco)">
+                        <button type="button" onclick="app.togglePassword()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-bdb-blue transition outline-none">
+                            <i class="fa-solid fa-eye text-lg" id="eyeIcon"></i>
+                        </button>
                     </div>
                     
                     <button type="button" id="emailLoginBtn" class="w-full bg-bdb-blue text-white font-bold py-3.5 rounded-xl hover:bg-bdb-blue-dark transition-all shadow-md">Accedi con Email</button>
@@ -668,6 +671,22 @@
                 });
             },
 
+            togglePassword: function() {
+                const p = document.getElementById('authPassword');
+                const i = document.getElementById('eyeIcon');
+                if (p.type === 'password') {
+                    p.type = 'text';
+                    i.classList.remove('fa-eye');
+                    i.classList.add('fa-eye-slash');
+                    i.classList.add('text-bdb-blue');
+                } else {
+                    p.type = 'password';
+                    i.classList.remove('fa-eye-slash');
+                    i.classList.remove('text-bdb-blue');
+                    i.classList.add('fa-eye');
+                }
+            },
+
             toggleMenu: function(forceOpen) {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('mobileOverlay');
@@ -736,6 +755,8 @@
                     this.state.atleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
                     this.state.atleti.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
                     this.renderAnagrafica(); 
+                    this.renderEventi(); // Ricarica gli eventi nel caso in cui il ruolo dell'utente sia appena stato caricato
+                    
                     if(this.state.isAdmin) {
                         this.updateDashboardStats();
                         this.updateQuotaDropdown();
@@ -1165,9 +1186,26 @@
 
             renderEventi: function() {
                 const g = document.getElementById('eventiGrid');
-                if(!this.state.eventi.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', 'Nessun evento in programma.')}</div>`;
                 
-                g.innerHTML = this.state.eventi.map(e => {
+                let eventiTarget = this.state.eventi;
+                if(!this.state.isAdmin) {
+                    const myFascicolo = this.state.atleti.find(a => a.ownerUid === this.state.user.uid);
+                    const myRole = myFascicolo ? (myFascicolo.ruolo || 'Atleta') : 'Atleta';
+                    
+                    eventiTarget = this.state.eventi.filter(e => {
+                        const grp = e.gruppo || 'Tutti';
+                        if (grp === 'Tutti') return true;
+                        if (grp === 'Tamburi' && myRole.includes('Tamburino')) return true;
+                        if (grp === 'Chiarine' && myRole.includes('Chiarina')) return true;
+                        if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina'))) return true;
+                        if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                        return false;
+                    });
+                }
+
+                if(!eventiTarget.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', 'Nessun evento in programma per la tua categoria.')}</div>`;
+                
+                g.innerHTML = eventiTarget.map(e => {
                     const disp = e.disponibilita || {};
                     let presentCount = 0, absentCount = 0;
                     Object.values(disp).forEach(v => { if(v==='si') presentCount++; if(v==='no') absentCount++; });
