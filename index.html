@@ -2,12 +2,12 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta tag potenziato per prevenire zoom non voluti su iOS e coprire le "Safe Areas" (notch, dynamic island) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font ultra-moderno e accogliente -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Librerie esterne -->
@@ -35,20 +35,17 @@
         }
     </script>
     <style>
-        /* Uso di 100dvh per evitare che la barra indirizzi di iOS copra il layout */
         body { background-color: #F8FAFC; overflow: hidden; height: 100dvh; }
         
         .view-section { display: none; height: 100%; overflow-y: auto; padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
         .view-section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Sidebar Nav Item Active State */
         .nav-item { position: relative; overflow: hidden; }
         .nav-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background-color: #FFD100; transform: scaleY(0); transition: transform 0.2s ease; border-radius: 0 4px 4px 0; }
         .nav-item.active { background-color: rgba(255, 255, 255, 0.1); color: white; font-weight: 600; }
@@ -59,8 +56,7 @@
         .inner-tab-btn { border-bottom: 2px solid transparent; transition: all 0.2s; }
         .inner-tab-btn.active { border-bottom: 2px solid #0033A0; color: #0033A0; font-weight: 700; }
 
-        /* Glassmorphism e Safe Areas per i Modali */
-        .glass-modal { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+        .glass-modal { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
         
         tbody tr { transition: all 0.2s ease; }
         tbody tr:hover { background-color: #F1F5F9; transform: scale(1.002); }
@@ -68,7 +64,6 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
-    <!-- AUTH SCREEN -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
             <div class="w-full md:w-5/12 bg-bdb-blue p-8 flex flex-col items-center justify-center text-white relative overflow-hidden hidden md:flex">
@@ -84,10 +79,10 @@
                     <h1 class="text-2xl font-extrabold text-bdb-blue tracking-tight">Borgo Don Bosco</h1>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">Bentornato!</h2>
-                <p class="text-gray-500 mb-8 text-sm">Accedi per gestire l'associazione.</p>
+                <p class="text-gray-500 mb-8 text-sm">Accedi per gestire la tua associazione.</p>
                 
                 <div class="space-y-5">
-                    <button onclick="app.googleLogin()" class="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-3.5 rounded-xl shadow-sm hover:bg-gray-50 hover:border-gray-200 transition-all duration-200 flex items-center justify-center gap-3">
+                    <button onclick="app.googleLogin()" class="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-3.5 rounded-xl shadow-sm hover:bg-gray-50 hover:border-gray-200 transition-all flex items-center justify-center gap-3">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
                         Accedi con Google
                     </button>
@@ -98,23 +93,17 @@
                         <div class="flex-grow border-t border-gray-200"></div>
                     </div>
 
-                    <div>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-envelope text-gray-400"></i></div>
-                            <!-- Font base (16px) per evitare zoom su iOS -->
-                            <input type="email" id="authEmail" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-bdb-blue focus:border-transparent outline-none transition text-base" placeholder="Email">
-                        </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-envelope text-gray-400"></i></div>
+                        <input type="email" id="authEmail" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-bdb-blue outline-none transition text-base" placeholder="Email">
                     </div>
-                    <div>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div>
-                            <input type="password" id="authPassword" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-bdb-blue focus:border-transparent outline-none transition text-base" placeholder="Password">
-                        </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400"></i></div>
+                        <input type="password" id="authPassword" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-bdb-blue outline-none transition text-base" placeholder="Password">
                     </div>
                     
-                    <div class="flex gap-3 pt-2">
-                        <button onclick="app.login()" class="flex-1 bg-bdb-blue text-white font-bold py-3.5 rounded-xl hover:bg-bdb-blue-dark hover:shadow-lg transition-all">Accedi</button>
-                    </div>
+                    <button onclick="app.login()" class="w-full bg-bdb-blue text-white font-bold py-3.5 rounded-xl hover:bg-bdb-blue-dark hover:shadow-lg transition-all">Accedi</button>
+                    
                     <div class="flex justify-between text-center pt-4 text-sm">
                         <button onclick="app.resetPassword()" class="text-bdb-blue font-medium">Password persa?</button>
                         <button onclick="app.register()" class="text-gray-500 hover:text-gray-800">Crea account</button>
@@ -124,14 +113,11 @@
         </div>
     </div>
 
-    <!-- MAIN APP WRAPPER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         
-        <!-- Mobile Menu Overlay (Sfondo sfocato quando il menu è aperto) -->
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
         
-        <!-- SIDEBAR (Drawer su mobile, Fisso su Desktop) -->
-        <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-bdb-blue text-white flex flex-col shrink-0 shadow-2xl md:shadow-xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+        <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-bdb-blue text-white flex flex-col shrink-0 shadow-2xl md:shadow-xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
             <div class="p-6 flex items-center justify-between border-b border-white/10">
                 <div class="flex items-center gap-3">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-bdb-yellow object-cover shadow-lg">
@@ -140,24 +126,22 @@
                         <span class="text-[10px] text-bdb-yellow uppercase tracking-widest font-bold">APS & Sport</span>
                     </div>
                 </div>
-                <button class="md:hidden text-white/80 hover:text-white p-2" onclick="app.toggleMenu(false)">
-                    <i class="fa-solid fa-chevron-left text-xl"></i>
-                </button>
+                <button class="md:hidden text-white/80 hover:text-white p-2" onclick="app.toggleMenu(false)"><i class="fa-solid fa-chevron-left text-xl"></i></button>
             </div>
             
             <nav id="navMenu" class="flex flex-col gap-2 p-4 overflow-y-auto flex-grow">
-                <p class="text-xs font-bold text-white/40 uppercase tracking-widest mb-2 pl-4">Menu</p>
+                <p class="text-xs font-bold text-white/40 uppercase tracking-widest mb-2 pl-4">Menu Principale</p>
                 <button onclick="app.switchTab('dashboard')" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
                     <i class="fa-solid fa-chart-pie w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Bacheca</span>
                 </button>
                 <button onclick="app.switchTab('anagrafica')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
                     <i class="fa-solid fa-address-card w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Fascicoli</span>
                 </button>
-                <button id="nav-finanza" onclick="app.switchTab('finanza')" class="admin-only hidden nav-item items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
-                    <i class="fa-solid fa-sack-dollar w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Contabilità</span>
-                </button>
                 <button onclick="app.switchTab('eventi')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
                     <i class="fa-regular fa-calendar-days w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Calendario</span>
+                </button>
+                <button id="nav-finanza" onclick="app.switchTab('finanza')" class="admin-only hidden nav-item items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
+                    <i class="fa-solid fa-sack-dollar w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Contabilità</span>
                 </button>
                 <button id="nav-magazzino" onclick="app.switchTab('magazzino')" class="admin-only hidden nav-item items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
                     <i class="fa-solid fa-boxes-stacked w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Magazzino</span>
@@ -169,85 +153,80 @@
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-bdb-yellow to-yellow-300 text-bdb-blue-dark flex items-center justify-center font-bold text-lg shadow-inner shrink-0" id="userInitial">U</div>
                     <div class="overflow-hidden">
                         <p class="text-sm font-bold truncate text-white" id="userEmailDisplay">email@email.com</p>
-                        <p class="text-xs text-bdb-yellow font-medium" id="userRoleDisplay">Atleta / Socio</p>
+                        <p class="text-xs text-bdb-yellow font-medium uppercase" id="userRoleDisplay">Atleta / Socio</p>
                     </div>
                 </div>
-                <button onclick="app.logout()" class="w-full py-2.5 bg-white/5 hover:bg-red-500/20 hover:text-red-300 rounded-xl text-sm font-medium transition-all group border border-white/10">
-                    <i class="fa-solid fa-arrow-right-from-bracket mr-2 group-hover:-translate-x-1 transition-transform"></i> Disconnetti
+                <button onclick="app.logout()" class="w-full py-2.5 bg-white/5 hover:bg-red-500/20 hover:text-red-300 rounded-xl text-sm font-medium transition-all border border-white/10">
+                    <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Disconnetti
                 </button>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
-            
-            <!-- Mobile Header (Fisso in alto) -->
-            <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 shadow-sm z-20">
+            <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg" class="w-8 h-8 rounded-full border border-bdb-yellow">
                     <span class="font-extrabold text-bdb-blue text-lg">Gestione BDB</span>
                 </div>
-                <button onclick="app.toggleMenu(true)" class="text-bdb-blue p-2 bg-blue-50 rounded-lg">
-                    <i class="fa-solid fa-bars text-xl"></i>
-                </button>
+                <button onclick="app.toggleMenu(true)" class="text-bdb-blue p-2 bg-blue-50 rounded-lg"><i class="fa-solid fa-bars text-xl"></i></button>
             </header>
 
-            <!-- VIEWS CONTAINER -->
             <main id="views-container" class="flex-1 overflow-y-auto relative bg-bdb-gray">
                 
-                <!-- DASHBOARD -->
+                <!-- VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section active p-4 md:p-8">
                     <header class="mb-8 mt-2 md:mt-0">
                         <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight" id="greetingTitle">Buongiorno!</h2>
-                        <p class="text-gray-500 text-sm md:text-base">Ecco un riepilogo della situazione dell'associazione.</p>
+                        <p class="text-gray-500 text-sm md:text-base">Benvenuto nella bacheca dell'associazione.</p>
                     </header>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
-                        <div class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
-                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-users"></i></div>
+                    <!-- Statistiche solo per Admin -->
+                    <div id="adminStats" class="admin-only hidden grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                             <div><p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Tesserati Attivi</p><h3 class="text-2xl font-extrabold text-gray-800" id="dash-tesserati">0</h3></div>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
-                            <div class="w-12 h-12 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-file-waveform"></i></div>
+                        <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-waveform"></i></div>
                             <div><p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Certificati Scaduti</p><h3 class="text-2xl font-extrabold text-gray-800" id="dash-scaduti">0</h3></div>
                         </div>
-                        <div class="admin-only hidden bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl"><i class="fa-solid fa-piggy-bank"></i></div>
                             <div><p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Crediti aperti</p><h3 class="text-2xl font-extrabold text-gray-800" id="dash-crediti">€ 0</h3></div>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
-                        <div class="p-4 md:p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                            <h3 class="font-bold text-gray-800 text-base md:text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Bacheca Comunicazioni</h3>
-                            <button id="btnAddNews" onclick="app.promptNews()" class="admin-only hidden text-sm bg-bdb-blue text-white px-4 py-2 rounded-lg font-semibold hover:bg-bdb-blue-dark shadow-sm transition"><i class="fa-solid fa-plus md:hidden"></i><span class="hidden md:inline">Nuovo Avviso</span></button>
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+                        <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Avvisi Direttivo</h3>
+                            <button onclick="app.promptNews()" class="admin-only hidden text-sm bg-bdb-blue text-white px-4 py-2 rounded-xl font-bold hover:bg-bdb-blue-dark transition shadow-md"><i class="fa-solid fa-plus md:hidden"></i><span class="hidden md:inline">Crea Avviso</span></button>
                         </div>
-                        <div id="newsFeed" class="p-4 md:p-5 space-y-4 max-h-[400px] overflow-y-auto"></div>
+                        <div id="newsFeed" class="p-5 space-y-4 max-h-[400px] overflow-y-auto"></div>
                     </div>
                 </div>
 
-                <!-- ANAGRAFICA -->
+                <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Fascicoli</h2>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">I Tuoi Fascicoli</h2>
                             <p class="text-gray-500 text-sm">Gestione anagrafiche e certificati medici.</p>
                         </div>
                         <div class="flex gap-2 w-full md:w-auto">
                             <div class="relative flex-grow md:w-64">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-magnifying-glass text-gray-400"></i></div>
-                                <input type="text" id="searchAnagrafica" placeholder="Cerca nome..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-bdb-blue outline-none shadow-sm transition text-base" oninput="app.renderAnagrafica()">
+                                <input type="text" id="searchAnagrafica" placeholder="Cerca nome..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-bdb-blue outline-none shadow-sm text-base" oninput="app.renderAnagrafica()">
                             </div>
-                            <button onclick="app.openTesseratoModal()" class="bg-bdb-blue text-white px-4 md:px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition shrink-0 flex items-center gap-2">
+                            <button onclick="app.openTesseratoModal()" class="bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition shrink-0 flex items-center gap-2">
                                 <i class="fa-solid fa-user-plus"></i> <span class="hidden md:inline">Nuovo</span>
                             </button>
                         </div>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
                         <div class="overflow-x-auto scrollbar-hide">
                             <table class="w-full text-left text-sm whitespace-nowrap min-w-[600px]">
-                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-bold">
-                                    <tr><th class="p-4 md:p-5">Nominativo</th><th class="p-4 md:p-5">Ruolo</th><th class="p-4 md:p-5">Stato Medico</th><th class="p-4 md:p-5 text-center">Docs</th><th class="p-4 md:p-5 text-right">Azioni</th></tr>
+                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
+                                    <tr><th class="p-5">Nominativo</th><th class="p-5">Ruolo</th><th class="p-5">Stato Medico</th><th class="p-5 text-center">Docs</th><th class="p-5 text-right">Azioni</th></tr>
                                 </thead>
                                 <tbody id="anagraficaTableBody" class="divide-y divide-gray-50"></tbody>
                             </table>
@@ -255,23 +234,23 @@
                     </div>
                 </div>
 
-                <!-- FINANZA -->
+                <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Finanza & Quote</h2>
-                            <p class="text-gray-500 text-sm">Monitoraggio versamenti, quote kit e scadenze.</p>
+                            <p class="text-gray-500 text-sm">Monitoraggio versamenti e ricevute PDF.</p>
                         </div>
                         <button onclick="app.openQuotaModal()" class="w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-receipt"></i> Nuova Quota
+                            <i class="fa-solid fa-receipt"></i> Emetti Quota
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="finanzaStats"></div>
-                    <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
                         <div class="overflow-x-auto scrollbar-hide">
                             <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
-                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-bold">
-                                    <tr><th class="p-4">Data</th><th class="p-4">Tesserato</th><th class="p-4">Causale</th><th class="p-4 text-right">Totale</th><th class="p-4 text-right">Versato</th><th class="p-4 text-center">Stato</th><th class="p-4 text-right">Azioni</th></tr>
+                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
+                                    <tr><th class="p-5">Data</th><th class="p-5">Tesserato</th><th class="p-5">Causale</th><th class="p-5 text-right">Totale</th><th class="p-5 text-right">Versato</th><th class="p-5 text-center">Stato</th><th class="p-5 text-right">Azioni</th></tr>
                                 </thead>
                                 <tbody id="finanzaTableBody" class="divide-y divide-gray-50"></tbody>
                             </table>
@@ -279,21 +258,21 @@
                     </div>
                 </div>
 
-                <!-- EVENTI -->
+                <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Calendario</h2>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Calendario & Convocazioni</h2>
                             <p class="text-gray-500 text-sm">Appuntamenti, gare e appello presenze.</p>
                         </div>
-                        <button id="btnNuovoEvento" onclick="app.openEventoModal()" class="admin-only hidden w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2">
+                        <button onclick="app.openEventoModal()" class="admin-only hidden w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-calendar-plus"></i> Crea Evento
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
-                <!-- MAGAZZINO -->
+                <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -304,11 +283,11 @@
                             <i class="fa-solid fa-box-open"></i> Nuovo Articolo
                         </button>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
                         <div class="overflow-x-auto scrollbar-hide">
                             <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
-                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-bold">
-                                    <tr><th class="p-4">Articolo</th><th class="p-4">Categoria</th><th class="p-4 text-center">Totale</th><th class="p-4 text-center">In Uso</th><th class="p-4 text-center">Liberi</th><th class="p-4 text-right">Azioni</th></tr>
+                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
+                                    <tr><th class="p-5">Articolo</th><th class="p-5">Categoria</th><th class="p-5 text-center">Totale</th><th class="p-5 text-center">In Uso</th><th class="p-5 text-center">Liberi</th><th class="p-5 text-right">Azioni</th></tr>
                                 </thead>
                                 <tbody id="magazzinoTableBody" class="divide-y divide-gray-50"></tbody>
                             </table>
@@ -322,80 +301,139 @@
 
     <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[calc(100dvh-2rem)] overflow-hidden">
-            <div class="p-4 md:p-5 border-b border-gray-100 flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-bdb-blue flex items-center justify-center"><i class="fa-solid fa-user-astronaut"></i></div>
-                    <h3 class="text-lg md:text-xl font-extrabold text-gray-800" id="modalTesseratoTitle">Nuovo Tesserato</h3>
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col max-h-[calc(100dvh-2rem)] overflow-hidden">
+            <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight" id="modalTesseratoTitle">Nuovo Tesserato</h3>
                 </div>
-                <button onclick="app.closeModal('modalTesserato')" class="w-8 h-8 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-200"><i class="fa-solid fa-times"></i></button>
+                <button onclick="app.closeModal('modalTesserato')" class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-200 transition"><i class="fa-solid fa-times text-lg"></i></button>
             </div>
+            
             <div class="flex overflow-x-auto border-b border-gray-100 px-2 md:px-6 shrink-0 scrollbar-hide">
-                <button onclick="app.switchInnerTab('tab-base')" id="btn-tab-base" class="inner-tab-btn active px-4 py-3 text-sm font-semibold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-id-card mr-2 hidden md:inline"></i>Dati Base</button>
-                <button onclick="app.switchInnerTab('tab-medico')" id="btn-tab-medico" class="inner-tab-btn px-4 py-3 text-sm font-semibold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-staff-snake mr-2 hidden md:inline"></i>Area Medica</button>
-                <button onclick="app.switchInnerTab('tab-docs')" id="btn-tab-docs" class="inner-tab-btn px-4 py-3 text-sm font-semibold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-folder-open mr-2 hidden md:inline"></i>Documenti</button>
-                <button onclick="app.switchInnerTab('tab-tecnico')" id="btn-tab-tecnico" class="inner-tab-btn px-4 py-3 text-sm font-semibold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-shirt mr-2 hidden md:inline"></i>Tecnica</button>
+                <button onclick="app.switchInnerTab('tab-base')" id="btn-tab-base" class="inner-tab-btn active px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-id-card mr-2 hidden md:inline"></i>Dati Base</button>
+                <button onclick="app.switchInnerTab('tab-medico')" id="btn-tab-medico" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-staff-snake mr-2 hidden md:inline"></i>Area Medica</button>
+                <button onclick="app.switchInnerTab('tab-docs')" id="btn-tab-docs" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-folder-open mr-2 hidden md:inline"></i>Documenti</button>
+                <button onclick="app.switchInnerTab('tab-tecnico')" id="btn-tab-tecnico" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-shirt mr-2 hidden md:inline"></i>Tecnica</button>
             </div>
-            <div class="p-4 md:p-6 overflow-y-auto flex-grow pb-[env(safe-area-inset-bottom)]">
+            
+            <div class="p-5 md:p-8 overflow-y-auto flex-grow pb-[env(safe-area-inset-bottom)]">
                 <input type="hidden" id="t_id">
-                <div id="tab-base" class="inner-tab-content active space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Nome e Cognome *</label><input type="text" id="t_nome" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white text-base outline-none" required></div>
-                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Data di Nascita *</label><input type="date" id="t_nascita" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white text-base outline-none" required></div>
-                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Ruolo Principale</label>
-                            <select id="t_ruolo" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white text-base outline-none">
-                                <option value="Atleta">Atleta</option><option value="Sbandieratore">Sbandieratore</option><option value="Musico (Tamburino)">Musico (Tamburino)</option><option value="Musico (Chiarina)">Musico (Chiarina)</option><option value="Maestro/Istruttore">Maestro/Istruttore</option><option value="Fidanzato/a">Fidanzato/a</option><option value="Socio Sostenitore">Socio Sostenitore</option>
+                
+                <div id="tab-base" class="inner-tab-content active space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Nome e Cognome *</label><input type="text" id="t_nome" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium" required></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Data di Nascita *</label><input type="date" id="t_nascita" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium" required></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Ruolo Principale</label>
+                            <select id="t_ruolo" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium">
+                                <option value="Atleta">Atleta (Generico)</option>
+                                <option value="Sbandieratore">Sbandieratore</option>
+                                <option value="Musico (Tamburino)">Musico (Tamburino)</option>
+                                <option value="Musico (Chiarina)">Musico (Chiarina)</option>
+                                <option value="Maestro/Istruttore">Maestro/Istruttore</option>
+                                <option value="Fidanzato/a">Fidanzato/a</option>
+                                <option value="Socio Sostenitore">Socio Sostenitore</option>
                             </select>
                         </div>
-                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Cellulare *</label><input type="tel" id="t_tel" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white text-base outline-none"></div>
-                        <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-700 mb-1">Genitore / Tutore (se minorenne)</label><input type="text" id="t_genitore" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white text-base outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Cellulare *</label><input type="tel" id="t_tel" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium"></div>
+                        <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Genitore / Tutore (se minorenne)</label><input type="text" id="t_genitore" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium" placeholder="Nome e Cognome genitore"></div>
                     </div>
                 </div>
-                <div id="tab-medico" class="inner-tab-content space-y-4">
-                    <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><label class="block text-xs font-bold text-gray-700 mb-1">Data Emissione Certificato</label><input type="date" id="t_cert_emiss" class="w-full p-3 border border-gray-200 rounded-xl text-base outline-none"></div>
-                            <div><label class="block text-xs font-bold text-red-600 mb-1">Scadenza Certificato *</label><input type="date" id="t_cert_scad" class="w-full p-3 border border-red-200 rounded-xl text-base outline-none" required></div>
+
+                <div id="tab-medico" class="inner-tab-content space-y-5">
+                    <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
+                        <h4 class="font-bold text-bdb-blue mb-4 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Certificato Agonistico</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Data Emissione</label><input type="date" id="t_cert_emiss" class="w-full p-3.5 border border-blue-200 rounded-xl bg-white text-base font-medium outline-none"></div>
+                            <div><label class="block text-xs font-bold text-red-500 mb-1.5 uppercase tracking-wider">Scadenza *</label><input type="date" id="t_cert_scad" class="w-full p-3.5 border border-red-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-red-400" required></div>
                         </div>
                     </div>
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Note Mediche Vitali (Allergie, Asma...)</label><textarea id="t_note_mediche" rows="2" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white text-base outline-none"></textarea></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Note Mediche Vitali (Allergie, Asma...)</label><textarea id="t_note_mediche" rows="3" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium"></textarea></div>
                 </div>
-                <div id="tab-docs" class="inner-tab-content space-y-3">
-                    <label class="flex items-center gap-4 p-3 border border-gray-200 rounded-xl bg-gray-50 cursor-pointer"><input type="checkbox" id="t_doc_privacy" class="w-5 h-5 text-bdb-blue rounded"><span class="font-bold text-sm">Modello Privacy Firmato</span></label>
-                    <label class="flex items-center gap-4 p-3 border border-gray-200 rounded-xl bg-gray-50 cursor-pointer"><input type="checkbox" id="t_doc_ci" class="w-5 h-5 text-bdb-blue rounded"><span class="font-bold text-sm">Carta Identità</span></label>
-                    <label class="flex items-center gap-4 p-3 border border-gray-200 rounded-xl bg-gray-50 cursor-pointer"><input type="checkbox" id="t_doc_cf" class="w-5 h-5 text-bdb-blue rounded"><span class="font-bold text-sm">Tessera Sanitaria</span></label>
+
+                <div id="tab-docs" class="inner-tab-content space-y-4">
+                    <div class="flex justify-between items-center mb-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div>
+                            <p class="font-bold text-gray-800">Modello Privacy</p>
+                            <p class="text-xs text-gray-500">Scarica, firma e ricarica.</p>
+                        </div>
+                        <button onclick="app.downloadPrivacy()" class="text-bdb-blue font-bold text-sm bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition"><i class="fa-solid fa-download mr-1"></i> Scarica</button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue cursor-pointer transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-privacy"><i class="fa-solid fa-upload"></i></div>
+                                <div><p class="font-bold text-sm text-gray-800" id="name-privacy">Carica Privacy Firmata</p><p class="text-xs text-gray-400">PDF o Foto</p></div>
+                            </div>
+                            <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFakeUpload(this, 'privacy')">
+                            <input type="hidden" id="t_doc_privacy" value="false">
+                        </label>
+
+                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue cursor-pointer transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-ci"><i class="fa-solid fa-upload"></i></div>
+                                <div><p class="font-bold text-sm text-gray-800" id="name-ci">Carica Carta Identità</p><p class="text-xs text-gray-400">Fronte/Retro</p></div>
+                            </div>
+                            <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFakeUpload(this, 'ci')">
+                            <input type="hidden" id="t_doc_ci" value="false">
+                        </label>
+
+                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue cursor-pointer transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-cf"><i class="fa-solid fa-upload"></i></div>
+                                <div><p class="font-bold text-sm text-gray-800" id="name-cf">Carica Tessera Sanitaria</p><p class="text-xs text-gray-400">Fronte</p></div>
+                            </div>
+                            <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFakeUpload(this, 'cf')">
+                            <input type="hidden" id="t_doc_cf" value="false">
+                        </label>
+                    </div>
                 </div>
-                <div id="tab-tecnico" class="inner-tab-content grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Taglia Abbigliamento</label><select id="t_taglia" class="w-full p-3 border border-gray-200 rounded-xl text-base outline-none"><option value="">Nessuna...</option><option value="YXS">YXS</option><option value="YS">YS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select></div>
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Gruppo / Squadra</label><input type="text" id="t_squadra" class="w-full p-3 border border-gray-200 rounded-xl text-base outline-none"></div>
+
+                <div id="tab-tecnico" class="inner-tab-content">
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Taglia Abbigliamento Sociale</label>
+                        <select id="t_taglia" class="w-full p-4 border border-gray-300 rounded-xl text-base font-bold outline-none focus:ring-2 focus:ring-bdb-blue bg-white">
+                            <option value="">-- Non specificata --</option>
+                            <option value="YXS">Bambino YXS</option>
+                            <option value="YS">Bambino YS</option>
+                            <option value="YM">Bambino YM</option>
+                            <option value="S">Adulto S</option>
+                            <option value="M">Adulto M</option>
+                            <option value="L">Adulto L</option>
+                            <option value="XL">Adulto XL</option>
+                            <option value="XXL">Adulto XXL</option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-3"><i class="fa-solid fa-circle-info mr-1"></i> Utile per gli ordini di magazzino e il kit di rappresentanza.</p>
+                    </div>
                 </div>
             </div>
-            <div class="p-4 border-t border-gray-100 flex justify-end gap-2 shrink-0">
-                <button onclick="app.closeModal('modalTesserato')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-100">Annulla</button>
-                <button id="btnSaveTesserato" onclick="app.saveTesserato()" class="admin-only px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold hover:bg-bdb-blue-dark shadow-md hidden">Salva</button>
+            
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3 shrink-0 bg-gray-50/50">
+                <button onclick="app.closeModal('modalTesserato')" class="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button>
+                <button id="btnSaveTesserato" onclick="app.saveTesserato()" class="admin-only hidden px-8 py-3 rounded-xl bg-bdb-blue text-white font-extrabold hover:bg-bdb-blue-dark shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">Salva Fascicolo</button>
             </div>
         </div>
     </div>
 
-    <!-- Altri Modali Standard -->
-    <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"><div class="p-5 border-b border-gray-100"><h3 class="font-extrabold text-lg">Emetti Quota</h3></div><div class="p-5 space-y-4 bg-gray-50"><input type="hidden" id="q_id"><div><label class="block text-xs font-bold mb-1">Tesserato *</label><select id="q_tesserato" class="w-full p-3 border rounded-xl text-base outline-none"></select></div><div><label class="block text-xs font-bold mb-1">Causale *</label><select id="q_causale" class="w-full p-3 border rounded-xl text-base outline-none"><option value="Quota Iscrizione Annuale">Quota Iscrizione Annuale</option><option value="Kit Abbigliamento">Kit Abbigliamento</option><option value="Sanzione/Multa">Sanzione/Multa</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="block text-xs font-bold mb-1">Totale *</label><input type="number" id="q_totale" class="w-full p-3 border rounded-xl text-base outline-none" placeholder="€ 0.00"></div><div><label class="block text-xs font-bold mb-1">Acconto Ora</label><input type="number" id="q_versato" class="w-full p-3 border rounded-xl text-base outline-none" value="0"></div></div></div><div class="p-4 border-t flex justify-end gap-2"><button onclick="app.closeModal('modalQuota')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-100">Annulla</button><button onclick="app.saveQuota()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold">Salva</button></div></div></div>
+    <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden"><div class="p-6 border-b border-gray-100"><h3 class="font-extrabold text-xl text-gray-800">Emetti Quota</h3></div><div class="p-6 space-y-5 bg-gray-50"><input type="hidden" id="q_id"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tesserato *</label><select id="q_tesserato" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"></select></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Causale *</label><select id="q_causale" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"><option value="Quota Iscrizione Annuale">Quota Iscrizione Annuale</option><option value="Kit Abbigliamento">Kit Abbigliamento</option><option value="Sanzione/Multa">Sanzione/Multa</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Totale *</label><input type="number" id="q_totale" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue" placeholder="€ 0.00"></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Acconto Ora</label><input type="number" id="q_versato" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue" value="0"></div></div></div><div class="p-5 border-t border-gray-100 flex justify-end gap-3"><button onclick="app.closeModal('modalQuota')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200">Annulla</button><button onclick="app.saveQuota()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark">Salva</button></div></div></div>
     
-    <div id="modalEvento" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"><div class="p-5 border-b border-gray-100"><h3 class="font-extrabold text-lg">Nuovo Evento</h3></div><div class="p-5 space-y-4 bg-gray-50"><div><label class="block text-xs font-bold mb-1">Titolo *</label><input type="text" id="e_titolo" class="w-full p-3 border rounded-xl text-base outline-none"></div><div class="grid grid-cols-2 gap-4"><div><label class="block text-xs font-bold mb-1">Data *</label><input type="date" id="e_data" class="w-full p-3 border rounded-xl text-base outline-none"></div><div><label class="block text-xs font-bold mb-1">Ora</label><input type="time" id="e_ora" class="w-full p-3 border rounded-xl text-base outline-none"></div></div><div><label class="block text-xs font-bold mb-1">Tipo</label><select id="e_tipo" class="w-full p-3 border rounded-xl text-base outline-none"><option value="Allenamento">Allenamento</option><option value="Gara/Competizione">Gara/Competizione</option><option value="Esibizione/Sfilata">Esibizione/Sfilata</option><option value="Sociale">Sociale / Cena</option></select></div></div><div class="p-4 border-t flex justify-end gap-2"><button onclick="app.closeModal('modalEvento')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500">Annulla</button><button onclick="app.saveEvento()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold">Crea</button></div></div></div>
+    <div id="modalEvento" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden"><div class="p-6 border-b border-gray-100"><h3 class="font-extrabold text-xl text-gray-800">Nuovo Evento</h3></div><div class="p-6 space-y-5 bg-gray-50"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Titolo *</label><input type="text" id="e_titolo" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"></div><div class="grid grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Data *</label><input type="date" id="e_data" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Ora</label><input type="time" id="e_ora" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"></div></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tipo Evento</label><select id="e_tipo" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"><option value="Allenamento">Allenamento</option><option value="Gara/Competizione">Gara / Competizione</option><option value="Esibizione/Sfilata">Esibizione / Sfilata</option><option value="Sociale">Sociale / Cena</option></select></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Destinatari (Chi deve partecipare)</label><select id="e_gruppo" class="w-full p-3.5 border border-bdb-blue bg-blue-50 rounded-xl text-base font-bold outline-none focus:ring-2 focus:ring-bdb-blue"><option value="Tutti">Tutta l'Associazione</option><option value="Sbandieratori">Solo Sbandieratori</option><option value="Tamburi">Solo Tamburi</option><option value="Chiarine">Solo Chiarine</option><option value="Musici">Gruppo Musici (Tamburi + Chiarine)</option></select></div></div><div class="p-5 border-t flex justify-end gap-3"><button onclick="app.closeModal('modalEvento')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200">Annulla</button><button onclick="app.saveEvento()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark">Crea</button></div></div></div>
     
-    <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"><div class="p-5 border-b border-gray-100"><h3 class="font-extrabold text-lg">Aggiungi Magazzino</h3></div><div class="p-5 space-y-4 bg-gray-50"><div><label class="block text-xs font-bold mb-1">Nome *</label><input type="text" id="i_nome" class="w-full p-3 border rounded-xl text-base outline-none"></div><div><label class="block text-xs font-bold mb-1">Categoria</label><select id="i_cat" class="w-full p-3 border rounded-xl text-base outline-none"><option value="Attrezzatura (Bandiere/Aste/Pesi)">Attrezzatura (Bandiere/Aste/Pesi)</option><option value="Strumenti Musicali">Strumenti Musicali</option><option value="Costumi Storici">Costumi Storici</option><option value="Abbigliamento Rappresentanza">Abbigliamento Rappresentanza</option></select></div><div><label class="block text-xs font-bold mb-1">Quantità *</label><input type="number" id="i_tot" class="w-full p-3 border rounded-xl text-base outline-none" value="1"></div></div><div class="p-4 border-t flex justify-end gap-2"><button onclick="app.closeModal('modalItem')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500">Annulla</button><button onclick="app.saveItem()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold">Salva</button></div></div></div>
+    <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden"><div class="p-6 border-b border-gray-100"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Magazzino</h3></div><div class="p-6 space-y-5 bg-gray-50"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nome *</label><input type="text" id="i_nome" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Categoria</label><select id="i_cat" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue"><option value="Attrezzatura (Bandiere/Aste/Pesi)">Attrezzatura (Bandiere/Aste/Pesi)</option><option value="Strumenti Musicali">Strumenti Musicali</option><option value="Costumi Storici">Costumi Storici</option><option value="Abbigliamento Rappresentanza">Abbigliamento Rappresentanza</option></select></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quantità Iniziale *</label><input type="number" id="i_tot" class="w-full p-3.5 border rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue" value="1"></div></div><div class="p-5 border-t flex justify-end gap-3"><button onclick="app.closeModal('modalItem')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200">Annulla</button><button onclick="app.saveItem()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark">Salva</button></div></div></div>
 
-    <!-- MODAL APPELLO MOBILE FRIENDLY (Supporto Safe Area iOS) -->
-    <div id="modalAppello" class="fixed inset-0 bg-bdb-gray z-[110] hidden flex flex-col transform transition-transform duration-300 translate-y-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-        <div class="bg-bdb-blue text-white flex flex-col shrink-0 shadow-lg relative z-10">
-            <div class="p-4 flex items-center justify-between">
-                <button onclick="app.closeAppello()" class="p-2"><i class="fa-solid fa-chevron-down text-2xl"></i></button>
-                <div class="text-center"><h3 class="font-bold text-lg leading-tight" id="appelloTitle">Appello</h3><p class="text-xs text-bdb-yellow font-medium uppercase" id="appelloDate">Data</p></div>
+    <div id="modalAppello" class="fixed inset-0 bg-gray-100 z-[110] hidden flex flex-col transform transition-transform duration-300 translate-y-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+        <div class="bg-bdb-blue text-white flex flex-col shrink-0 shadow-xl relative z-10 rounded-b-3xl">
+            <div class="p-5 flex items-center justify-between">
+                <button onclick="app.closeAppello()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition"><i class="fa-solid fa-chevron-down text-lg"></i></button>
+                <div class="text-center"><h3 class="font-extrabold text-xl leading-tight" id="appelloTitle">Appello</h3><p class="text-xs text-bdb-yellow font-bold uppercase tracking-widest mt-1" id="appelloDate">Data</p></div>
                 <div class="w-10"></div>
             </div>
+            <div class="px-6 pb-6 text-center"><span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm" id="appelloGruppo">Gruppo</span></div>
         </div>
-        <div class="flex-grow overflow-y-auto bg-gray-100 p-4 pb-24" id="appelloList"></div>
-        <div class="absolute bottom-[env(safe-area-inset-bottom)] left-0 w-full p-4 bg-white border-t border-gray-200 shadow-2xl">
-            <button onclick="app.closeAppello()" class="w-full bg-bdb-blue text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-bdb-blue-dark">Termina Appello</button>
+        <div class="flex-grow overflow-y-auto p-4 md:p-8 pb-32" id="appelloList"></div>
+        <div class="absolute bottom-[env(safe-area-inset-bottom)] left-0 w-full p-5 bg-white/80 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+            <button onclick="app.closeAppello()" class="w-full bg-bdb-blue text-white font-extrabold py-4 rounded-2xl shadow-lg hover:bg-bdb-blue-dark text-lg hover:-translate-y-1 transition-transform">Salva & Termina</button>
         </div>
     </div>
 
@@ -404,7 +442,6 @@
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // Metti le TUE chiavi qui!
         const firebaseConfig = {
             apiKey: "AIzaSyAUYhZUZ3lUBwISXXcfzLoRt4SVNDFwqr4",
             authDomain: "testergestionaledb.firebaseapp.com",
@@ -423,61 +460,58 @@
         const app = {
             state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [] },
             
-            // UX Helpers
             ui: {
                 toast: (msg, icon='success') => Swal.fire({ toast: true, position: 'top-end', icon, title: msg, showConfirmButton: false, timer: 3000 }),
-                error: (msg) => Swal.fire({ icon: 'error', title: 'Oops...', text: msg, confirmButtonColor: '#0033A0', borderRadius: '1rem' }),
-                confirm: (title, text) => Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#9ca3af', confirmButtonText: 'Sì, elimina!', cancelButtonText: 'Annulla', borderRadius: '1rem' }),
-                empty: (icon, text) => `<div class="flex flex-col items-center justify-center py-12 text-gray-400"><i class="fa-solid ${icon} text-5xl mb-4 opacity-40"></i><p class="font-medium">${text}</p></div>`
+                error: (msg) => Swal.fire({ icon: 'error', title: 'Attenzione', text: msg, confirmButtonColor: '#0033A0', borderRadius: '1.5rem' }),
+                confirm: (title, text) => Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#9ca3af', confirmButtonText: 'Sì, procedi!', cancelButtonText: 'Annulla', borderRadius: '1.5rem' }),
+                empty: (icon, text) => `<div class="flex flex-col items-center justify-center py-16 text-gray-300"><i class="fa-solid ${icon} text-6xl mb-5 opacity-50"></i><p class="font-bold text-gray-400 text-lg">${text}</p></div>`
             },
 
-            // --- MENU MOBILE ---
             toggleMenu: function(forceOpen) {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('mobileOverlay');
                 if(forceOpen === true || sidebar.classList.contains('-translate-x-full')) {
-                    sidebar.classList.remove('-translate-x-full');
-                    overlay.classList.remove('hidden');
+                    sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden');
                 } else {
-                    sidebar.classList.add('-translate-x-full');
-                    overlay.classList.add('hidden');
+                    sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden');
                 }
             },
 
-            // --- AUTH ---
             initAuth: function() {
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         this.state.user = user;
-                        // METTI LA TUA EMAIL QUI DENTRO GLI APICI PER DIVENTARE ADMIN!
-                        this.state.isAdmin = (user.email === 'lollinorusso@icloud.com');
+                        // LOGICA ADMIN POTENZIATA
+                        const adminEmails = ['lollinorusso@icloud.com', 'segreteria@borgodonbosco.com'];
+                        this.state.isAdmin = adminEmails.includes(user.email);
                         
                         document.getElementById('authScreen').classList.add('hidden');
                         document.getElementById('mainApp').classList.remove('hidden');
                         
                         document.getElementById('userEmailDisplay').innerText = user.email || user.displayName || 'Utente';
-                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Segreteria / Admin' : 'Atleta / Socio';
+                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Admin Segreteria' : 'Atleta / Socio';
                         document.getElementById('userInitial').innerText = (user.email || user.displayName || 'U').charAt(0).toUpperCase();
                         
                         this.setGreeting();
 
-                        const adminElements = document.querySelectorAll('.admin-only');
+                        const adminEls = document.querySelectorAll('.admin-only');
                         if (this.state.isAdmin) {
-                            adminElements.forEach(el => el.classList.remove('hidden'));
+                            adminEls.forEach(el => el.classList.remove('hidden'));
                             document.getElementById('nav-finanza').classList.add('flex');
                             document.getElementById('nav-magazzino').classList.add('flex');
+                            document.getElementById('btnSaveTesserato').classList.remove('hidden');
                         } else {
-                            adminElements.forEach(el => el.classList.add('hidden'));
+                            adminEls.forEach(el => el.classList.add('hidden'));
                             document.getElementById('nav-finanza').classList.remove('flex');
                             document.getElementById('nav-magazzino').classList.remove('flex');
-                            this.switchTab('dashboard'); // Forza la Home
+                            document.getElementById('btnSaveTesserato').classList.add('hidden');
+                            this.switchTab('dashboard'); 
                         }
 
                         this.loadData();
                         this.ui.toast("Accesso effettuato!");
                     } else {
-                        this.state.user = null;
-                        this.state.isAdmin = false;
+                        this.state.user = null; this.state.isAdmin = false;
                         document.getElementById('authScreen').classList.remove('hidden');
                         document.getElementById('mainApp').classList.add('hidden');
                         document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
@@ -489,9 +523,7 @@
             
             setGreeting: function() {
                 const hour = new Date().getHours();
-                let saluto = 'Buongiorno';
-                if(hour >= 13 && hour < 18) saluto = 'Buon pomeriggio';
-                if(hour >= 18) saluto = 'Buonasera';
+                let saluto = 'Buongiorno'; if(hour >= 13 && hour < 18) saluto = 'Buon pomeriggio'; if(hour >= 18) saluto = 'Buonasera';
                 const nome = (this.state.user.displayName || this.state.user.email || 'Utente').split('@')[0];
                 document.getElementById('greetingTitle').innerText = `${saluto}, ${nome.charAt(0).toUpperCase() + nome.slice(1)}!`;
             },
@@ -499,18 +531,14 @@
             login: () => { const e=document.getElementById('authEmail').value, p=document.getElementById('authPassword').value; if(!e||!p) return app.ui.error("Dati mancanti"); signInWithEmailAndPassword(auth, e, p).catch(e => app.ui.error("Credenziali errate")); },
             register: () => { const e=document.getElementById('authEmail').value, p=document.getElementById('authPassword').value; if(!e||!p) return app.ui.error("Dati mancanti"); createUserWithEmailAndPassword(auth, e, p).catch(e => app.ui.error(e.message)); },
             googleLogin: () => signInWithPopup(auth, googleProvider).catch(e => app.ui.error(e.message)),
-            resetPassword: () => { const e=document.getElementById('authEmail').value; if(!e) return app.ui.error("Inserisci l'email"); sendPasswordResetEmail(auth, e).then(()=>app.ui.toast("Email inviata!")).catch(e=>app.ui.error(e.message)); },
+            resetPassword: () => { const e=document.getElementById('authEmail').value; if(!e) return app.ui.error("Inserisci l'email in basso per recuperarla."); sendPasswordResetEmail(auth, e).then(()=>app.ui.toast("Email inviata!")).catch(e=>app.ui.error(e.message)); },
             logout: () => signOut(auth),
 
-            // --- NAV ---
             switchTab: function(tabId) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 const btn = document.querySelector(`button[onclick="app.switchTab('${tabId}')"]`);
                 if(btn) btn.classList.add('active');
-                
-                // Chiude il menu laterale su mobile
                 if(window.innerWidth < 768) this.toggleMenu(false);
-                
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('view-' + tabId).classList.add('active');
             },
@@ -521,23 +549,20 @@
             },
             closeModal: (id) => document.getElementById(id).classList.add('hidden'),
 
-            // --- DB LOAD ---
             loadData: function() {
                 const qAtleti = this.state.isAdmin ? query(collection(db, "fascicoli")) : query(collection(db, "fascicoli"), where("ownerUid", "==", this.state.user.uid));
                 onSnapshot(qAtleti, (snap) => {
                     this.state.atleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
                     this.state.atleti.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
-                    this.renderAnagrafica(); this.updateDashboardStats();
+                    this.renderAnagrafica(); if(this.state.isAdmin) this.updateDashboardStats();
                     if(document.getElementById('q_tesserato')) document.getElementById('q_tesserato').innerHTML = `<option value="">-- Seleziona --</option>` + this.state.atleti.map(a => `<option value="${a.id}">${a.nome}</option>`).join('');
                 });
 
                 onSnapshot(query(collection(db, "news"), orderBy("date", "desc")), (snap) => {
-                    this.state.news = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                    this.renderNews();
+                    this.state.news = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderNews();
                 });
                 onSnapshot(query(collection(db, "eventi"), orderBy("data", "desc")), (snap) => {
-                    this.state.eventi = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                    this.renderEventi();
+                    this.state.eventi = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderEventi();
                 });
 
                 if(this.state.isAdmin) {
@@ -546,7 +571,6 @@
                 }
             },
 
-            // --- DASHBOARD ---
             updateDashboardStats: function() {
                 document.getElementById('dash-tesserati').innerText = this.state.atleti.length;
                 let scaduti = 0; const oggi = new Date(); oggi.setHours(0,0,0,0);
@@ -557,61 +581,60 @@
                 const c = document.getElementById('newsFeed');
                 if(!this.state.news.length) return c.innerHTML = this.ui.empty('fa-wind', 'Nessuna comunicazione in bacheca');
                 c.innerHTML = this.state.news.map(n => `
-                    <div class="border-l-4 border-bdb-yellow pl-4 py-3 bg-white rounded-r-xl shadow-sm hover:shadow-md transition group">
+                    <div class="border-l-4 border-bdb-yellow pl-5 py-4 bg-white rounded-r-2xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group">
                         <div class="flex justify-between items-start">
-                            <h4 class="font-extrabold text-gray-800">${n.title}</h4>
-                            ${this.state.isAdmin ? `<button onclick="app.deleteDocRef('news', '${n.id}')" class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            <h4 class="font-extrabold text-gray-800 text-lg">${n.title}</h4>
+                            ${this.state.isAdmin ? `<button onclick="app.deleteDocRef('news', '${n.id}')" class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition p-1"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">${n.content}</p>
-                        <span class="text-xs font-bold text-gray-400 mt-3 block uppercase">${new Date(n.date).toLocaleDateString()}</span>
+                        <p class="text-gray-600 mt-2 leading-relaxed">${n.content}</p>
+                        <span class="text-[10px] font-extrabold text-gray-400 mt-3 block uppercase tracking-widest">${new Date(n.date).toLocaleDateString()}</span>
                     </div>`).join('');
             },
             promptNews: async function() {
-                const { value: formValues } = await Swal.fire({ title: 'Nuovo Avviso', html: '<input id="swal-input1" class="swal2-input" placeholder="Titolo"><textarea id="swal-input2" class="swal2-textarea" placeholder="Testo..."></textarea>', focusConfirm: false, preConfirm: () => [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value] });
+                const { value: formValues } = await Swal.fire({ title: 'Crea Avviso', html: '<input id="swal-input1" class="swal2-input" placeholder="Titolo (es. Cena di Natale)"><textarea id="swal-input2" class="swal2-textarea" placeholder="Testo della comunicazione..."></textarea>', focusConfirm: false, confirmButtonColor: '#0033A0', preConfirm: () => [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value] });
                 if (formValues && formValues[0]) { await addDoc(collection(db, "news"), { title: formValues[0], content: formValues[1], date: new Date().toISOString() }); this.ui.toast("Pubblicato!"); }
             },
             deleteDocRef: function(colName, id) {
-                this.ui.confirm("Sicuro?", "L'azione è irreversibile.").then(async (r) => {
+                this.ui.confirm("Sei sicuro?", "Questa azione è irreversibile.").then(async (r) => {
                     if(r.isConfirmed) { await deleteDoc(doc(db, colName, id)); this.ui.toast("Eliminato."); }
                 });
             },
 
-            // --- ANAGRAFICA ---
+            // --- FASCICOLI ---
             renderAnagrafica: function() {
                 const tbody = document.getElementById('anagraficaTableBody');
                 const search = document.getElementById('searchAnagrafica').value.toLowerCase();
                 const filtered = this.state.atleti.filter(a => (a.nome || '').toLowerCase().includes(search));
-                if(!filtered.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-folder-open', 'Nessun tesserato trovato.')}</td></tr>`;
+                if(!filtered.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-folder-open', 'Nessun fascicolo trovato.')}</td></tr>`;
 
                 const oggi = new Date(); oggi.setHours(0,0,0,0);
                 tbody.innerHTML = filtered.map(a => {
-                    let certStatus = `<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">Assente</span>`;
+                    let certStatus = `<span class="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-[11px] uppercase tracking-wider font-extrabold">Assente</span>`;
                     if(a.cert_scad) {
                         const diff = Math.ceil((new Date(a.cert_scad) - oggi) / (1000 * 60 * 60 * 24));
-                        if(diff < 0) certStatus = `<span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Scaduto</span>`;
-                        else if(diff <= 30) certStatus = `<span class="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">${diff}gg</span>`;
-                        else certStatus = `<span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">Valido</span>`;
+                        if(diff < 0) certStatus = `<span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[11px] uppercase tracking-wider font-extrabold border border-red-100">Scaduto</span>`;
+                        else if(diff <= 30) certStatus = `<span class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg text-[11px] uppercase tracking-wider font-extrabold border border-orange-100">${diff} gg</span>`;
+                        else certStatus = `<span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-[11px] uppercase tracking-wider font-extrabold border border-emerald-100">Valido</span>`;
                     }
-                    const docsHTML = (a.doc_privacy && a.doc_ci && a.doc_cf) ? `<i class="fa-solid fa-circle-check text-emerald-500"></i>` : `<i class="fa-solid fa-circle-exclamation text-orange-400"></i>`;
+                    const docsHTML = (a.doc_privacy && a.doc_ci && a.doc_cf) ? `<i class="fa-solid fa-circle-check text-emerald-500 text-xl" title="Tutto ok"></i>` : `<i class="fa-solid fa-circle-exclamation text-orange-400 text-xl" title="Mancanti"></i>`;
                     
-                    // Admin vede il tasto modifica ed elimina, l'utente vede il tasto visualizza/modifica
                     return `
                         <tr class="cursor-pointer group" onclick="app.editTesserato('${a.id}')">
-                            <td class="p-4 md:p-5"><div class="font-extrabold text-gray-800 text-base">${a.nome}</div><div class="text-xs text-gray-500">${a.nascita}</div></td>
-                            <td class="p-4 md:p-5"><span class="px-2 py-1 bg-bdb-gray text-bdb-blue rounded font-bold text-xs">${a.ruolo || 'Atleta'}</span></td>
-                            <td class="p-4 md:p-5">${certStatus}</td>
-                            <td class="p-4 md:p-5 text-center text-lg">${docsHTML}</td>
-                            <td class="p-4 md:p-5 text-right">
-                                <button class="text-gray-400 hover:text-bdb-blue p-2 bg-gray-50 rounded-lg group-hover:bg-white shadow-sm" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid fa-pen"></i></button>
-                                ${this.state.isAdmin ? `<button class="text-gray-400 hover:text-red-500 p-2 bg-gray-50 rounded-lg group-hover:bg-white shadow-sm ml-2" onclick="event.stopPropagation(); app.deleteDocRef('fascicoli', '${a.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            <td class="p-5"><div class="font-extrabold text-gray-800 text-base">${a.nome}</div><div class="text-xs text-gray-400 font-medium">${a.nascita}</div></td>
+                            <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${a.ruolo || 'Atleta'}</span></td>
+                            <td class="p-5">${certStatus}</td>
+                            <td class="p-5 text-center">${docsHTML}</td>
+                            <td class="p-5 text-right">
+                                <button class="text-gray-400 hover:text-bdb-blue p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid fa-pen"></i></button>
+                                ${this.state.isAdmin ? `<button class="text-gray-400 hover:text-red-500 p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition ml-2" onclick="event.stopPropagation(); app.deleteDocRef('fascicoli', '${a.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
                             </td>
                         </tr>`;
                 }).join('');
             },
             openTesseratoModal: function() {
                 document.getElementById('t_id').value = '';
-                document.querySelectorAll('#modalTesserato input:not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
-                document.querySelectorAll('#modalTesserato input[type=checkbox]').forEach(el => el.checked = false);
+                document.querySelectorAll('#modalTesserato input:not([type=file]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
+                ['privacy','ci','cf'].forEach(k => { document.getElementById('t_doc_'+k).value = 'false'; document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-upload"></i>'; document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400"; });
                 document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
                 if(this.state.isAdmin) document.getElementById('btnSaveTesserato').classList.remove('hidden');
                 this.switchInnerTab('tab-base'); document.getElementById('modalTesserato').classList.remove('hidden');
@@ -619,93 +642,149 @@
             editTesserato: function(id) {
                 const a = this.state.atleti.find(x => x.id === id); if(!a) return;
                 document.getElementById('t_id').value = a.id;
-                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche','taglia','squadra'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
-                ['privacy','ci','cf'].forEach(k => document.getElementById('t_doc_'+k).checked = !!a['doc_'+k]);
-                document.getElementById('modalTesseratoTitle').innerText = a.nome;
+                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche','taglia'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
                 
-                // Se è Admin o il creatore del profilo, mostra il tasto salva
-                if(this.state.isAdmin || a.ownerUid === this.state.user.uid) document.getElementById('btnSaveTesserato').classList.remove('hidden');
-                else document.getElementById('btnSaveTesserato').classList.add('hidden');
+                ['privacy','ci','cf'].forEach(k => {
+                    const isUploaded = a['doc_'+k] === 'true' || a['doc_'+k] === true;
+                    document.getElementById('t_doc_'+k).value = isUploaded ? 'true' : 'false';
+                    if(isUploaded) {
+                        document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-check"></i>';
+                        document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center";
+                    } else {
+                        document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-upload"></i>';
+                        document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center";
+                    }
+                });
 
+                document.getElementById('modalTesseratoTitle').innerText = a.nome;
+                if(this.state.isAdmin || a.ownerUid === this.state.user.uid) document.getElementById('btnSaveTesserato').classList.remove('hidden'); else document.getElementById('btnSaveTesserato').classList.add('hidden');
                 this.switchInnerTab('tab-base'); document.getElementById('modalTesserato').classList.remove('hidden');
             },
             saveTesserato: async function() {
                 const id = document.getElementById('t_id').value;
-                const d = {}; ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche','taglia','squadra'].forEach(k => d[k] = document.getElementById('t_'+k).value);
-                ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).checked);
+                const d = {}; ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche','taglia'].forEach(k => d[k] = document.getElementById('t_'+k).value);
+                ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value === 'true');
                 if(!d.nome || !d.nascita) return this.ui.error("Nome e Data richiesti.");
                 try {
                     if(id) await updateDoc(doc(db, "fascicoli", id), d);
                     else { d.ownerUid = this.state.user.uid; await addDoc(collection(db, "fascicoli"), d); }
-                    this.closeModal('modalTesserato'); this.ui.toast("Salvato!");
+                    this.closeModal('modalTesserato'); this.ui.toast("Fascicolo Salvato!");
                 } catch(e) { this.ui.error(e.message); }
+            },
+            handleFakeUpload: function(input, type) {
+                if(input.files && input.files[0]) {
+                    const file = input.files[0];
+                    document.getElementById('t_doc_'+type).value = 'true';
+                    document.getElementById('icon-'+type).innerHTML = '<i class="fa-solid fa-check"></i>';
+                    document.getElementById('icon-'+type).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner";
+                    document.getElementById('name-'+type).innerText = file.name.substring(0, 20) + '...';
+                    this.ui.toast("File elaborato!");
+                }
+            },
+            downloadPrivacy: function() {
+                if(!window.jspdf) return this.ui.error("Libreria in caricamento...");
+                const doc = new window.jspdf.jsPDF(); doc.setFont("helvetica", "bold"); doc.setFontSize(16);
+                doc.text("Borgo Don Bosco - Modello Privacy", 105, 20, { align: "center" });
+                doc.setFontSize(10); doc.setFont("helvetica", "normal");
+                doc.text("Il sottoscritto acconsente al trattamento dei dati personali ai sensi del GDPR...", 20, 40);
+                doc.text("Firma: ___________________________", 20, 80); doc.text("Data: ____/____/________", 120, 80);
+                doc.save("Modello_Privacy_BDB.pdf");
             },
 
             // --- FINANZA ---
             renderFinanza: function() {
-                const tbody = document.getElementById('finanzaTableBody');
-                let prev = 0, inc = 0;
+                const tbody = document.getElementById('finanzaTableBody'); let prev = 0, inc = 0;
                 if(!this.state.quote.length) tbody.innerHTML = `<tr><td colspan="7">${this.ui.empty('fa-wallet', 'Nessuna quota emessa.')}</td></tr>`;
                 else {
                     tbody.innerHTML = this.state.quote.map(q => {
                         const t = this.state.atleti.find(a => a.id === q.tesseratoId);
                         const diff = Number(q.totale) - Number(q.versato);
-                        const s = diff <= 0 ? `<span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded font-bold text-xs">Saldato</span>` : `<span class="bg-orange-50 text-orange-700 px-2 py-1 rounded font-bold text-xs">Da saldare (${formatter.format(diff)})</span>`;
+                        const s = diff <= 0 ? `<span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-emerald-100">Saldato</span>` : `<span class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-orange-100">Da saldare (${formatter.format(diff)})</span>`;
                         prev += Number(q.totale); inc += Number(q.versato);
                         return `<tr>
-                            <td class="p-4">${new Date(q.dataCreazione).toLocaleDateString()}</td>
-                            <td class="p-4 font-extrabold text-gray-800">${t ? t.nome : 'Utente rimosso'}</td>
-                            <td class="p-4">${q.causale}</td><td class="p-4 text-right font-bold text-gray-600">${formatter.format(q.totale)}</td>
-                            <td class="p-4 text-right font-extrabold text-bdb-blue">${formatter.format(q.versato)}</td><td class="p-4 text-center">${s}</td>
-                            <td class="p-4 text-right flex justify-end gap-2">
-                                ${diff > 0 ? `<button class="text-emerald-600 border border-emerald-600 px-3 py-1.5 rounded-lg shadow-sm hover:bg-emerald-50 font-bold" onclick="app.aggiungiAcconto('${q.id}', ${diff}, '${t?t.nome:''}', '${q.causale}')">+ Versa</button>` : ''}
-                                <button class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:text-bdb-blue shadow-sm" onclick="app.generaRicevutaPDF('${t?t.nome:''}', '${q.causale}', ${q.versato})"><i class="fa-solid fa-file-pdf"></i></button>
-                                <button class="w-8 h-8 rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 shadow-sm" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
+                            <td class="p-5 font-medium">${new Date(q.dataCreazione).toLocaleDateString()}</td>
+                            <td class="p-5 font-extrabold text-gray-800">${t ? t.nome : 'Rimosso'}</td>
+                            <td class="p-5 text-gray-600">${q.causale}</td><td class="p-5 text-right font-bold text-gray-400">${formatter.format(q.totale)}</td>
+                            <td class="p-5 text-right font-extrabold text-bdb-blue">${formatter.format(q.versato)}</td><td class="p-5 text-center">${s}</td>
+                            <td class="p-5 text-right flex justify-end gap-2">
+                                ${diff > 0 ? `<button class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition" onclick="app.aggiungiAcconto('${q.id}', ${diff}, '${t?t.nome:''}', '${q.causale}')">Incassa</button>` : ''}
+                                <button class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border border-gray-100 transition" onclick="app.generaRicevutaPDF('${t?t.nome:''}', '${q.causale}', ${q.versato})" title="Ricevuta"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border border-gray-100 transition" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
                             </td></tr>`;
                     }).join('');
                 }
                 document.getElementById('dash-crediti').innerText = formatter.format(prev - inc);
-                document.getElementById('finanzaStats').innerHTML = `<div class="bg-white p-5 rounded-2xl shadow-soft"><p class="text-xs font-bold text-gray-400 uppercase">Totale Previsto</p><h3 class="text-2xl font-extrabold">${formatter.format(prev)}</h3></div><div class="bg-white p-5 rounded-2xl shadow-soft relative overflow-hidden"><div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div><p class="text-xs font-bold text-gray-400 uppercase">Incassato</p><h3 class="text-2xl font-extrabold text-emerald-600">${formatter.format(inc)}</h3></div><div class="bg-white p-5 rounded-2xl shadow-soft relative overflow-hidden"><div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-400"></div><p class="text-xs font-bold text-gray-400 uppercase">Crediti Aperti</p><h3 class="text-2xl font-extrabold text-orange-500">${formatter.format(prev - inc)}</h3></div>`;
+                document.getElementById('finanzaStats').innerHTML = `<div class="bg-white p-6 rounded-3xl shadow-soft"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Totale Previsto</p><h3 class="text-3xl font-extrabold text-gray-800">${formatter.format(prev)}</h3></div><div class="bg-white p-6 rounded-3xl shadow-soft relative overflow-hidden"><div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400"></div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Incassato</p><h3 class="text-3xl font-extrabold text-emerald-500">${formatter.format(inc)}</h3></div><div class="bg-white p-6 rounded-3xl shadow-soft relative overflow-hidden"><div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-400"></div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Da Incassare</p><h3 class="text-3xl font-extrabold text-orange-500">${formatter.format(prev - inc)}</h3></div>`;
             },
             openQuotaModal: () => { document.getElementById('q_id').value = ''; document.getElementById('q_totale').value = ''; document.getElementById('q_versato').value = '0'; document.getElementById('modalQuota').classList.remove('hidden'); },
             saveQuota: async function() {
                 const t=document.getElementById('q_tesserato').value, c=document.getElementById('q_causale').value, tot=document.getElementById('q_totale').value, v=document.getElementById('q_versato').value;
                 if(!t || !tot) return this.ui.error("Campi obbligatori mancanti.");
                 await addDoc(collection(db, "finanza"), { tesseratoId: t, causale: c, totale: Number(tot), versato: Number(v), dataCreazione: new Date().toISOString() });
-                this.closeModal('modalQuota'); this.ui.toast("Quota creata!");
+                this.closeModal('modalQuota'); this.ui.toast("Quota emessa!");
             },
             aggiungiAcconto: async function(id, rimanente, nome, causale) {
-                const { value: imp } = await Swal.fire({ title: 'Versamento', input: 'number', inputLabel: `Max ${formatter.format(rimanente)}`, showCancelButton: true });
+                const { value: imp } = await Swal.fire({ title: 'Nuovo Incasso', input: 'number', inputLabel: `Importo max: ${formatter.format(rimanente)}`, showCancelButton: true, confirmButtonColor: '#10b981' });
                 if(imp && Number(imp) > 0 && Number(imp) <= rimanente) {
-                    const q = this.state.quote.find(x => x.id === id);
-                    await updateDoc(doc(db, "finanza", id), { versato: Number(q.versato) + Number(imp) });
-                    this.ui.toast("Acconto registrato!");
-                    Swal.fire({ title: 'Ricevuta PDF', text: 'Vuoi scaricarla?', icon: 'question', showCancelButton: true }).then(r => { if(r.isConfirmed) this.generaRicevutaPDF(nome, "Acconto: " + causale, imp); });
+                    const q = this.state.quote.find(x => x.id === id); await updateDoc(doc(db, "finanza", id), { versato: Number(q.versato) + Number(imp) });
+                    this.ui.toast("Incasso registrato!");
+                    Swal.fire({ title: 'Ricevuta PDF', text: 'Scarica la ricevuta aggiornata?', icon: 'success', showCancelButton: true, confirmButtonColor: '#0033A0' }).then(r => { if(r.isConfirmed) this.generaRicevutaPDF(nome, "Acconto: " + causale, imp); });
                 }
             },
             generaRicevutaPDF: function(n, c, i) {
-                if(!window.jspdf) return this.ui.error("Libreria PDF in caricamento...");
+                if(!window.jspdf) return this.ui.error("Attendi il caricamento...");
                 const doc = new window.jspdf.jsPDF(); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(0, 51, 160);
                 doc.text("Borgo Don Bosco", 105, 30, { align: "center" }); doc.setFontSize(12); doc.setTextColor(100); doc.setFont("helvetica", "normal");
                 doc.text("Associazione Sportiva", 105, 38, { align: "center" }); doc.setDrawColor(200); doc.line(20, 45, 190, 45);
-                doc.setFontSize(16); doc.setTextColor(0); doc.setFont("helvetica", "bold"); doc.text("RICEVUTA", 105, 60, { align: "center" });
-                doc.setFontSize(12); doc.setFont("helvetica", "normal");
-                doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 80); doc.text(`Da: ${n}`, 20, 90); doc.text(`Causale: ${c}`, 20, 100);
+                doc.setFontSize(16); doc.setTextColor(0); doc.setFont("helvetica", "bold"); doc.text("RICEVUTA DI PAGAMENTO", 105, 60, { align: "center" });
+                doc.setFontSize(12); doc.setFont("helvetica", "normal"); doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 80); doc.text(`Da: ${n}`, 20, 90); doc.text(`Causale: ${c}`, 20, 100);
                 doc.setFillColor(245, 247, 250); doc.rect(20, 115, 170, 20, 'F'); doc.text(`Importo Versato:`, 25, 128); doc.setFont("helvetica", "bold"); doc.setTextColor(0, 51, 160); doc.text(formatter.format(i), 185, 128, {align: "right"});
                 doc.save(`Ricevuta_${n.replace(/\s+/g, '_')}.pdf`);
             },
 
-            // --- EVENTI E APPELLO ---
+            // --- EVENTI E APPELLO CON RSVP E FILTRI ---
             renderEventi: function() {
                 const g = document.getElementById('eventiGrid');
-                if(!this.state.eventi.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', 'Nessun evento in calendario.')}</div>`;
+                if(!this.state.eventi.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', 'Nessun evento in programma.')}</div>`;
                 g.innerHTML = this.state.eventi.map(e => {
-                    const count = e.presenze ? Object.values(e.presenze).filter(v=>v).length : 0;
-                    return `<div class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col h-full hover:shadow-md transition">
-                        <div class="flex justify-between items-start mb-3"><span class="text-[10px] font-bold px-2 py-1 uppercase bg-blue-50 text-bdb-blue rounded-lg">${e.tipo}</span>${this.state.isAdmin ? `<button onclick="app.deleteDocRef('eventi', '${e.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-times"></i></button>` : ''}</div>
+                    const disp = e.disponibilita || {};
+                    let presentCount = 0, absentCount = 0;
+                    Object.values(disp).forEach(v => { if(v==='si') presentCount++; if(v==='no') absentCount++; });
+                    
+                    // UI per Utente Standard (Disponibilità)
+                    let userAction = '';
+                    if(!this.state.isAdmin) {
+                        const myStatus = disp[this.state.user.uid];
+                        userAction = `
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">La tua presenza</p>
+                            <div class="flex gap-2">
+                                <button onclick="app.setDisponibilita('${e.id}', 'si')" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${myStatus==='si' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-gray-50 text-gray-500 hover:bg-emerald-50 hover:text-emerald-600'}"><i class="fa-solid fa-check mr-1"></i> Ci sarò</button>
+                                <button onclick="app.setDisponibilita('${e.id}', 'no')" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${myStatus==='no' ? 'bg-red-500 text-white shadow-lg' : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600'}"><i class="fa-solid fa-xmark mr-1"></i> Assente</button>
+                            </div>
+                        </div>`;
+                    }
+
+                    // UI per Admin (Appello)
+                    const adminAction = this.state.isAdmin ? `
+                        <div class="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
+                            <div class="flex gap-3"><span class="text-xs font-bold text-emerald-600"><i class="fa-solid fa-check mr-1"></i>${presentCount}</span> <span class="text-xs font-bold text-red-500"><i class="fa-solid fa-xmark mr-1"></i>${absentCount}</span></div>
+                            <button onclick="app.openAppello('${e.id}')" class="bg-bdb-yellow text-bdb-blue-dark px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:scale-105 transition">Appello <i class="fa-solid fa-clipboard-user ml-1"></i></button>
+                        </div>` : '';
+
+                    return `
+                    <div class="bg-white p-6 rounded-3xl shadow-soft border border-gray-100 flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex gap-2">
+                                <span class="text-[10px] font-extrabold px-3 py-1 uppercase bg-blue-50 text-bdb-blue rounded-lg tracking-wider">${e.tipo}</span>
+                                <span class="text-[10px] font-extrabold px-3 py-1 uppercase bg-gray-100 text-gray-500 rounded-lg tracking-wider">${e.gruppo || 'Tutti'}</span>
+                            </div>
+                            ${this.state.isAdmin ? `<button onclick="app.deleteDocRef('eventi', '${e.id}')" class="text-gray-300 hover:text-red-500 p-1"><i class="fa-solid fa-times text-lg"></i></button>` : ''}
+                        </div>
                         <h3 class="font-extrabold text-gray-800 text-xl leading-tight mb-2">${e.titolo}</h3>
-                        <p class="text-sm text-gray-500 font-medium mb-5"><i class="fa-regular fa-calendar text-bdb-yellow mr-1"></i> ${new Date(e.data).toLocaleDateString()} ${e.ora||''}</p>
-                        <div class="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center"><span class="text-sm text-gray-500"><strong>${count}</strong> Presenti</span>${this.state.isAdmin ? `<button onclick="app.openAppello('${e.id}')" class="bg-gradient-to-r from-bdb-yellow to-yellow-300 text-bdb-blue-dark px-4 py-2 rounded-xl font-bold text-sm shadow-md hover:scale-105 transition">Appello <i class="fa-solid fa-list-check ml-1"></i></button>` : ''}</div>
+                        <p class="text-sm text-gray-400 font-medium mb-2"><i class="fa-regular fa-calendar text-bdb-yellow mr-1"></i> ${new Date(e.data).toLocaleDateString()} ${e.ora||''}</p>
+                        ${userAction}
+                        ${adminAction}
                     </div>`;
                 }).join('');
             },
@@ -713,23 +792,49 @@
             saveEvento: async function() {
                 const t=document.getElementById('e_titolo').value, d=document.getElementById('e_data').value;
                 if(!t||!d) return this.ui.error("Titolo e Data obbligatori.");
-                await addDoc(collection(db, "eventi"), { titolo: t, data: d, ora: document.getElementById('e_ora').value, tipo: document.getElementById('e_tipo').value, presenze: {} });
-                this.closeModal('modalEvento'); this.ui.toast("Creato!");
+                await addDoc(collection(db, "eventi"), { titolo: t, data: d, ora: document.getElementById('e_ora').value, tipo: document.getElementById('e_tipo').value, gruppo: document.getElementById('e_gruppo').value, disponibilita: {}, presenzeFisiche: {} });
+                this.closeModal('modalEvento'); this.ui.toast("Evento Creato!");
+            },
+            setDisponibilita: async function(eId, stato) {
+                await updateDoc(doc(db, "eventi", eId), { [`disponibilita.${this.state.user.uid}`]: stato });
+                this.ui.toast(stato === 'si' ? "Presenza confermata!" : "Assenza segnalata.");
             },
             openAppello: function(id) {
-                const e = this.state.eventi.find(x => x.id === id); document.getElementById('appelloTitle').innerText = e.titolo; document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
-                document.getElementById('appelloList').innerHTML = this.state.atleti.map(a => `
-                    <div class="flex items-center justify-between p-4 bg-white mb-3 rounded-2xl shadow-sm border border-gray-100">
-                        <div><p class="font-bold text-gray-800">${a.nome}</p><p class="text-xs text-gray-500">${a.ruolo||'Atleta'}</p></div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" ${e.presenze&&e.presenze[a.id] ? 'checked' : ''} onchange="app.toggleP('${id}', '${a.id}', this.checked)">
-                            <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
-                        </label>
-                    </div>`).join('');
+                const e = this.state.eventi.find(x => x.id === id); 
+                document.getElementById('appelloTitle').innerText = e.titolo; 
+                document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
+                document.getElementById('appelloGruppo').innerText = "Filtro: " + (e.gruppo || 'Tutti');
+                
+                // FILTRO ATLETI BASATO SUL GRUPPO EVENTO
+                let atletiTarget = this.state.atleti;
+                if(e.gruppo === 'Tamburi') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Musico (Tamburino)');
+                else if(e.gruppo === 'Chiarine') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Musico (Chiarina)');
+                else if(e.gruppo === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
+                else if(e.gruppo === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Sbandieratore');
+                
+                if(atletiTarget.length === 0) {
+                    document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-500 mt-10 font-bold">Nessun atleta registrato in questo gruppo.</div>`;
+                } else {
+                    document.getElementById('appelloList').innerHTML = atletiTarget.map(a => {
+                        const rsvp = e.disponibilita && e.disponibilita[a.ownerUid] ? e.disponibilita[a.ownerUid] : 'Nessuna risp.';
+                        let rsvpBadge = `<span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-400 font-bold ml-2">?</span>`;
+                        if(rsvp==='si') rsvpBadge = `<span class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded font-bold ml-2">Ci Sarò</span>`;
+                        if(rsvp==='no') rsvpBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold ml-2">No</span>`;
+
+                        return `
+                        <div class="flex items-center justify-between p-5 bg-white mb-4 rounded-3xl shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100">
+                            <div><p class="font-extrabold text-gray-800 text-lg flex items-center">${a.nome} ${rsvpBadge}</p><p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${a.ruolo||'Atleta'}</p></div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" ${e.presenzeFisiche&&e.presenzeFisiche[a.id] ? 'checked' : ''} onchange="app.toggleP('${id}', '${a.id}', this.checked)">
+                                <div class="w-16 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                            </label>
+                        </div>`;
+                    }).join('');
+                }
                 const m = document.getElementById('modalAppello'); m.classList.remove('hidden'); setTimeout(() => m.classList.remove('translate-y-full'), 10);
             },
             closeAppello: () => { const m = document.getElementById('modalAppello'); m.classList.add('translate-y-full'); setTimeout(() => m.classList.add('hidden'), 300); },
-            toggleP: async (eId, aId, isP) => updateDoc(doc(db, "eventi", eId), { [`presenze.${aId}`]: isP }),
+            toggleP: async (eId, aId, isP) => updateDoc(doc(db, "eventi", eId), { [`presenzeFisiche.${aId}`]: isP }),
 
             // --- MAGAZZINO ---
             renderMagazzino: function() {
@@ -737,7 +842,7 @@
                 if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="6">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
                 tbody.innerHTML = this.state.magazzino.map(i => {
                     const u = i.assegnazioni ? i.assegnazioni.length : 0; const disp = i.totale - u;
-                    return `<tr><td class="p-4 font-extrabold text-gray-800">${i.nome}</td><td class="p-4"><span class="text-[10px] font-bold uppercase bg-gray-100 px-2 py-1 rounded-lg">${i.categoria}</span></td><td class="p-4 text-center font-bold">${i.totale}</td><td class="p-4 text-center text-orange-500 font-bold">${u}</td><td class="p-4 text-center font-extrabold ${disp>0?'text-emerald-600':'text-red-500'}">${disp}</td><td class="p-4 text-right"><button onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                    return `<tr><td class="p-5 font-extrabold text-gray-800">${i.nome}</td><td class="p-5"><span class="text-[10px] font-bold uppercase bg-gray-100 px-3 py-1.5 rounded-lg text-gray-500">${i.categoria}</span></td><td class="p-5 text-center font-bold text-gray-600">${i.totale}</td><td class="p-5 text-center text-orange-500 font-bold">${u}</td><td class="p-5 text-center font-extrabold ${disp>0?'text-emerald-600':'text-red-500'}">${disp}</td><td class="p-5 text-right"><button onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-gray-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash"></i></button></td></tr>`;
                 }).join('');
             },
             openItemModal: () => document.getElementById('modalItem').classList.remove('hidden'),
