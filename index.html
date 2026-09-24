@@ -138,4 +138,1133 @@
                 <button onclick="app.switchTab('dashboard')" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
                     <i class="fa-solid fa-chart-pie w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Bacheca</span>
                 </button>
-                <button onclick="app.switchTab('anagrafica')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-lef
+                <button onclick="app.switchTab('anagrafica')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
+                    <i class="fa-solid fa-address-card w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium" id="labelAnagraficaNav">I Miei Fascicoli</span>
+                </button>
+                <button onclick="app.switchTab('eventi')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
+                    <i class="fa-regular fa-calendar-days w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Calendario</span>
+                </button>
+                
+                <button id="nav-finanza" onclick="app.switchTab('finanza')" class="admin-only hidden nav-item items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
+                    <i class="fa-solid fa-sack-dollar w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Contabilità</span>
+                </button>
+                <button id="nav-magazzino" onclick="app.switchTab('magazzino')" class="admin-only hidden nav-item items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition text-left group">
+                    <i class="fa-solid fa-boxes-stacked w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="font-medium">Magazzino</span>
+                </button>
+            </nav>
+
+            <div class="p-6 border-t border-white/10 bg-black/10">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-bdb-yellow to-yellow-300 text-bdb-blue-dark flex items-center justify-center font-bold text-lg shadow-inner shrink-0" id="userInitial">U</div>
+                    <div class="overflow-hidden">
+                        <p class="text-sm font-bold truncate text-white" id="userEmailDisplay">email@email.com</p>
+                        <p class="text-xs text-bdb-yellow font-medium uppercase" id="userRoleDisplay">Atleta</p>
+                    </div>
+                </div>
+                <button onclick="app.logout()" class="w-full py-2.5 bg-white/5 hover:bg-red-500/20 hover:text-red-300 rounded-xl text-sm font-medium transition-all border border-white/10">
+                    <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Disconnetti
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
+            <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
+                <div class="flex items-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg" class="w-8 h-8 rounded-full border border-bdb-yellow object-cover">
+                    <span class="font-extrabold text-bdb-blue text-lg">Gestione BDB</span>
+                </div>
+                <button onclick="app.toggleMenu(true)" class="text-bdb-blue p-2 bg-blue-50 rounded-lg"><i class="fa-solid fa-bars text-xl"></i></button>
+            </header>
+
+            <main id="views-container" class="flex-1 overflow-y-auto relative bg-bdb-gray">
+                
+                <!-- VIEW: DASHBOARD -->
+                <div id="view-dashboard" class="view-section active p-4 md:p-8">
+                    <header class="mb-8 mt-2 md:mt-0">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight" id="greetingTitle">Buongiorno!</h2>
+                        <p class="text-gray-500 text-sm md:text-base">Benvenuto nella bacheca ufficiale dell'associazione.</p>
+                    </header>
+                    
+                    <div id="adminStats" class="admin-only hidden grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                            <div><p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Tesserati Attivi</p><h3 class="text-2xl font-extrabold text-gray-800" id="dash-tesserati">0</h3></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-file-waveform"></i></div>
+                            <div><p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Certificati Scaduti</p><h3 class="text-2xl font-extrabold text-gray-800" id="dash-scaduti">0</h3></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl"><i class="fa-solid fa-piggy-bank"></i></div>
+                            <div><p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Crediti aperti</p><h3 class="text-2xl font-extrabold text-gray-800" id="dash-crediti">€ 0</h3></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+                        <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Avvisi Direttivo</h3>
+                            <button onclick="app.promptNews()" class="admin-only hidden text-sm bg-bdb-blue text-white px-4 py-2 rounded-xl font-bold hover:bg-bdb-blue-dark transition shadow-md"><i class="fa-solid fa-plus md:hidden"></i><span class="hidden md:inline">Crea Avviso</span></button>
+                        </div>
+                        <div id="newsFeed" class="p-5 space-y-4 max-h-[500px] overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <!-- VIEW: ANAGRAFICA -->
+                <div id="view-anagrafica" class="view-section p-4 md:p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight" id="anagraficaTitle">I Tuoi Fascicoli</h2>
+                            <p class="text-gray-500 text-sm">Gestisci le anagrafiche in totale sicurezza.</p>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <div class="relative flex-grow md:w-64">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-magnifying-glass text-gray-400"></i></div>
+                                <input type="text" id="searchAnagrafica" placeholder="Cerca nome..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-bdb-blue outline-none shadow-sm text-base bg-white" oninput="app.renderAnagrafica()">
+                            </div>
+                            <button onclick="app.openTesseratoModal()" class="bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition shrink-0 flex items-center gap-2 hover:-translate-y-0.5">
+                                <i class="fa-solid fa-user-plus"></i> <span class="hidden md:inline">Nuovo</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto scrollbar-hide">
+                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[600px]">
+                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
+                                    <tr>
+                                        <th class="p-5">Nominativo</th>
+                                        <th class="p-5">Ruolo</th>
+                                        <th class="p-5">Stato Medico</th>
+                                        <th class="p-5 text-center">Docs</th>
+                                        <th class="p-5 text-right">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="anagraficaTableBody" class="divide-y divide-gray-50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: FINANZA -->
+                <div id="view-finanza" class="view-section p-4 md:p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Contabilità & Quote</h2>
+                            <p class="text-gray-500 text-sm">Monitoraggio versamenti e ricevute PDF.</p>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button onclick="app.openQuotaModal()" class="flex-1 md:flex-initial bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                                <i class="fa-solid fa-receipt"></i> Emetti Quota
+                            </button>
+                            <button onclick="app.resetYearlyPayments()" class="bg-red-50 text-red-600 border border-red-200 px-4 py-2.5 rounded-xl font-bold hover:bg-red-100 transition flex items-center gap-2 text-sm" title="Azzera tutti i pagamenti per iniziare il nuovo anno">
+                                <i class="fa-solid fa-rotate-right"></i> Nuovo Anno
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="finanzaStats"></div>
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto scrollbar-hide">
+                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
+                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
+                                    <tr>
+                                        <th class="p-5">Data</th>
+                                        <th class="p-5">Tesserato</th>
+                                        <th class="p-5">Causale</th>
+                                        <th class="p-5 text-right">Totale</th>
+                                        <th class="p-5 text-right">Versato</th>
+                                        <th class="p-5 text-center">Stato</th>
+                                        <th class="p-5 text-right">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="finanzaTableBody" class="divide-y divide-gray-50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: EVENTI -->
+                <div id="view-eventi" class="view-section p-4 md:p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Calendario Appuntamenti</h2>
+                            <p class="text-gray-500 text-sm">Eventi, disponibilità atleti e appello presenze.</p>
+                        </div>
+                        <button onclick="app.openEventoModal()" class="admin-only hidden w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                            <i class="fa-solid fa-calendar-plus"></i> Crea Evento
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
+                </div>
+
+                <!-- VIEW: MAGAZZINO -->
+                <div id="view-magazzino" class="view-section p-4 md:p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Inventario Magazzino</h2>
+                            <p class="text-gray-500 text-sm">Gestione puntuale strumenti, costumi e attrezzatura.</p>
+                        </div>
+                        <button onclick="app.openItemModal()" class="w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                            <i class="fa-solid fa-box-open"></i> Nuovo Articolo
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto scrollbar-hide">
+                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                                <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
+                                    <tr>
+                                        <th class="p-5">Articolo</th>
+                                        <th class="p-5">Categoria</th>
+                                        <th class="p-5">Dettaglio / Nome / N.</th>
+                                        <th class="p-5 text-center">Quantità</th>
+                                        <th class="p-5 text-right">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="magazzinoTableBody" class="divide-y divide-gray-50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL TESSERATO -->
+    <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
+            <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight" id="modalTesseratoTitle">Nuovo Tesserato</h3>
+                </div>
+                <button onclick="app.closeModal('modalTesserato')" class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-200 transition flex items-center justify-center"><i class="fa-solid fa-times text-lg"></i></button>
+            </div>
+            
+            <div class="flex overflow-x-auto border-b border-gray-100 px-2 md:px-6 shrink-0 bg-white scrollbar-hide">
+                <button onclick="app.switchInnerTab('tab-base')" id="btn-tab-base" class="inner-tab-btn active px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-id-card mr-2 hidden md:inline"></i>Dati Base</button>
+                <button onclick="app.switchInnerTab('tab-medico')" id="btn-tab-medico" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-solid fa-staff-snake mr-2 hidden md:inline"></i>Area Medica</button>
+                <button onclick="app.switchInnerTab('tab-docs')" id="btn-tab-docs" class="inner-tab-btn px-4 py-4 text-sm font-bold text-gray-500 whitespace-nowrap"><i class="fa-regular fa-folder-open mr-2 hidden md:inline"></i>Documenti</button>
+            </div>
+            
+            <div class="p-5 md:p-8 overflow-y-auto flex-grow bg-white">
+                <input type="hidden" id="t_id">
+                
+                <div id="tab-base" class="inner-tab-content active space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Nome e Cognome <span class="text-red-500">*</span></label>
+                            <input type="text" id="t_nome" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Es. Mario Rossi">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Data di Nascita <span class="text-red-500">*</span></label>
+                            <input type="date" id="t_nascita" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" onchange="app.checkMinorenne()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Ruolo</label>
+                            <select id="t_ruolo" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition cursor-pointer">
+                                <option value="Atleta">Atleta (Generico)</option>
+                                <option value="Sbandieratore">Sbandieratore</option>
+                                <option value="Musico (Tamburino)">Musico (Tamburino)</option>
+                                <option value="Musico (Chiarina)">Musico (Chiarina)</option>
+                                <option value="Maestro/Istruttore">Maestro/Istruttore</option>
+                                <option value="Socio Sostenitore">Socio Sostenitore</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Cellulare</label>
+                            <input type="tel" id="t_tel" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Es. 333 1234567">
+                        </div>
+                        <div class="md:col-span-2" id="boxGenitore">
+                            <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Genitore / Tutore Legale <span class="text-orange-500" id="avvisoMinore">(Obbligatorio se minorenne)</span></label>
+                            <input type="text" id="t_genitore" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Nome e Cognome del genitore">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-medico" class="inner-tab-content space-y-5">
+                    <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
+                        <h4 class="font-bold text-bdb-blue mb-4 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Certificato Medico Agonistico</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Data Emissione</label>
+                                <input type="date" id="t_cert_emiss" class="w-full p-3.5 border border-blue-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-red-500 mb-1.5 uppercase tracking-wider">Data di Scadenza</label>
+                                <input type="date" id="t_cert_scad" class="w-full p-3.5 border border-red-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-red-400 transition">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Note Mediche Vitali</label>
+                        <textarea id="t_note_mediche" rows="3" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Allergie, problemi cardiaci, asma..."></textarea>
+                    </div>
+                    <div class="pt-2">
+                        <label class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition">
+                            <input type="checkbox" id="t_flag_medico" class="mt-1 w-5 h-5 text-bdb-blue rounded border-gray-300 focus:ring-bdb-blue">
+                            <span class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                Dichiaro sotto la mia responsabilità (o in qualità di genitore/tutore legale per i minori) che i dati e le informazioni mediche fornite sono veritiere e che l'atleta è in possesso di regolare certificato medico agonistico in corso di validità. <span class="text-red-500">*</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="tab-docs" class="inner-tab-content space-y-4">
+                    <div class="flex justify-between items-center mb-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div>
+                            <p class="font-bold text-gray-800">Modello Privacy BDB</p>
+                            <p class="text-xs text-gray-500">Documento ufficiale da scaricare e firmare.</p>
+                        </div>
+                        <a href="https://www.borgodonbosco.com/uploads/1789735400_Modello_privacy.pdf" target="_blank" class="text-bdb-blue font-bold text-sm bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition shadow-sm"><i class="fa-solid fa-download mr-1"></i> Scarica PDF</a>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue transition group">
+                            <label class="flex items-center gap-3 flex-grow cursor-pointer">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-privacy"><i class="fa-solid fa-upload"></i></div>
+                                <div><p class="font-bold text-sm text-gray-800" id="name-privacy">Carica Modello Privacy Firmato</p><p class="text-xs text-gray-400">Clicca per selezionare PDF o foto</p></div>
+                                <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'privacy')">
+                                <input type="hidden" id="t_doc_privacy" value="">
+                            </label>
+                            <button type="button" id="view-privacy" onclick="app.viewDoc('privacy')" class="hidden text-xs bg-blue-50 text-bdb-blue font-bold px-3 py-1.5 rounded-lg ml-2 hover:bg-blue-100"><i class="fa-solid fa-eye"></i> Vedi</button>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue transition group">
+                            <label class="flex items-center gap-3 flex-grow cursor-pointer">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-ci"><i class="fa-solid fa-upload"></i></div>
+                                <div><p class="font-bold text-sm text-gray-800" id="name-ci">Carica Carta di Identità</p><p class="text-xs text-gray-400">Clicca per selezionare</p></div>
+                                <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'ci')">
+                                <input type="hidden" id="t_doc_ci" value="">
+                            </label>
+                            <button type="button" id="view-ci" onclick="app.viewDoc('ci')" class="hidden text-xs bg-blue-50 text-bdb-blue font-bold px-3 py-1.5 rounded-lg ml-2 hover:bg-blue-100"><i class="fa-solid fa-eye"></i> Vedi</button>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue transition group">
+                            <label class="flex items-center gap-3 flex-grow cursor-pointer">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-cf"><i class="fa-solid fa-upload"></i></div>
+                                <div><p class="font-bold text-sm text-gray-800" id="name-cf">Carica Tessera Sanitaria</p><p class="text-xs text-gray-400">Clicca per selezionare</p></div>
+                                <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'cf')">
+                                <input type="hidden" id="t_doc_cf" value="">
+                            </label>
+                            <button type="button" id="view-cf" onclick="app.viewDoc('cf')" class="hidden text-xs bg-blue-50 text-bdb-blue font-bold px-3 py-1.5 rounded-lg ml-2 hover:bg-blue-100"><i class="fa-solid fa-eye"></i> Vedi</button>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition">
+                            <input type="checkbox" id="t_flag_docs" class="mt-1 w-5 h-5 text-bdb-blue rounded border-gray-300 focus:ring-bdb-blue">
+                            <span class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                Confermo di aver allegato copia conforme e leggibile del Modello Privacy firmato, della Carta di Identità e della Tessera Sanitaria. <span class="text-red-500">*</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3 shrink-0 bg-gray-50 rounded-b-[2rem]">
+                <button type="button" onclick="app.closeModal('modalTesserato')" class="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button>
+                <button type="button" id="btnSaveTesserato" onclick="app.saveTesserato()" class="px-8 py-3 rounded-xl bg-bdb-blue text-white font-extrabold hover:bg-bdb-blue-dark shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">Salva Fascicolo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL QUOTA -->
+    <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Emetti Quota</h3><button type="button" onclick="app.closeModal('modalQuota')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 space-y-5 bg-gray-50">
+                <input type="hidden" id="q_id">
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tesserato <span class="text-red-500">*</span></label><select id="q_tesserato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"></select></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Causale e Importo <span class="text-red-500">*</span></label>
+                    <select id="q_causale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" onchange="app.autoFillQuotaAmount()">
+                        <option value="Comitato 50€">Comitato 50€</option>
+                        <option value="Fisb + Comitato 100€">Fisb + Comitato 100€</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Totale Dovuto <span class="text-red-500">*</span></label><input type="number" id="q_totale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="50" readonly></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Acconto Versato</label><input type="number" id="q_versato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="0"></div>
+                </div>
+            </div>
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button type="button" onclick="app.closeModal('modalQuota')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button type="button" onclick="app.saveQuota()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Registra</button></div>
+        </div>
+    </div>
+    
+    <!-- MODAL EVENTO -->
+    <div id="modalEvento" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Nuovo Evento</h3><button type="button" onclick="app.closeModal('modalEvento')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 space-y-5 bg-gray-50">
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Titolo Evento <span class="text-red-500">*</span></label><input type="text" id="e_titolo" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" placeholder="Es. Gara Nazionale / Prova Tamburi"></div>
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Data <span class="text-red-500">*</span></label><input type="date" id="e_data" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"></div><div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Ora</label><input type="time" id="e_ora" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"></div></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tipologia</label><select id="e_tipo" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white"><option value="Allenamento">Allenamento</option><option value="Gara/Competizione">Gara / Competizione</option><option value="Esibizione/Sfilata">Esibizione / Sfilata</option><option value="Sociale">Evento Sociale / Cena</option></select></div>
+                <div>
+                    <label class="block text-xs font-bold text-bdb-blue uppercase tracking-wider mb-2">Gruppo Destinatario <span class="text-red-500">*</span></label>
+                    <select id="e_gruppo" class="w-full p-3.5 border-2 border-blue-200 bg-blue-50 rounded-xl text-base font-extrabold text-bdb-blue outline-none focus:ring-2 focus:ring-bdb-blue cursor-pointer transition shadow-sm">
+                        <option value="Tutti">Tutti (Tamburi, Chiarine e Sbandieratori)</option>
+                        <option value="Sbandieratori">Solo Sbandieratori</option>
+                        <option value="Tamburi">Solo Tamburi</option>
+                        <option value="Chiarine">Solo Chiarine</option>
+                        <option value="Musici">Gruppo Musici (Tamburi + Chiarine)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button type="button" onclick="app.closeModal('modalEvento')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button type="button" onclick="app.saveEvento()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Crea Evento</button></div>
+        </div>
+    </div>
+    
+    <!-- MODAL MAGAZZINO -->
+    <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 space-y-5 bg-gray-50">
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nome Articolo <span class="text-red-500">*</span></label><input type="text" id="i_nome" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" placeholder="Es. Tamburo Principale"></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Categoria</label>
+                    <select id="i_cat" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" onchange="app.toggleItemFields()">
+                        <option value="Tamburi">Tamburi</option>
+                        <option value="Chiarine">Chiarine</option>
+                        <option value="Bandiere">Bandiere</option>
+                        <option value="Stivali">Stivali</option>
+                        <option value="Cappelli">Cappelli</option>
+                        <option value="Camicie">Camicie</option>
+                        <option value="Ponchi">Ponchi</option>
+                        <option value="Mantelli">Mantelli</option>
+                    </select>
+                </div>
+                <div id="field-desc" class="block"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Descrizione</label><input type="text" id="i_desc" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Specifiche tecniche..."></div>
+                <div id="field-num" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Numero Stivale</label><input type="text" id="i_num" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Es. 42"></div>
+                <div id="field-prop" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assegnato A (Nome)</label><input type="text" id="i_prop" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Nome proprietario..."></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quantità <span class="text-red-500">*</span></label><input type="number" id="i_tot" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="1" min="1"></div>
+            </div>
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button type="button" onclick="app.closeModal('modalItem')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button type="button" onclick="app.saveItem()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Salva</button></div>
+        </div>
+    </div>
+
+    <!-- OVERLAY APPELLO -->
+    <div id="modalAppello" class="fixed inset-0 bg-gray-50 z-[110] hidden flex flex-col transform transition-transform duration-300 translate-y-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+        <div class="bg-bdb-blue text-white flex flex-col shrink-0 shadow-xl relative z-10 rounded-b-3xl">
+            <div class="p-5 flex items-center justify-between">
+                <button type="button" onclick="app.closeAppello()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition"><i class="fa-solid fa-chevron-down text-lg"></i></button>
+                <div class="text-center"><h3 class="font-extrabold text-xl leading-tight" id="appelloTitle">Appello</h3><p class="text-xs text-bdb-yellow font-bold uppercase tracking-widest mt-1" id="appelloDate">Data</p></div>
+                <div class="w-10"></div>
+            </div>
+            <div class="px-6 pb-6 text-center">
+                <p class="text-xs text-white/60 mb-2">Atleti filtrati in base alla categoria dell'evento:</p>
+                <span class="bg-white/20 px-4 py-1.5 rounded-full text-sm font-extrabold backdrop-blur-sm shadow-inner" id="appelloGruppo">Gruppo</span>
+            </div>
+        </div>
+        <div class="flex-grow overflow-y-auto p-4 md:p-8 pb-32" id="appelloList"></div>
+        <div class="absolute bottom-[env(safe-area-inset-bottom)] left-0 w-full p-5 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+            <button type="button" onclick="app.terminaAppello()" class="w-full bg-bdb-blue text-white font-extrabold py-4 rounded-2xl shadow-lg hover:bg-bdb-blue-dark text-lg hover:-translate-y-1 transition-transform flex items-center justify-center gap-2">
+                <i class="fa-solid fa-check-double"></i> Salva & Termina Appello
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAUYhZUZ3lUBwISXXcfzLoRt4SVNDFwqr4",
+            authDomain: "testergestionaledb.firebaseapp.com",
+            projectId: "testergestionaledb",
+            storageBucket: "testergestionaledb.firebasestorage.app",
+            messagingSenderId: "803867581296",
+            appId: "1:803867581296:web:ab9296d1d9b0b6598f8db5"
+        };
+
+        const firebaseApp = initializeApp(firebaseConfig);
+        const db = getFirestore(firebaseApp);
+        const auth = getAuth(firebaseApp);
+        const googleProvider = new GoogleAuthProvider();
+        const formatter = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
+
+        const app = {
+            state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [] },
+            _unsubs: [],
+            
+            ui: {
+                toast: (msg, icon='success') => Swal.fire({ toast: true, position: 'top-end', icon, title: msg, showConfirmButton: false, timer: 3000, timerProgressBar: true }),
+                error: (title, msg) => Swal.fire({ icon: 'error', title: title, text: msg, confirmButtonColor: '#0033A0', customClass: { popup: 'rounded-[1.5rem]' } }),
+                confirm: (title, text) => Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#9ca3af', confirmButtonText: 'Sì, procedi!', cancelButtonText: 'Annulla' }),
+                empty: (icon, text) => `<div class="flex flex-col items-center justify-center py-16 text-gray-300"><i class="fa-solid ${icon} text-6xl mb-5 opacity-40"></i><p class="font-bold text-gray-400 text-lg">${text}</p></div>`
+            },
+
+            esc: (s) => String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
+
+            init: function() {
+                // Attach event listeners safely after DOM is ready
+                document.getElementById('emailLoginBtn').addEventListener('click', () => this.login());
+                document.getElementById('googleLoginBtn').addEventListener('click', () => this.googleLogin());
+                document.getElementById('resetPassBtn').addEventListener('click', () => this.resetPassword());
+                document.getElementById('registerBtn').addEventListener('click', () => this.register());
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        this.state.user = user;
+                        const adminEmails = ['lollinorusso@icloud.com', 'segreteria@borgodonbosco.com'];
+                        this.state.isAdmin = adminEmails.includes((user.email || '').toLowerCase());
+                        
+                        document.getElementById('authScreen').classList.add('hidden');
+                        document.getElementById('mainApp').classList.remove('hidden');
+                        
+                        document.getElementById('userEmailDisplay').innerText = user.email || user.displayName || 'Utente BDB';
+                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Admin / Direttivo' : 'Atleta / Socio';
+                        document.getElementById('userInitial').innerText = (user.email || user.displayName || 'U').charAt(0).toUpperCase();
+                        
+                        this.setGreeting();
+
+                        const adminEls = document.querySelectorAll('.admin-only');
+                        if (this.state.isAdmin) {
+                            adminEls.forEach(el => el.classList.remove('hidden'));
+                            document.getElementById('nav-finanza').classList.add('flex');
+                            document.getElementById('nav-magazzino').classList.add('flex');
+                            document.getElementById('anagraficaTitle').innerText = "Anagrafica Completa";
+                            document.getElementById('labelAnagraficaNav').innerText = "Tutti i Fascicoli";
+                        } else {
+                            adminEls.forEach(el => el.classList.add('hidden'));
+                            document.getElementById('nav-finanza').classList.remove('flex');
+                            document.getElementById('nav-magazzino').classList.remove('flex');
+                            document.getElementById('anagraficaTitle').innerText = "Il Mio Fascicolo";
+                            document.getElementById('labelAnagraficaNav').innerText = "Il Mio Fascicolo";
+                        }
+
+                        this.loadData();
+                        this.ui.toast("Accesso effettuato correttamente!");
+                    } else {
+                        this._unsubs.forEach(fn => fn());
+                        this._unsubs = [];
+                        this.state.user = null; this.state.isAdmin = false;
+                        document.getElementById('authScreen').classList.remove('hidden');
+                        document.getElementById('mainApp').classList.add('hidden');
+                        document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                        document.getElementById('nav-finanza').classList.remove('flex');
+                        document.getElementById('nav-magazzino').classList.remove('flex');
+                        document.getElementById('authEmail').value = '';
+                        document.getElementById('authPassword').value = '';
+                    }
+                });
+            },
+
+            toggleMenu: function(forceOpen) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobileOverlay');
+                if(forceOpen === true || sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden');
+                }
+            },
+            
+            setGreeting: function() {
+                const hour = new Date().getHours();
+                let saluto = 'Buongiorno'; if(hour >= 13 && hour < 18) saluto = 'Buon pomeriggio'; if(hour >= 18) saluto = 'Buonasera';
+                const nome = (this.state.user.displayName || this.state.user.email || 'Utente').split('@')[0];
+                document.getElementById('greetingTitle').innerText = `${saluto}, ${nome.charAt(0).toUpperCase() + nome.slice(1)}!`;
+            },
+
+            login: function() { 
+                const e = document.getElementById('authEmail').value;
+                const p = document.getElementById('authPassword').value; 
+                if(!e || !p) return this.ui.error("Dati mancanti", "Inserisci email e password."); 
+                signInWithEmailAndPassword(auth, e, p).catch(err => this.ui.error("Accesso Negato", "Credenziali errate o utente non trovato.")); 
+            },
+
+            register: function() { 
+                const e = document.getElementById('authEmail').value;
+                const p = document.getElementById('authPassword').value; 
+                if(!e || !p) return this.ui.error("Dati mancanti", "Inserisci email e password."); 
+                createUserWithEmailAndPassword(auth, e, p).catch(err => this.ui.error("Errore", err.message)); 
+            },
+
+            googleLogin: function() { 
+                signInWithPopup(auth, googleProvider).catch(err => { 
+                    if(err.code !== 'auth/popup-closed-by-user') this.ui.error("Errore Google", err.message); 
+                }); 
+            },
+
+            resetPassword: function() { 
+                const e = document.getElementById('authEmail').value; 
+                if(!e) return this.ui.error("Recupero Password", "Inserisci prima la tua email."); 
+                sendPasswordResetEmail(auth, e).then(() => this.ui.toast("Email inviata!")).catch(err => this.ui.error("Errore", err.message)); 
+            },
+
+            logout: function() { signOut(auth); },
+
+            switchTab: function(tabId) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                const btn = document.querySelector(`button[onclick="app.switchTab('${tabId}')"]`);
+                if(btn) btn.classList.add('active');
+                if(window.innerWidth < 768) this.toggleMenu(false);
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('view-' + tabId).classList.add('active');
+            },
+            switchInnerTab: function(tabId) {
+                document.querySelectorAll('.inner-tab-content, .inner-tab-btn').forEach(el => el.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                document.getElementById('btn-' + tabId).classList.add('active');
+            },
+            closeModal: (id) => document.getElementById(id).classList.add('hidden'),
+
+            loadData: function() {
+                this._unsubs.forEach(fn => fn());
+                this._unsubs = [];
+                const qAtleti = this.state.isAdmin ? query(collection(db, "fascicoli")) : query(collection(db, "fascicoli"), where("ownerUid", "==", this.state.user.uid));
+                this._unsubs.push(onSnapshot(qAtleti, (snap) => {
+                    this.state.atleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    this.state.atleti.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
+                    this.renderAnagrafica(); 
+                    if(this.state.isAdmin) {
+                        this.updateDashboardStats();
+                        this.updateQuotaDropdown();
+                    }
+                }, (err) => this.ui.error("Errore Dati", "Impossibile caricare i fascicoli: " + err.message)));
+
+                this._unsubs.push(onSnapshot(query(collection(db, "news"), orderBy("date", "desc")), (snap) => {
+                    this.state.news = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderNews();
+                }, (err) => this.ui.error("Errore Dati", "Impossibile caricare gli avvisi: " + err.message)));
+                
+                this._unsubs.push(onSnapshot(query(collection(db, "eventi"), orderBy("data", "desc")), (snap) => {
+                    this.state.eventi = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderEventi();
+                }, (err) => this.ui.error("Errore Dati", "Impossibile caricare gli eventi: " + err.message)));
+
+                this._unsubs.push(onSnapshot(collection(db, "finanza"), (snap) => { 
+                    this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+                    if(this.state.isAdmin) {
+                        this.renderFinanza(); 
+                    }
+                    this.updateQuotaDropdown();
+                }, (err) => { if(this.state.isAdmin) this.ui.error("Errore Dati", "Impossibile caricare la contabilità: " + err.message); }));
+
+                if(this.state.isAdmin) {
+                    this._unsubs.push(onSnapshot(collection(db, "magazzino"), (snap) => { this.state.magazzino = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderMagazzino(); }, (err) => this.ui.error("Errore Dati", "Impossibile caricare il magazzino: " + err.message)));
+                }
+            },
+
+            updateDashboardStats: function() {
+                document.getElementById('dash-tesserati').innerText = this.state.atleti.length;
+                let scaduti = 0; const oggi = new Date(); oggi.setHours(0,0,0,0);
+                this.state.atleti.forEach(a => { if(a.cert_scad && new Date(a.cert_scad) < oggi) scaduti++; });
+                document.getElementById('dash-scaduti').innerText = scaduti;
+            },
+            
+            formatDateNice: function(isoString) {
+                const date = new Date(isoString);
+                const today = new Date();
+                if(date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) return "Oggi";
+                return date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
+            },
+
+            renderNews: function() {
+                const c = document.getElementById('newsFeed');
+                if(!this.state.news.length) return c.innerHTML = this.ui.empty('fa-wind', 'Nessuna comunicazione in bacheca.');
+                c.innerHTML = this.state.news.map(n => `
+                    <div class="border-l-4 border-bdb-yellow pl-5 py-4 bg-white rounded-r-2xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-extrabold text-gray-800 text-lg">${this.esc(n.title)}</h4>
+                            ${this.state.isAdmin ? `<button onclick="app.deleteDocRef('news', '${n.id}')" class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition p-1"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
+                        <p class="text-gray-600 mt-2 leading-relaxed text-sm">${this.esc(n.content)}</p>
+                        <span class="text-[10px] font-extrabold text-gray-400 mt-3 block uppercase tracking-widest"><i class="fa-regular fa-clock mr-1"></i> ${this.formatDateNice(n.date)}</span>
+                    </div>`).join('');
+            },
+            
+            promptNews: async function() {
+                const { value: formValues } = await Swal.fire({ 
+                    title: 'Crea Avviso', 
+                    html: '<input id="swal-input1" class="swal2-input font-bold" placeholder="Titolo"><textarea id="swal-input2" class="swal2-textarea" placeholder="Testo..."></textarea>', 
+                    focusConfirm: false, confirmButtonColor: '#0033A0', confirmButtonText: 'Pubblica',
+                    preConfirm: () => {
+                        const t = document.getElementById('swal-input1').value;
+                        if(!t) Swal.showValidationMessage("Il titolo è obbligatorio");
+                        return [t, document.getElementById('swal-input2').value];
+                    } 
+                });
+                if (formValues && formValues[0]) { await addDoc(collection(db, "news"), { title: formValues[0], content: formValues[1], date: new Date().toISOString() }); this.ui.toast("Avviso Pubblicato!"); }
+            },
+            
+            deleteDocRef: function(colName, id) {
+                this.ui.confirm("Sei sicuro?", "Vuoi eliminare questo elemento?").then(async (r) => {
+                    if(r.isConfirmed) { await deleteDoc(doc(db, colName, id)); this.ui.toast("Eliminato con successo."); }
+                });
+            },
+
+            checkMinorenne: function() {
+                const nascita = document.getElementById('t_nascita').value;
+                if(!nascita) return;
+                const dob = new Date(nascita);
+                const oggi = new Date();
+                let eta = oggi.getFullYear() - dob.getFullYear();
+                const m = oggi.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && oggi.getDate() < dob.getDate())) eta--;
+                
+                const box = document.getElementById('boxGenitore');
+                const avviso = document.getElementById('avvisoMinore');
+                if(eta < 18) {
+                    avviso.innerText = "(Obbligatorio - Atleta Minorenne)";
+                    box.classList.add('ring-2', 'ring-orange-200', 'p-3', 'rounded-xl', 'bg-orange-50/50');
+                } else {
+                    avviso.innerText = "(Facoltativo)";
+                    box.classList.remove('ring-2', 'ring-orange-200', 'p-3', 'rounded-xl', 'bg-orange-50/50');
+                }
+            },
+
+            renderAnagrafica: function() {
+                const tbody = document.getElementById('anagraficaTableBody');
+                const search = document.getElementById('searchAnagrafica').value.toLowerCase();
+                const filtered = this.state.atleti.filter(a => (a.nome || '').toLowerCase().includes(search));
+                
+                if(!filtered.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-folder-open', 'Nessun fascicolo trovato.')}</td></tr>`;
+
+                const oggi = new Date(); oggi.setHours(0,0,0,0);
+                tbody.innerHTML = filtered.map(a => {
+                    let certStatus = `<span class="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold">Assente</span>`;
+                    let whatsappBtn = '';
+
+                    if(a.cert_scad) {
+                        const diff = Math.ceil((new Date(a.cert_scad) - oggi) / (1000 * 60 * 60 * 24));
+                        if(diff < 0) {
+                            certStatus = `<span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-red-100">Scaduto</span>`;
+                            if(this.state.isAdmin && a.tel) {
+                                const msg = encodeURIComponent(`Ciao ${a.nome}, ti ricordiamo che il certificato medico per Borgo Don Bosco risulta SCADUTO. Ti chiediamo di provvedere al rinnovo al più presto. Grazie!`);
+                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp Scadenza"><i class="fa-brands fa-whatsapp text-sm"></i> Sollecita</a>`;
+                            }
+                        } else if(diff <= 30) {
+                            certStatus = `<span class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-orange-100">${diff} gg</span>`;
+                            if(this.state.isAdmin && a.tel) {
+                                const msg = encodeURIComponent(`Ciao ${a.nome}, ti ricordiamo che il certificato medico per Borgo Don Bosco scadrà tra ${diff} giorni (${a.cert_scad}). Ti chiediamo di provvedere al rinnovo. Grazie!`);
+                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp Scadenza"><i class="fa-brands fa-whatsapp text-sm"></i> Sollecita</a>`;
+                            }
+                        } else {
+                            certStatus = `<span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-emerald-100">Valido</span>`;
+                        }
+                    }
+                    
+                    const docsHTML = (a.doc_privacy && a.doc_ci && a.doc_cf) ? `<i class="fa-solid fa-circle-check text-emerald-500 text-xl" title="Completo"></i>` : `<i class="fa-solid fa-circle-exclamation text-orange-400 text-xl" title="Documenti mancanti"></i>`;
+                    
+                    return `
+                        <tr class="cursor-pointer group" onclick="app.editTesserato('${a.id}')">
+                            <td class="p-5"><div class="font-extrabold text-gray-800 text-base">${this.esc(a.nome)}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${this.esc(a.nascita)}</div></td>
+                            <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${this.esc(a.ruolo || 'Atleta')}</span></td>
+                            <td class="p-5 flex items-center">${certStatus} ${whatsappBtn}</td>
+                            <td class="p-5 text-center">${docsHTML}</td>
+                            <td class="p-5 text-right">
+                                <button type="button" class="text-gray-400 hover:text-bdb-blue p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid fa-pen"></i></button>
+                                ${this.state.isAdmin ? `<button type="button" class="text-gray-400 hover:text-red-500 p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition ml-2" onclick="event.stopPropagation(); app.deleteDocRef('fascicoli', '${a.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            </td>
+                        </tr>`;
+                }).join('');
+            },
+            
+            openTesseratoModal: function() {
+                document.getElementById('t_id').value = '';
+                document.querySelectorAll('#modalTesserato input:not([type=file]):not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
+                document.querySelectorAll('#modalTesserato input[type=checkbox]').forEach(el => el.checked = false);
+                document.getElementById('t_ruolo').value = 'Atleta';
+                document.getElementById('boxGenitore').classList.remove('ring-2', 'ring-orange-200', 'p-3', 'rounded-xl', 'bg-orange-50/50');
+                document.getElementById('avvisoMinore').innerText = '(Obbligatorio se minorenne)';
+                ['privacy','ci','cf'].forEach(k => { 
+                    document.getElementById('t_doc_'+k).value = ''; 
+                    document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-upload"></i>'; 
+                    document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 transition"; 
+                    document.getElementById('name-'+k).innerText = `Carica ${k.toUpperCase()}`;
+                    document.getElementById('view-'+k).classList.add('hidden');
+                });
+                document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
+                this.switchInnerTab('tab-base'); 
+                document.getElementById('modalTesserato').classList.remove('hidden');
+            },
+            
+            editTesserato: function(id) {
+                const a = this.state.atleti.find(x => x.id === id); if(!a) return;
+                document.getElementById('t_id').value = a.id;
+                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
+                document.getElementById('t_flag_medico').checked = !!a.flag_medico;
+                document.getElementById('t_flag_docs').checked = !!a.flag_docs;
+
+                ['privacy','ci','cf'].forEach(k => {
+                    const val = a['doc_'+k];
+                    document.getElementById('t_doc_'+k).value = val || '';
+                    if(val) {
+                        document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-check"></i>';
+                        document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition";
+                        document.getElementById('name-'+k).innerText = `Documento ${k.toUpperCase()} caricato`;
+                        document.getElementById('view-'+k).classList.remove('hidden');
+                    } else {
+                        document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-upload"></i>';
+                        document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center transition";
+                        document.getElementById('name-'+k).innerText = `Carica ${k.toUpperCase()}`;
+                        document.getElementById('view-'+k).classList.add('hidden');
+                    }
+                });
+                document.getElementById('modalTesseratoTitle').innerText = a.nome || 'Modifica Fascicolo';
+                this.checkMinorenne();
+                this.switchInnerTab('tab-base'); 
+                document.getElementById('modalTesserato').classList.remove('hidden');
+            },
+            
+            saveTesserato: async function() {
+                const id = document.getElementById('t_id').value;
+                const d = {};
+                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => d[k] = document.getElementById('t_'+k).value);
+                d.flag_medico = document.getElementById('t_flag_medico').checked;
+                d.flag_docs = document.getElementById('t_flag_docs').checked;
+                ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value);
+                
+                if(!d.nome || d.nome.trim() === '') return this.ui.error("Attenzione", "Il campo Nome e Cognome è obbligatorio.");
+                if(!d.nascita) return this.ui.error("Attenzione", "La Data di Nascita è obbligatoria.");
+                if(!d.flag_medico) return this.ui.error("Attenzione", "Devi confermare la veridicità dei dati medici con l'apposito flag.");
+                if(!d.flag_docs) return this.ui.error("Attenzione", "Devi confermare di aver allegato i documenti richiesti.");
+                
+                try {
+                    if(id) { await updateDoc(doc(db, "fascicoli", id), d); }
+                    else { d.ownerUid = this.state.user.uid; await addDoc(collection(db, "fascicoli"), d); }
+                    this.closeModal('modalTesserato'); 
+                    this.ui.toast("Fascicolo salvato con successo!");
+                } catch(err) { this.ui.error("Errore", err.message); }
+            },
+            
+            handleFileUpload: function(input, type) {
+                if(input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const MAX_SIZE = 700 * 1024;
+                    if(file.size > MAX_SIZE) {
+                        input.value = '';
+                        return this.ui.error("File troppo grande", "Il file selezionato supera 700KB. Comprimi il PDF/foto o scegline uno più leggero prima di caricarlo.");
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const base64String = e.target.result;
+                        document.getElementById('t_doc_'+type).value = base64String;
+                        document.getElementById('icon-'+type).innerHTML = '<i class="fa-solid fa-check"></i>';
+                        document.getElementById('icon-'+type).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition scale-110";
+                        document.getElementById('name-'+type).innerText = "✅ " + file.name.substring(0, 20);
+                        document.getElementById('view-'+type).classList.remove('hidden');
+                        setTimeout(() => document.getElementById('icon-'+type).classList.remove('scale-110'), 200);
+                        this.ui.toast("Documento acquisito!");
+                    };
+                    reader.onerror = () => this.ui.error("Errore Lettura", "Impossibile leggere il file selezionato.");
+                    reader.readAsDataURL(file);
+                }
+            },
+
+            viewDoc: function(type) {
+                const dataUrl = document.getElementById('t_doc_'+type).value;
+                if(!dataUrl) return;
+                const win = window.open();
+                if(!win) return this.ui.error("Popup bloccato", "Il browser ha bloccato l'apertura del documento. Consenti i popup per questo sito e riprova.");
+                win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
+            },
+
+            updateQuotaDropdown: function() {
+                const select = document.getElementById('q_tesserato');
+                if(!select) return;
+                const pagatiIds = new Set(this.state.quote.filter(q => Number(q.versato) >= Number(q.totale)).map(q => q.tesseratoId));
+                const disponibili = this.state.atleti.filter(a => !pagatiIds.has(a.id));
+                select.innerHTML = `<option value="">-- Seleziona --</option>` + disponibili.map(a => `<option value="${a.id}">${a.nome} (${a.ruolo || 'Atleta'})</option>`).join('');
+            },
+
+            renderFinanza: function() {
+                const tbody = document.getElementById('finanzaTableBody'); let prev = 0, inc = 0;
+                if(!this.state.quote.length) tbody.innerHTML = `<tr><td colspan="7">${this.ui.empty('fa-wallet', 'Nessuna quota emessa.')}</td></tr>`;
+                else {
+                    tbody.innerHTML = this.state.quote.map(q => {
+                        const t = this.state.atleti.find(a => a.id === q.tesseratoId);
+                        const diff = Number(q.totale) - Number(q.versato);
+                        const isSaldato = diff <= 0;
+                        prev += Number(q.totale); inc += Number(q.versato);
+                        return `<tr>
+                            <td class="p-5 text-gray-500">${new Date(q.dataCreazione).toLocaleDateString()}</td>
+                            <td class="p-5 font-extrabold text-gray-800">${t ? this.esc(t.nome) : 'Rimosso'}</td>
+                            <td class="p-5 text-gray-600">${this.esc(q.causale)}</td>
+                            <td class="p-5 text-right font-bold text-gray-400">${formatter.format(q.totale)}</td>
+                            <td class="p-5 text-right font-extrabold text-bdb-blue">${formatter.format(q.versato)}</td>
+                            <td class="p-5 text-center">${isSaldato ? '<span class="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-xs font-bold">Saldato</span>' : '<span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-xs font-bold">Da saldare</span>'}</td>
+                            <td class="p-5 text-right flex justify-end gap-2">
+                                ${!isSaldato ? `<button type="button" class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition" onclick="app.aggiungiAcconto('${q.id}', ${diff})">Incassa</button>` : ''}
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border" onclick="app.generaRicevutaPDF('${t?t.nome:'Sconosciuto'}', '${q.causale}', ${q.versato}, ${q.totale})" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </td></tr>`;
+                    }).join('');
+                }
+                document.getElementById('dash-crediti').innerText = formatter.format(prev - inc);
+                document.getElementById('finanzaStats').innerHTML = `
+                    <div class="bg-white p-6 rounded-3xl shadow-soft"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Totale Previsto</p><h3 class="text-3xl font-extrabold text-gray-800">${formatter.format(prev)}</h3></div>
+                    <div class="bg-white p-6 rounded-3xl shadow-soft border-l-4 border-emerald-400"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Incassato Reale</p><h3 class="text-3xl font-extrabold text-emerald-500">${formatter.format(inc)}</h3></div>
+                    <div class="bg-white p-6 rounded-3xl shadow-soft border-l-4 border-orange-400"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Crediti Aperti</p><h3 class="text-3xl font-extrabold text-orange-500">${formatter.format(prev - inc)}</h3></div>`;
+            },
+            
+            openQuotaModal: () => { 
+                document.getElementById('q_id').value=''; 
+                document.getElementById('q_causale').value='Comitato 50€'; 
+                document.getElementById('q_totale').value='50'; 
+                document.getElementById('q_versato').value='0'; 
+                app.updateQuotaDropdown();
+                document.getElementById('modalQuota').classList.remove('hidden'); 
+            },
+            autoFillQuotaAmount: () => {
+                const c = document.getElementById('q_causale').value;
+                document.getElementById('q_totale').value = c.includes('100') ? '100' : '50';
+            },
+            saveQuota: async function() {
+                const t = document.getElementById('q_tesserato').value, c = document.getElementById('q_causale').value, tot = document.getElementById('q_totale').value, v = document.getElementById('q_versato').value;
+                if(!t || !tot || tot <= 0) return this.ui.error("Errore", "Seleziona un tesserato e verifica i campi obbligatori.");
+                await addDoc(collection(db, "finanza"), { tesseratoId: t, causale: c, totale: Number(tot), versato: Number(v), dataCreazione: new Date().toISOString() });
+                this.closeModal('modalQuota'); this.ui.toast("Quota emessa!");
+            },
+            
+            aggiungiAcconto: async function(id, rimanente) {
+                const { value: imp } = await Swal.fire({ title: 'Incasso Quota', input: 'number', inputLabel: `Massimo riscuotibile: ${formatter.format(rimanente)}`, showCancelButton: true, confirmButtonColor: '#10b981' });
+                if(imp && Number(imp) > 0 && Number(imp) <= rimanente) {
+                    const q = this.state.quote.find(x => x.id === id); 
+                    await updateDoc(doc(db, "finanza", id), { versato: Number(q.versato) + Number(imp) });
+                    this.ui.toast("Incasso registrato!");
+                }
+            },
+
+            resetYearlyPayments: async function() {
+                const r = await this.ui.confirm("Nuovo Anno Associativo", "Vuoi davvero azzerare e cancellare tutti i pagamenti registrati per iniziare un nuovo anno? Questa operazione non è reversibile.");
+                if(r.isConfirmed) {
+                    try {
+                        const snap = await getDocs(collection(db, "finanza"));
+                        const deletions = snap.docs.map(d => deleteDoc(doc(db, "finanza", d.id)));
+                        await Promise.all(deletions);
+                        this.ui.toast("Tutti i pagamenti sono stati azzerati con successo!");
+                    } catch(err) {
+                        this.ui.error("Errore", err.message);
+                    }
+                }
+            },
+            
+            generaRicevutaPDF: function(nome, causale, versato, totale) {
+                if(!window.jspdf) return;
+                const docPdf = new window.jspdf.jsPDF(); 
+                
+                docPdf.setFillColor(0, 51, 160);
+                docPdf.rect(0, 0, 210, 45, 'F');
+                
+                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(22); docPdf.setTextColor(255, 255, 255);
+                docPdf.text("BORGO DON BOSCO APS", 105, 18, { align: "center" }); 
+                docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(255, 228, 94);
+                docPdf.text("Associazione di Promozione Sociale e Sportiva - Asti", 105, 26, { align: "center" }); 
+                docPdf.setFontSize(9); docPdf.setTextColor(240, 240, 240);
+                docPdf.text("Codice Fiscale: 92051490055", 105, 34, { align: "center" });
+
+                docPdf.setFontSize(14); docPdf.setTextColor(0, 51, 160); docPdf.setFont("helvetica", "bold"); 
+                docPdf.text("RICEVUTA QUOTA ASSOCIATIVA / VERSAMENTO", 105, 60, { align: "center" });
+                
+                docPdf.setDrawColor(220, 224, 230);
+                docPdf.setLineWidth(0.5);
+                docPdf.line(20, 68, 190, 68);
+
+                docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal"); 
+                docPdf.text(`Data emissione: ${new Date().toLocaleDateString('it-IT')}`, 20, 80); 
+                
+                docPdf.text("Intestato a:", 20, 95);
+                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0); docPdf.setFontSize(13);
+                docPdf.text(`${nome}`, 50, 95);
+
+                docPdf.setFontSize(11); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(100);
+                docPdf.text("Causale:", 20, 107);
+                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0);
+                docPdf.text(`${causale}`, 50, 107);
+
+                docPdf.setFillColor(248, 250, 252);
+                docPdf.setDrawColor(210, 215, 225);
+                docPdf.roundedRect(20, 122, 170, 45, 4, 4, 'FD');
+                
+                docPdf.setFontSize(10); docPdf.setTextColor(100); docPdf.setFont("helvetica", "bold");
+                docPdf.text("IMPORTO DOVUTO", 35, 137);
+                docPdf.text("IMPORTO VERSATO", 125, 137);
+                
+                docPdf.setFontSize(16); docPdf.setTextColor(120, 120, 120);
+                docPdf.text(formatter.format(totale), 35, 153);
+                docPdf.setFontSize(18); docPdf.setTextColor(0, 51, 160);
+                docPdf.text(formatter.format(versato), 125, 153);
+
+                docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
+                docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 195, { align: "center" });
+                
+                docPdf.text("Il Direttivo / Segreteria", 145, 220);
+                docPdf.setDrawColor(150);
+                docPdf.line(125, 213, 190, 213);
+
+                docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
+            },
+
+            renderEventi: function() {
+                const g = document.getElementById('eventiGrid');
+                if(!this.state.eventi.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', 'Nessun evento in programma.')}</div>`;
+                
+                g.innerHTML = this.state.eventi.map(e => {
+                    const disp = e.disponibilita || {};
+                    let presentCount = 0, absentCount = 0;
+                    Object.values(disp).forEach(v => { if(v==='si') presentCount++; if(v==='no') absentCount++; });
+                    
+                    let userAction = '';
+                    if(!this.state.isAdmin) {
+                        const myStatus = disp[this.state.user.uid];
+                        userAction = `
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">La tua disponibilità</p>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="app.setDisponibilita('${e.id}', 'si')" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all ${myStatus==='si' ? 'bg-emerald-500 text-white shadow-lg scale-105' : 'bg-gray-50 text-gray-500 hover:bg-emerald-50 hover:text-emerald-600'}"><i class="fa-solid fa-check mr-1"></i> Ci sarò</button>
+                                <button type="button" onclick="app.setDisponibilita('${e.id}', 'no')" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all ${myStatus==='no' ? 'bg-red-500 text-white shadow-lg scale-105' : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600'}"><i class="fa-solid fa-xmark mr-1"></i> Assente</button>
+                            </div>
+                        </div>`;
+                    }
+
+                    const adminAction = this.state.isAdmin ? `
+                        <div class="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
+                            <div class="flex gap-3 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                                <span class="text-xs font-extrabold text-emerald-600"><i class="fa-solid fa-check mr-1"></i>${presentCount}</span> 
+                                <span class="text-gray-300">|</span>
+                                <span class="text-xs font-extrabold text-red-500"><i class="fa-solid fa-xmark mr-1"></i>${absentCount}</span>
+                            </div>
+                            <button type="button" onclick="app.openAppello('${e.id}')" class="bg-bdb-yellow text-bdb-blue-dark px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:scale-105 transition">Appello <i class="fa-solid fa-clipboard-user ml-1"></i></button>
+                        </div>` : '';
+
+                    return `
+                    <div class="bg-white p-6 rounded-3xl shadow-soft border border-gray-100 flex flex-col h-full hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-[10px] font-extrabold px-3 py-1 uppercase bg-blue-50 text-bdb-blue rounded-lg">${e.tipo}</span>
+                                <span class="text-[10px] font-extrabold px-3 py-1 uppercase bg-gray-50 text-gray-500 rounded-lg"><i class="fa-solid fa-users mr-1"></i> ${e.gruppo || 'Tutti'}</span>
+                            </div>
+                            ${this.state.isAdmin ? `<button type="button" onclick="app.deleteDocRef('eventi', '${e.id}')" class="text-gray-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-times text-lg"></i></button>` : ''}
+                        </div>
+                        <h3 class="font-extrabold text-gray-800 text-xl leading-tight mb-2">${this.esc(e.titolo)}</h3>
+                        <p class="text-sm text-gray-500 font-medium mb-2"><i class="fa-regular fa-calendar-check text-bdb-yellow mr-1"></i> ${new Date(e.data).toLocaleDateString()} ${e.ora ? '- ' + e.ora : ''}</p>
+                        ${userAction}
+                        ${adminAction}
+                    </div>`;
+                }).join('');
+            },
+            
+            openEventoModal: () => {
+                document.getElementById('e_titolo').value='';
+                document.getElementById('e_data').value='';
+                document.getElementById('e_ora').value='';
+                document.getElementById('e_tipo').value='Allenamento';
+                document.getElementById('e_gruppo').value='Tutti';
+                document.getElementById('modalEvento').classList.remove('hidden');
+            },
+            saveEvento: async function() {
+                const t = document.getElementById('e_titolo').value, d = document.getElementById('e_data').value;
+                if(!t || !d) return this.ui.error("Errore", "Compila tutti i campi obbligatori.");
+                await addDoc(collection(db, "eventi"), { 
+                    titolo: t, data: d, ora: document.getElementById('e_ora').value, 
+                    tipo: document.getElementById('e_tipo').value, gruppo: document.getElementById('e_gruppo').value, 
+                    disponibilita: {}, presenzeFisiche: {} 
+                });
+                this.closeModal('modalEvento'); this.ui.toast("Evento Creato!");
+            },
+            
+            setDisponibilita: async function(eId, stato) {
+                await updateDoc(doc(db, "eventi", eId), { [`disponibilita.${this.state.user.uid}`]: stato });
+                this.ui.toast(stato === 'si' ? "Disponibilità confermata!" : "Assenza registrata.");
+            },
+            
+            openAppello: function(id) {
+                const e = this.state.eventi.find(x => x.id === id); 
+                document.getElementById('appelloTitle').innerText = e.titolo; 
+                document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
+                document.getElementById('appelloGruppo').innerText = (e.gruppo || 'Tutti');
+                
+                let atletiTarget = this.state.atleti;
+                const grp = e.gruppo || 'Tutti';
+                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino'));
+                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina'));
+                else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
+                else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
+                
+                if(atletiTarget.length === 0) {
+                    document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-400 mt-20 font-bold"><i class="fa-solid fa-ghost text-4xl mb-4 opacity-50 block"></i>Nessun tesserato trovato in questo gruppo.</div>`;
+                } else {
+                    document.getElementById('appelloList').innerHTML = atletiTarget.map(a => {
+                        const rsvp = e.disponibilita && e.disponibilita[a.ownerUid] ? e.disponibilita[a.ownerUid] : 'boh';
+                        let rsvpBadge = `<span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-400 font-bold ml-2">? Non espresso</span>`;
+                        if(rsvp==='si') rsvpBadge = `<span class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-check"></i> Disponibile</span>`;
+                        if(rsvp==='no') rsvpBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-xmark"></i> Assente</span>`;
+
+                        return `
+                        <div class="flex items-center justify-between p-5 bg-white mb-4 rounded-3xl shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100">
+                            <div>
+                                <p class="font-extrabold text-gray-800 text-lg flex items-center flex-wrap gap-1">${this.esc(a.nome)} ${rsvpBadge}</p>
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')}</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
+                                <input type="checkbox" class="sr-only peer" ${e.presenzeFisiche&&e.presenzeFisiche[a.id] ? 'checked' : ''} onchange="app.toggleP('${id}', '${a.id}', this.checked)">
+                                <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                            </label>
+                        </div>`;
+                    }).join('');
+                }
+                
+                const m = document.getElementById('modalAppello'); 
+                m.classList.remove('hidden'); 
+                setTimeout(() => m.classList.remove('translate-y-full'), 10);
+            },
+            
+            closeAppello: () => { const m = document.getElementById('modalAppello'); m.classList.add('translate-y-full'); setTimeout(() => m.classList.add('hidden'), 300); },
+            terminaAppello: function() { this.closeAppello(); this.ui.toast("Appello salvato con successo!"); },
+            toggleP: async (eId, aId, isP) => updateDoc(doc(db, "eventi", eId), { [`presenzeFisiche.${aId}`]: isP }),
+
+            renderMagazzino: function() {
+                const tbody = document.getElementById('magazzinoTableBody');
+                if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
+                tbody.innerHTML = this.state.magazzino.map(i => {
+                    let det = this.esc(i.descrizione || '-');
+                    if(i.categoria === 'Stivali' && i.numero) det = `Numero: <strong>${this.esc(i.numero)}</strong>`;
+                    if((i.categoria === 'Ponchi' || i.categoria === 'Mantelli') && i.proprietario) det = `Assegnato a: <strong>${this.esc(i.proprietario)}</strong>`;
+                    return `<tr>
+                        <td class="p-5 font-extrabold text-gray-800">${this.esc(i.nome)}</td>
+                        <td class="p-5"><span class="text-[10px] font-bold uppercase bg-blue-50 text-bdb-blue px-3 py-1.5 rounded-lg">${i.categoria}</span></td>
+                        <td class="p-5 text-gray-600">${det}</td>
+                        <td class="p-5 text-center font-extrabold text-gray-800">${i.totale}</td>
+                        <td class="p-5 text-right"><button type="button" onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-gray-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`;
+                }).join('');
+            },
+            
+            openItemModal: () => { 
+                document.getElementById('i_nome').value=''; 
+                document.getElementById('i_desc').value='';
+                document.getElementById('i_num').value='';
+                document.getElementById('i_prop').value='';
+                document.getElementById('i_cat').value='Tamburi';
+                document.getElementById('i_tot').value='1';
+                document.getElementById('modalItem').classList.remove('hidden'); 
+                app.toggleItemFields();
+            },
+            toggleItemFields: () => {
+                const cat = document.getElementById('i_cat').value;
+                document.getElementById('field-desc').style.display = ['Tamburi','Chiarine','Bandiere'].includes(cat) ? 'block' : 'none';
+                document.getElementById('field-num').style.display = cat === 'Stivali' ? 'block' : 'none';
+                document.getElementById('field-prop').style.display = ['Ponchi','Mantelli'].includes(cat) ? 'block' : 'none';
+            },
+            saveItem: async function() {
+                const n = document.getElementById('i_nome').value; if(!n) return;
+                const cat = document.getElementById('i_cat').value;
+                await addDoc(collection(db, "magazzino"), { 
+                    nome: n, 
+                    categoria: cat, 
+                    descrizione: document.getElementById('i_desc').value,
+                    numero: document.getElementById('i_num').value,
+                    proprietario: document.getElementById('i_prop').value,
+                    totale: Number(document.getElementById('i_tot').value) 
+                });
+                this.closeModal('modalItem'); this.ui.toast("Articolo aggiunto.");
+            }
+        };
+
+        window.app = app;
+        window.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
+</body>
+</html>
