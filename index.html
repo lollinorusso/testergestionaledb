@@ -121,7 +121,6 @@
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
         
-        <!-- Sidebar Navigation -->
         <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-bdb-blue text-white flex flex-col shrink-0 shadow-2xl md:shadow-xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
             <div class="p-6 flex items-center justify-between border-b border-white/10">
                 <div class="flex items-center gap-3">
@@ -186,7 +185,6 @@
                         <p class="text-gray-500 text-sm md:text-base">Benvenuto nella bacheca ufficiale dell'associazione.</p>
                     </header>
                     
-                    <!-- Admin Statistics Overview (Admin Only) -->
                     <div id="adminStats" class="admin-only hidden grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
                         <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
                             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
@@ -202,7 +200,6 @@
                         </div>
                     </div>
 
-                    <!-- News Feed -->
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
                         <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Avvisi Direttivo</h3>
@@ -331,7 +328,6 @@
         </div>
     </div>
 
-    <!-- MODAL FASCICOLO TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
             <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
@@ -920,9 +916,8 @@
             updateQuotaDropdown: function() {
                 const select = document.getElementById('q_tesserato');
                 if(!select) return;
-                // Esclude chiunque abbia già una quota inserita (indipendentemente dallo stato di saldo)
-                const registeredTesseratiIds = new Set(this.state.quote.map(q => q.tesseratoId));
-                const disponibili = this.state.atleti.filter(a => !registeredTesseratiIds.has(a.id));
+                const registratiIds = new Set(this.state.quote.map(q => q.tesseratoId));
+                const disponibili = this.state.atleti.filter(a => !registratiIds.has(a.id));
                 select.innerHTML = `<option value="">-- Seleziona --</option>` + disponibili.map(a => `<option value="${a.id}">${a.nome} (${a.ruolo || 'Atleta'})</option>`).join('');
             },
 
@@ -1002,7 +997,6 @@
                 if(!window.jspdf) return;
                 const docPdf = new window.jspdf.jsPDF(); 
                 
-                // Intestazione ufficiale elegante
                 docPdf.setFillColor(0, 51, 160);
                 docPdf.rect(0, 0, 210, 45, 'F');
                 
@@ -1013,7 +1007,6 @@
                 docPdf.setFontSize(9); docPdf.setTextColor(240, 240, 240);
                 docPdf.text("Codice Fiscale: 92051490055", 105, 34, { align: "center" });
 
-                // Titolo Ricevuta
                 docPdf.setFontSize(14); docPdf.setTextColor(0, 51, 160); docPdf.setFont("helvetica", "bold"); 
                 docPdf.text("RICEVUTA QUOTA ASSOCIATIVA / VERSAMENTO", 105, 60, { align: "center" });
                 
@@ -1021,7 +1014,6 @@
                 docPdf.setLineWidth(0.5);
                 docPdf.line(20, 68, 190, 68);
 
-                // Dettagli anagrafici e data
                 docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal"); 
                 docPdf.text(`Data emissione: ${new Date().toLocaleDateString('it-IT')}`, 20, 80); 
                 
@@ -1034,7 +1026,6 @@
                 docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0);
                 docPdf.text(`${causale}`, 50, 107);
 
-                // Box Importi Moderno
                 docPdf.setFillColor(248, 250, 252);
                 docPdf.setDrawColor(210, 215, 225);
                 docPdf.roundedRect(20, 122, 170, 45, 4, 4, 'FD');
@@ -1048,7 +1039,6 @@
                 docPdf.setFontSize(18); docPdf.setTextColor(0, 51, 160);
                 docPdf.text(formatter.format(versato), 125, 153);
 
-                // Firma e chiusura
                 docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
                 docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 195, { align: "center" });
                 
@@ -1089,7 +1079,7 @@
                                 <span class="text-xs font-extrabold text-red-500"><i class="fa-solid fa-xmark mr-1"></i>${absentCount}</span>
                             </div>
                             <button onclick="app.openAppello('${e.id}')" class="bg-bdb-yellow text-bdb-blue-dark px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:scale-105 transition">Appello <i class="fa-solid fa-clipboard-user ml-1"></i></button>
-                        ` : '';
+                        </div>` : '';
 
                     return `
                     <div class="bg-white p-6 rounded-3xl shadow-soft border border-gray-100 flex flex-col h-full hover:shadow-lg transition-shadow relative overflow-hidden group">
