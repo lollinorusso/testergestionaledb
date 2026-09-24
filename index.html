@@ -141,7 +141,7 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" alt="Logo" class="w-12 h-12 rounded-full border-2 border-bdb-yellow object-cover shadow-lg">
                     <div>
                         <span class="font-extrabold text-xl block leading-none tracking-tight">Gestione BDB</span>
-                        <span class="text-[10px] text-bdb-yellow uppercase tracking-widest font-bold">APS & Sport</span>
+                        <span class="text-[10px] text-bdb-yellow uppercase tracking-widest font-bold">APS</span>
                     </div>
                 </div>
                 <button class="md:hidden text-white/80 hover:text-white p-2" onclick="app.toggleMenu(false)"><i class="fa-solid fa-chevron-left text-xl"></i></button>
@@ -398,12 +398,12 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Ruolo</label>
-                            <select id="t_ruolo" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition cursor-pointer">
+                            <select id="t_ruolo" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition cursor-pointer" onchange="app.checkRuolo()">
                                 <option value="Atleta">Atleta (Generico)</option>
                                 <option value="Sbandieratore">Sbandieratore</option>
                                 <option value="Musico (Tamburino)">Musico (Tamburino)</option>
                                 <option value="Musico (Chiarina)">Musico (Chiarina)</option>
-                                <option value="Maestro/Istruttore">Maestro/Istruttore</option>
+                                <option value="Dirigente">Dirigente</option>
                                 <option value="Socio Sostenitore">Socio Sostenitore</option>
                             </select>
                         </div>
@@ -419,30 +419,38 @@
                 </div>
 
                 <div id="tab-medico" class="inner-tab-content space-y-5">
-                    <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
-                        <h4 class="font-bold text-bdb-blue mb-4 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Certificato Medico Agonistico</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Data Emissione</label>
-                                <input type="date" id="t_cert_emiss" class="w-full p-3.5 border border-blue-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-red-500 mb-1.5 uppercase tracking-wider">Data di Scadenza</label>
-                                <input type="date" id="t_cert_scad" class="w-full p-3.5 border border-red-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-red-400 transition">
+                    <div id="alertSocioSostenitore" class="hidden bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-file-medical text-bdb-blue text-3xl mb-3 opacity-50"></i>
+                        <h4 class="font-bold text-bdb-blue">Non Richiesto</h4>
+                        <p class="text-sm text-blue-600/70 mt-1">L'area medica non è necessaria per i Soci Sostenitori.</p>
+                    </div>
+
+                    <div id="areaMedicaContent" class="space-y-5">
+                        <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
+                            <h4 class="font-bold text-bdb-blue mb-4 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Certificato Medico Agonistico</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Data Emissione</label>
+                                    <input type="date" id="t_cert_emiss" class="w-full p-3.5 border border-blue-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-red-500 mb-1.5 uppercase tracking-wider">Data di Scadenza</label>
+                                    <input type="date" id="t_cert_scad" class="w-full p-3.5 border border-red-200 rounded-xl bg-white text-base font-medium outline-none focus:ring-2 focus:ring-red-400 transition">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Note Mediche Vitali</label>
-                        <textarea id="t_note_mediche" rows="3" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Allergie, problemi cardiaci, asma..."></textarea>
-                    </div>
-                    <div class="pt-2">
-                        <label class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition">
-                            <input type="checkbox" id="t_flag_medico" class="mt-1 w-5 h-5 text-bdb-blue rounded border-gray-300 focus:ring-bdb-blue">
-                            <span class="text-xs text-gray-700 font-semibold leading-relaxed">
-                                Dichiaro sotto la mia responsabilità (o in qualità di genitore/tutore legale per i minori) che i dati e le informazioni mediche fornite sono veritiere e che l'atleta è in possesso di regolare certificato medico agonistico in corso di validità. <span class="text-red-500">*</span>
-                            </span>
-                        </label>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Note Mediche Vitali</label>
+                            <textarea id="t_note_mediche" rows="3" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Allergie, problemi cardiaci, asma..."></textarea>
+                        </div>
+                        <div class="pt-2">
+                            <label class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition">
+                                <input type="checkbox" id="t_flag_medico" class="mt-1 w-5 h-5 text-bdb-blue rounded border-gray-300 focus:ring-bdb-blue">
+                                <span class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                    Dichiaro sotto la mia responsabilità (o in qualità di genitore/tutore legale per i minori) che i dati e le informazioni mediche fornite sono veritiere e che l'atleta è in possesso di regolare certificato medico agonistico -e di buona salute- in corso di validità. <span class="text-red-500">*</span>
+                                </span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -954,6 +962,20 @@
                 }
             },
 
+            checkRuolo: function() {
+                const ruolo = document.getElementById('t_ruolo').value;
+                const content = document.getElementById('areaMedicaContent');
+                const alertSocio = document.getElementById('alertSocioSostenitore');
+                
+                if (ruolo === 'Socio Sostenitore') {
+                    if(content) content.classList.add('hidden');
+                    if(alertSocio) alertSocio.classList.remove('hidden');
+                } else {
+                    if(content) content.classList.remove('hidden');
+                    if(alertSocio) alertSocio.classList.add('hidden');
+                }
+            },
+
             renderAnagrafica: function() {
                 const tbody = document.getElementById('anagraficaTableBody');
                 const search = document.getElementById('searchAnagrafica').value.toLowerCase();
@@ -966,7 +988,9 @@
                     let certStatus = `<span class="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold">Assente</span>`;
                     let whatsappBtn = '';
 
-                    if(a.cert_scad) {
+                    if(a.ruolo === 'Socio Sostenitore') {
+                        certStatus = `<span class="bg-blue-50 text-blue-500 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-blue-100">Non Richiesto</span>`;
+                    } else if(a.cert_scad) {
                         const diff = Math.ceil((new Date(a.cert_scad) - oggi) / (1000 * 60 * 60 * 24));
                         if(diff < 0) {
                             certStatus = `<span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-red-100">Scaduto</span>`;
@@ -1049,6 +1073,7 @@
                 });
                 
                 this.toggleTesseratoForm(false);
+                this.checkRuolo();
                 document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
                 this.switchInnerTab('tab-base'); 
                 document.getElementById('modalTesserato').classList.remove('hidden');
@@ -1079,6 +1104,7 @@
                 
                 const isReadOnly = this.state.isAdmin && a.ownerUid !== this.state.user.uid;
                 this.toggleTesseratoForm(isReadOnly);
+                this.checkRuolo();
                 
                 document.getElementById('modalTesseratoTitle').innerText = isReadOnly ? (a.nome + ' (Sola Lettura)') : (a.nome || 'Modifica Fascicolo');
                 this.checkMinorenne();
@@ -1096,7 +1122,10 @@
                 
                 if(!d.nome || d.nome.trim() === '') return this.ui.error("Attenzione", "Il campo Nome e Cognome è obbligatorio.");
                 if(!d.nascita) return this.ui.error("Attenzione", "La Data di Nascita è obbligatoria.");
-                if(!d.flag_medico) return this.ui.error("Attenzione", "Devi confermare la veridicità dei dati medici con l'apposito flag.");
+                
+                if(d.ruolo !== 'Socio Sostenitore' && !d.flag_medico) {
+                    return this.ui.error("Attenzione", "Devi confermare la veridicità dei dati medici con l'apposito flag.");
+                }
                 if(!d.flag_docs) return this.ui.error("Attenzione", "Devi confermare di aver allegato i documenti richiesti.");
                 
                 try {
@@ -1247,9 +1276,7 @@
                 docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(22); docPdf.setTextColor(255, 255, 255);
                 docPdf.text("BORGO DON BOSCO APS", 105, 18, { align: "center" }); 
                 docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(255, 228, 94);
-                docPdf.text("Associazione di Promozione Sociale e Sportiva - Asti", 105, 26, { align: "center" }); 
-                docPdf.setFontSize(9); docPdf.setTextColor(240, 240, 240);
-                docPdf.text("Codice Fiscale: 92051490055", 105, 34, { align: "center" });
+                docPdf.text("Associazione di Promozione Sociale e Sportiva - Asti", 105, 28, { align: "center" }); 
 
                 docPdf.setFontSize(14); docPdf.setTextColor(0, 51, 160); docPdf.setFont("helvetica", "bold"); 
                 docPdf.text("RICEVUTA QUOTA ASSOCIATIVA / VERSAMENTO", 105, 60, { align: "center" });
@@ -1286,9 +1313,16 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
                 docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 195, { align: "center" });
                 
-                docPdf.text("Il Direttivo / Segreteria", 145, 220);
-                docPdf.setDrawColor(150);
-                docPdf.line(125, 213, 190, 213);
+                const adminName = this.state.user.displayName || this.state.user.email.split('@')[0] || "Admin";
+                const now = new Date();
+                const dataStr = now.toLocaleDateString('it-IT');
+                const oraStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                
+                docPdf.setFontSize(9);
+                docPdf.setFont("helvetica", "italic");
+                docPdf.setTextColor(80);
+                docPdf.text(`Firmato digitalmente da: ${adminName.toUpperCase()}`, 190, 215, { align: "right" });
+                docPdf.text(`il giorno ${dataStr} alle ore ${oraStr}`, 190, 220, { align: "right" });
 
                 docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
             },
@@ -1613,3 +1647,4 @@
     </script>
 </body>
 </html>
+```eof
