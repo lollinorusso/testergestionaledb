@@ -255,9 +255,14 @@
                             <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Contabilità & Quote</h2>
                             <p class="text-gray-500 text-sm">Monitoraggio versamenti e ricevute PDF.</p>
                         </div>
-                        <button onclick="app.openQuotaModal()" class="w-full md:w-auto bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2 hover:-translate-y-0.5">
-                            <i class="fa-solid fa-receipt"></i> Emetti Quota
-                        </button>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button onclick="app.openQuotaModal()" class="flex-1 md:flex-initial bg-bdb-blue text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-bdb-blue-dark transition flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                                <i class="fa-solid fa-receipt"></i> Emetti Quota
+                            </button>
+                            <button onclick="app.resetYearlyPayments()" class="bg-red-50 text-red-600 border border-red-200 px-4 py-2.5 rounded-xl font-bold hover:bg-red-100 transition flex items-center gap-2 text-sm" title="Azzera tutti i pagamenti per iniziare il nuovo anno">
+                                <i class="fa-solid fa-rotate-right"></i> Nuovo Anno
+                            </button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="finanzaStats"></div>
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
@@ -397,6 +402,14 @@
                         <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Note Mediche Vitali</label>
                         <textarea id="t_note_mediche" rows="3" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Allergie, problemi cardiaci, asma..."></textarea>
                     </div>
+                    <div class="pt-2">
+                        <label class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition">
+                            <input type="checkbox" id="t_flag_medico" class="mt-1 w-5 h-5 text-bdb-blue rounded border-gray-300 focus:ring-bdb-blue">
+                            <span class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                Dichiaro sotto la mia responsabilità (o in qualità di genitore/tutore legale per i minori) che i dati e le informazioni mediche fornite sono veritiere e che l'atleta è in possesso di regolare certificato medico agonistico in corso di validità. <span class="text-red-500">*</span>
+                            </span>
+                        </label>
+                    </div>
                 </div>
 
                 <div id="tab-docs" class="inner-tab-content space-y-4">
@@ -409,31 +422,43 @@
                     </div>
 
                     <div class="space-y-3">
-                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue cursor-pointer transition group">
-                            <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue transition group">
+                            <label class="flex items-center gap-3 flex-grow cursor-pointer">
                                 <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-privacy"><i class="fa-solid fa-upload"></i></div>
                                 <div><p class="font-bold text-sm text-gray-800" id="name-privacy">Carica Modello Privacy Firmato</p><p class="text-xs text-gray-400">Clicca per selezionare PDF o foto</p></div>
-                            </div>
-                            <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'privacy')">
-                            <input type="hidden" id="t_doc_privacy" value="false">
-                        </label>
+                                <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'privacy')">
+                                <input type="hidden" id="t_doc_privacy" value="">
+                            </label>
+                            <button id="view-privacy" onclick="app.viewDoc('privacy')" class="hidden text-xs bg-blue-50 text-bdb-blue font-bold px-3 py-1.5 rounded-lg ml-2 hover:bg-blue-100"><i class="fa-solid fa-eye"></i> Vedi</button>
+                        </div>
 
-                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue cursor-pointer transition group">
-                            <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue transition group">
+                            <label class="flex items-center gap-3 flex-grow cursor-pointer">
                                 <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-ci"><i class="fa-solid fa-upload"></i></div>
                                 <div><p class="font-bold text-sm text-gray-800" id="name-ci">Carica Carta di Identità</p><p class="text-xs text-gray-400">Clicca per selezionare</p></div>
-                            </div>
-                            <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'ci')">
-                            <input type="hidden" id="t_doc_ci" value="false">
-                        </label>
+                                <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'ci')">
+                                <input type="hidden" id="t_doc_ci" value="">
+                            </label>
+                            <button id="view-ci" onclick="app.viewDoc('ci')" class="hidden text-xs bg-blue-50 text-bdb-blue font-bold px-3 py-1.5 rounded-lg ml-2 hover:bg-blue-100"><i class="fa-solid fa-eye"></i> Vedi</button>
+                        </div>
 
-                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue cursor-pointer transition group">
-                            <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:border-bdb-blue transition group">
+                            <label class="flex items-center gap-3 flex-grow cursor-pointer">
                                 <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-bdb-blue transition" id="icon-cf"><i class="fa-solid fa-upload"></i></div>
                                 <div><p class="font-bold text-sm text-gray-800" id="name-cf">Carica Tessera Sanitaria</p><p class="text-xs text-gray-400">Clicca per selezionare</p></div>
-                            </div>
-                            <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'cf')">
-                            <input type="hidden" id="t_doc_cf" value="false">
+                                <input type="file" class="hidden" accept=".pdf,image/*" onchange="app.handleFileUpload(this, 'cf')">
+                                <input type="hidden" id="t_doc_cf" value="">
+                            </label>
+                            <button id="view-cf" onclick="app.viewDoc('cf')" class="hidden text-xs bg-blue-50 text-bdb-blue font-bold px-3 py-1.5 rounded-lg ml-2 hover:bg-blue-100"><i class="fa-solid fa-eye"></i> Vedi</button>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100 transition">
+                            <input type="checkbox" id="t_flag_docs" class="mt-1 w-5 h-5 text-bdb-blue rounded border-gray-300 focus:ring-bdb-blue">
+                            <span class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                Confermo di aver allegato copia conforme e leggibile del Modello Privacy firmato, della Carta di Identità e della Tessera Sanitaria. <span class="text-red-500">*</span>
+                            </span>
                         </label>
                     </div>
                 </div>
@@ -461,8 +486,8 @@
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Totale Dovuto <span class="text-red-500">*</span></label><input type="number" id="q_totale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="50"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Acconto</label><input type="number" id="q_versato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="0"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Totale Dovuto <span class="text-red-500">*</span></label><input type="number" id="q_totale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="50" readonly></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Acconto Versato</label><input type="number" id="q_versato" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="0"></div>
                 </div>
             </div>
             <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button onclick="app.closeModal('modalQuota')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button onclick="app.saveQuota()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Registra</button></div>
@@ -663,7 +688,7 @@
                     this.renderAnagrafica(); 
                     if(this.state.isAdmin) {
                         this.updateDashboardStats();
-                        if(document.getElementById('q_tesserato')) document.getElementById('q_tesserato').innerHTML = `<option value="">-- Seleziona --</option>` + this.state.atleti.map(a => `<option value="${a.id}">${a.nome}</option>`).join('');
+                        this.updateQuotaDropdown();
                     }
                 });
 
@@ -676,7 +701,11 @@
                 });
 
                 if(this.state.isAdmin) {
-                    onSnapshot(collection(db, "finanza"), (snap) => { this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderFinanza(); });
+                    onSnapshot(collection(db, "finanza"), (snap) => { 
+                        this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+                        this.renderFinanza(); 
+                        this.updateQuotaDropdown();
+                    });
                     onSnapshot(collection(db, "magazzino"), (snap) => { this.state.magazzino = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderMagazzino(); });
                 }
             },
@@ -798,12 +827,14 @@
             
             openTesseratoModal: function() {
                 document.getElementById('t_id').value = '';
-                document.querySelectorAll('#modalTesserato input:not([type=file]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
+                document.querySelectorAll('#modalTesserato input:not([type=file]):not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
+                document.querySelectorAll('#modalTesserato input[type=checkbox]').forEach(el => el.checked = false);
                 ['privacy','ci','cf'].forEach(k => { 
-                    document.getElementById('t_doc_'+k).value = 'false'; 
+                    document.getElementById('t_doc_'+k).value = ''; 
                     document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-upload"></i>'; 
                     document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 transition"; 
                     document.getElementById('name-'+k).innerText = `Carica ${k.toUpperCase()}`;
+                    document.getElementById('view-'+k).classList.add('hidden');
                 });
                 document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
                 this.switchInnerTab('tab-base'); 
@@ -814,17 +845,22 @@
                 const a = this.state.atleti.find(x => x.id === id); if(!a) return;
                 document.getElementById('t_id').value = a.id;
                 ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
+                document.getElementById('t_flag_medico').checked = !!a.flag_medico;
+                document.getElementById('t_flag_docs').checked = !!a.flag_docs;
+
                 ['privacy','ci','cf'].forEach(k => {
-                    const isUp = a['doc_'+k] === true || a['doc_'+k] === 'true';
-                    document.getElementById('t_doc_'+k).value = isUp ? 'true' : 'false';
-                    if(isUp) {
+                    const val = a['doc_'+k];
+                    document.getElementById('t_doc_'+k).value = val || '';
+                    if(val) {
                         document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-check"></i>';
                         document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition";
                         document.getElementById('name-'+k).innerText = `Documento ${k.toUpperCase()} caricato`;
+                        document.getElementById('view-'+k).classList.remove('hidden');
                     } else {
                         document.getElementById('icon-'+k).innerHTML = '<i class="fa-solid fa-upload"></i>';
                         document.getElementById('icon-'+k).className = "w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center transition";
                         document.getElementById('name-'+k).innerText = `Carica ${k.toUpperCase()}`;
+                        document.getElementById('view-'+k).classList.add('hidden');
                     }
                 });
                 document.getElementById('modalTesseratoTitle').innerText = a.nome || 'Modifica Fascicolo';
@@ -837,10 +873,14 @@
                 const id = document.getElementById('t_id').value;
                 const d = {};
                 ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => d[k] = document.getElementById('t_'+k).value);
-                ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value === 'true');
+                d.flag_medico = document.getElementById('t_flag_medico').checked;
+                d.flag_docs = document.getElementById('t_flag_docs').checked;
+                ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value);
                 
                 if(!d.nome || d.nome.trim() === '') return this.ui.error("Attenzione", "Il campo Nome e Cognome è obbligatorio.");
                 if(!d.nascita) return this.ui.error("Attenzione", "La Data di Nascita è obbligatoria.");
+                if(!d.flag_medico) return this.ui.error("Attenzione", "Devi confermare la veridicità dei dati medici con l'apposito flag.");
+                if(!d.flag_docs) return this.ui.error("Attenzione", "Devi confermare di aver allegato i documenti richiesti.");
                 
                 try {
                     if(id) { await updateDoc(doc(db, "fascicoli", id), d); }
@@ -855,15 +895,33 @@
                     const file = input.files[0];
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        document.getElementById('t_doc_'+type).value = 'true';
+                        const base64String = e.target.result;
+                        document.getElementById('t_doc_'+type).value = base64String;
                         document.getElementById('icon-'+type).innerHTML = '<i class="fa-solid fa-check"></i>';
                         document.getElementById('icon-'+type).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition scale-110";
                         document.getElementById('name-'+type).innerText = "✅ " + file.name.substring(0, 20);
+                        document.getElementById('view-'+type).classList.remove('hidden');
                         setTimeout(() => document.getElementById('icon-'+type).classList.remove('scale-110'), 200);
                         this.ui.toast("Documento acquisito!");
                     };
                     reader.readAsDataURL(file);
                 }
+            },
+
+            viewDoc: function(type) {
+                const dataUrl = document.getElementById('t_doc_'+type).value;
+                if(!dataUrl) return;
+                const win = window.open();
+                win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
+            },
+
+            updateQuotaDropdown: function() {
+                const select = document.getElementById('q_tesserato');
+                if(!select) return;
+                // Esclude chiunque abbia già una quota inserita (indipendentemente dallo stato di saldo)
+                const registeredTesseratiIds = new Set(this.state.quote.map(q => q.tesseratoId));
+                const disponibili = this.state.atleti.filter(a => !registeredTesseratiIds.has(a.id));
+                select.innerHTML = `<option value="">-- Seleziona --</option>` + disponibili.map(a => `<option value="${a.id}">${a.nome} (${a.ruolo || 'Atleta'})</option>`).join('');
             },
 
             renderFinanza: function() {
@@ -884,7 +942,7 @@
                             <td class="p-5 text-center">${isSaldato ? '<span class="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-xs font-bold">Saldato</span>' : '<span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-xs font-bold">Da saldare</span>'}</td>
                             <td class="p-5 text-right flex justify-end gap-2">
                                 ${!isSaldato ? `<button class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition" onclick="app.aggiungiAcconto('${q.id}', ${diff})">Incassa</button>` : ''}
-                                <button class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border" onclick="app.generaRicevutaPDF('${t?t.nome:'Sconosciuto'}', '${q.causale}', ${q.versato})" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border" onclick="app.generaRicevutaPDF('${t?t.nome:'Sconosciuto'}', '${q.causale}', ${q.versato}, ${q.totale})" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
                                 <button class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
                             </td></tr>`;
                     }).join('');
@@ -898,18 +956,19 @@
             
             openQuotaModal: () => { 
                 document.getElementById('q_id').value=''; 
-                document.getElementById('q_causale').value='Comitato'; 
+                document.getElementById('q_causale').value='Comitato (50 €)'; 
                 document.getElementById('q_totale').value='50'; 
                 document.getElementById('q_versato').value='0'; 
+                app.updateQuotaDropdown();
                 document.getElementById('modalQuota').classList.remove('hidden'); 
             },
             autoFillQuotaAmount: () => {
                 const c = document.getElementById('q_causale').value;
-                document.getElementById('q_totale').value = c === 'Fisb + Comitato' ? '100' : '50';
+                document.getElementById('q_totale').value = c.includes('100') ? '100' : '50';
             },
             saveQuota: async function() {
                 const t = document.getElementById('q_tesserato').value, c = document.getElementById('q_causale').value, tot = document.getElementById('q_totale').value, v = document.getElementById('q_versato').value;
-                if(!t || !tot || tot <= 0) return this.ui.error("Errore", "Verifica i campi obbligatori.");
+                if(!t || !tot || tot <= 0) return this.ui.error("Errore", "Seleziona un tesserato e verifica i campi obbligatori.");
                 await addDoc(collection(db, "finanza"), { tesseratoId: t, causale: c, totale: Number(tot), versato: Number(v), dataCreazione: new Date().toISOString() });
                 this.closeModal('modalQuota'); this.ui.toast("Quota emessa!");
             },
@@ -922,24 +981,79 @@
                     this.ui.toast("Incasso registrato!");
                 }
             },
+
+            resetYearlyPayments: async function() {
+                const r = await this.ui.confirm("Nuovo Anno Associativo", "Vuoi davvero azzerare e cancellare tutti i pagamenti registrati per iniziare un nuovo anno? Questa operazione non è reversibile.");
+                if(r.isConfirmed) {
+                    try {
+                        const snap = await getDocs(collection(db, "finanza"));
+                        const deletions = snap.docs.map(d => deleteDoc(doc(db, "finanza", d.id)));
+                        await Promise.all(deletions);
+                        this.ui.toast("Tutti i pagamenti sono stati azzerati con successo!");
+                    } catch(err) {
+                        this.ui.error("Errore", err.message);
+                    }
+                }
+            },
             
-            generaRicevutaPDF: function(nome, causale, importo) {
+            generaRicevutaPDF: function(nome, causale, versato, totale) {
                 if(!window.jspdf) return;
                 const docPdf = new window.jspdf.jsPDF(); 
-                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(22); docPdf.setTextColor(0, 51, 160);
-                docPdf.text("Borgo Don Bosco", 105, 30, { align: "center" }); 
-                docPdf.setFontSize(12); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal");
-                docPdf.text("Associazione Sportiva e di Promozione Sociale", 105, 38, { align: "center" }); 
-                docPdf.setDrawColor(200); docPdf.line(20, 45, 190, 45);
-                docPdf.setFontSize(16); docPdf.setTextColor(0); docPdf.setFont("helvetica", "bold"); 
-                docPdf.text("RICEVUTA DI PAGAMENTO", 105, 60, { align: "center" });
-                docPdf.setFontSize(12); docPdf.setFont("helvetica", "normal"); 
-                docPdf.text(`Data: ${new Date().toLocaleDateString()}`, 20, 80); 
-                docPdf.text(`Versato da: ${nome}`, 20, 90); 
-                docPdf.text(`Causale: ${causale}`, 20, 100);
-                docPdf.setFillColor(245, 247, 250); docPdf.rect(20, 115, 170, 20, 'F'); 
-                docPdf.text("Importo:", 25, 128); docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0, 51, 160); 
-                docPdf.text(formatter.format(importo), 185, 128, {align: "right"});
+                
+                // Intestazione ufficiale elegante
+                docPdf.setFillColor(0, 51, 160);
+                docPdf.rect(0, 0, 210, 45, 'F');
+                
+                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(22); docPdf.setTextColor(255, 255, 255);
+                docPdf.text("BORGO DON BOSCO APS", 105, 18, { align: "center" }); 
+                docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(255, 228, 94);
+                docPdf.text("Associazione di Promozione Sociale e Sportiva - Asti", 105, 26, { align: "center" }); 
+                docPdf.setFontSize(9); docPdf.setTextColor(240, 240, 240);
+                docPdf.text("Codice Fiscale: 92051490055", 105, 34, { align: "center" });
+
+                // Titolo Ricevuta
+                docPdf.setFontSize(14); docPdf.setTextColor(0, 51, 160); docPdf.setFont("helvetica", "bold"); 
+                docPdf.text("RICEVUTA QUOTA ASSOCIATIVA / VERSAMENTO", 105, 60, { align: "center" });
+                
+                docPdf.setDrawColor(220, 224, 230);
+                docPdf.setLineWidth(0.5);
+                docPdf.line(20, 68, 190, 68);
+
+                // Dettagli anagrafici e data
+                docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal"); 
+                docPdf.text(`Data emissione: ${new Date().toLocaleDateString('it-IT')}`, 20, 80); 
+                
+                docPdf.text("Intestato a:", 20, 95);
+                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0); docPdf.setFontSize(13);
+                docPdf.text(`${nome}`, 50, 95);
+
+                docPdf.setFontSize(11); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(100);
+                docPdf.text("Causale:", 20, 107);
+                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0);
+                docPdf.text(`${causale}`, 50, 107);
+
+                // Box Importi Moderno
+                docPdf.setFillColor(248, 250, 252);
+                docPdf.setDrawColor(210, 215, 225);
+                docPdf.roundedRect(20, 122, 170, 45, 4, 4, 'FD');
+                
+                docPdf.setFontSize(10); docPdf.setTextColor(100); docPdf.setFont("helvetica", "bold");
+                docPdf.text("IMPORTO DOVUTO", 35, 137);
+                docPdf.text("IMPORTO VERSATO", 125, 137);
+                
+                docPdf.setFontSize(16); docPdf.setTextColor(120, 120, 120);
+                docPdf.text(formatter.format(totale), 35, 153);
+                docPdf.setFontSize(18); docPdf.setTextColor(0, 51, 160);
+                docPdf.text(formatter.format(versato), 125, 153);
+
+                // Firma e chiusura
+                docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
+                docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 195, { align: "center" });
+                
+                docPdf.text("Il Direttivo / Segreteria", 145, 220);
+                docPdf.setDrawColor(150);
+                docPdf.line(125, 213, 190, 213);
+
                 docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
             },
 
@@ -973,7 +1087,7 @@
                                 <span class="text-xs font-extrabold text-red-500"><i class="fa-solid fa-xmark mr-1"></i>${absentCount}</span>
                             </div>
                             <button onclick="app.openAppello('${e.id}')" class="bg-bdb-yellow text-bdb-blue-dark px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:scale-105 transition">Appello <i class="fa-solid fa-clipboard-user ml-1"></i></button>
-                        </div>` : '';
+                        ` : '';
 
                     return `
                     <div class="bg-white p-6 rounded-3xl shadow-soft border border-gray-100 flex flex-col h-full hover:shadow-lg transition-shadow relative overflow-hidden group">
