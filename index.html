@@ -168,7 +168,6 @@
             </div>
         </aside>
 
-        <!-- Main Workspace Area -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
@@ -187,7 +186,7 @@
                         <p class="text-gray-500 text-sm md:text-base">Benvenuto nella bacheca ufficiale dell'associazione.</p>
                     </header>
                     
-                    <!-- Admin Statistics Overview -->
+                    <!-- Admin Statistics Overview (Admin Only) -->
                     <div id="adminStats" class="admin-only hidden grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
                         <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
                             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
@@ -481,8 +480,8 @@
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Causale e Importo <span class="text-red-500">*</span></label>
                     <select id="q_causale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" onchange="app.autoFillQuotaAmount()">
-                        <option value="Comitato">Comitato - 50,00 €</option>
-                        <option value="Fisb + Comitato">Fisb + Comitato - 100,00 €</option>
+                        <option value="Comitato 50€">Comitato 50€</option>
+                        <option value="Fisb + Comitato 100€">Fisb + Comitato 100€</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -700,12 +699,15 @@
                     this.state.eventi = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderEventi();
                 });
 
-                if(this.state.isAdmin) {
-                    onSnapshot(collection(db, "finanza"), (snap) => { 
-                        this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+                onSnapshot(collection(db, "finanza"), (snap) => { 
+                    this.state.quote = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+                    if(this.state.isAdmin) {
                         this.renderFinanza(); 
-                        this.updateQuotaDropdown();
-                    });
+                    }
+                    this.updateQuotaDropdown();
+                });
+
+                if(this.state.isAdmin) {
                     onSnapshot(collection(db, "magazzino"), (snap) => { this.state.magazzino = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderMagazzino(); });
                 }
             },
@@ -746,7 +748,7 @@
                     preConfirm: () => {
                         const t = document.getElementById('swal-input1').value;
                         if(!t) Swal.showValidationMessage("Il titolo è obbligatorio");
-                        return [t, document.getElementById('swal-input2').value];
+                        return [t, document.getElementById('swal-input2'].value];
                     } 
                 });
                 if (formValues && formValues[0]) { await addDoc(collection(db, "news"), { title: formValues[0], content: formValues[1], date: new Date().toISOString() }); this.ui.toast("Avviso Pubblicato!"); }
@@ -956,7 +958,7 @@
             
             openQuotaModal: () => { 
                 document.getElementById('q_id').value=''; 
-                document.getElementById('q_causale').value='Comitato (50 €)'; 
+                document.getElementById('q_causale').value='Comitato 50€'; 
                 document.getElementById('q_totale').value='50'; 
                 document.getElementById('q_versato').value='0'; 
                 app.updateQuotaDropdown();
