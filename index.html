@@ -699,7 +699,7 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         this.state.user = user;
-                        const adminEmails = ['lollinorusso@icloud.com', 'segreteria@borgodonbosco.com'];
+                        const adminEmails = ['lollinorusso@icloud.com', 'segreteria@borgodonbosco.com', 'gianluigi_delmastro@hotmail.it'];
                         this.state.isAdmin = adminEmails.includes((user.email || '').toLowerCase());
                         
                         document.getElementById('authScreen').classList.add('hidden');
