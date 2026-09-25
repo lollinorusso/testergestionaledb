@@ -420,6 +420,20 @@
                             <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Genitore / Tutore Legale <span class="text-orange-500" id="avvisoMinore">(Obbligatorio se minorenne)</span></label>
                             <input type="text" id="t_genitore" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Nome e Cognome del genitore">
                         </div>
+                        
+                        <!-- Riquadro Fasce: Solo per Under e modificabile solo da Admin -->
+                        <div id="boxFascia" class="hidden md:col-span-2 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <label class="block text-xs font-bold text-bdb-blue mb-1.5 uppercase tracking-wider flex justify-between items-center">
+                                Fascia Allenamento 
+                                <span class="text-[10px] bg-white text-bdb-blue px-2 py-0.5 rounded border border-blue-100 normal-case font-bold"><i class="fa-solid fa-lock mr-1 text-gray-400"></i>Gestita dagli Allenatori</span>
+                            </label>
+                            <select id="t_fascia" class="w-full p-3.5 border border-blue-200 rounded-xl bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-extrabold text-bdb-blue transition cursor-pointer">
+                                <option value="Da assegnare">Da assegnare</option>
+                                <option value="Prima Fascia">Prima Fascia</option>
+                                <option value="Seconda Fascia">Seconda Fascia</option>
+                                <option value="Terza Fascia">Terza Fascia</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -552,11 +566,14 @@
                 <div>
                     <label class="block text-xs font-bold text-bdb-blue uppercase tracking-wider mb-2">Gruppo Destinatario <span class="text-red-500">*</span></label>
                     <select id="e_gruppo" class="w-full p-3.5 border-2 border-blue-200 bg-blue-50 rounded-xl text-base font-extrabold text-bdb-blue outline-none focus:ring-2 focus:ring-bdb-blue cursor-pointer transition shadow-sm">
-                        <option value="Tutti">Tutti (Tamburi, Chiarine e Sbandieratori)</option>
-                        <option value="Sbandieratori">Solo Sbandieratori</option>
-                        <option value="Tamburi">Solo Tamburi</option>
-                        <option value="Chiarine">Solo Chiarine</option>
-                        <option value="Musici">Gruppo Musici (Tamburi + Chiarine)</option>
+                        <option value="Tutti">Tutti</option>
+                        <option value="Sbandieratori">Solo Sbandieratori (Grandi)</option>
+                        <option value="Tamburi">Solo Tamburi (Grandi)</option>
+                        <option value="Chiarine">Solo Chiarine (Grandi)</option>
+                        <option value="Musici">Gruppo Musici Grandi (Tamburi + Chiarine)</option>
+                        <option value="Sbandieratori under">Solo Sbandieratori Under</option>
+                        <option value="Musici under">Solo Musici Under</option>
+                        <option value="Tutti under">Tutti gli Under (Sbandieratori e Musici piccoli)</option>
                     </select>
                 </div>
             </div>
@@ -564,7 +581,7 @@
         </div>
     </div>
     
-    <!-- MODAL MAGAZZINO -->
+    <!-- MODAL MAGAZZINO E OVERLAYS -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -660,6 +677,19 @@
 
             esc: (s) => String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
 
+            // Helper centralizzato per le verifiche di gruppo e fascia
+            isMatch: function(role, grp) {
+                if (grp === 'Tutti') return true;
+                if (grp === 'Tamburi' && role === 'Musico (Tamburino)') return true;
+                if (grp === 'Chiarine' && role === 'Musico (Chiarina)') return true;
+                if (grp === 'Musici' && (role === 'Musico (Tamburino)' || role === 'Musico (Chiarina)')) return true;
+                if (grp === 'Sbandieratori' && role === 'Sbandieratore') return true;
+                if (grp === 'Musici under' && role === 'Musico under') return true;
+                if (grp === 'Sbandieratori under' && role === 'Sbandieratore under') return true;
+                if (grp === 'Tutti under' && (role === 'Musico under' || role === 'Sbandieratore under')) return true;
+                return false;
+            },
+
             init: function() {
                 document.getElementById('emailLoginBtn').addEventListener('click', () => this.login());
                 document.getElementById('googleLoginBtn').addEventListener('click', () => this.googleLogin());
@@ -676,7 +706,7 @@
                         document.getElementById('mainApp').classList.remove('hidden');
                         
                         document.getElementById('userEmailDisplay').innerText = user.email || user.displayName || 'Utente BDB';
-                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Admin / Direttivo' : 'Atleta / Socio';
+                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Admin / Direttivo' : 'Socio / Genitore';
                         document.getElementById('userInitial').innerText = (user.email || user.displayName || 'U').charAt(0).toUpperCase();
                         
                         this.setGreeting();
@@ -833,15 +863,7 @@
                             const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                             const grp = newEventi[0].gruppo || 'Tutti';
                             
-                            shouldNotify = myFascicoli.some(myF => {
-                                const myRole = myF.ruolo || 'Atleta';
-                                if (grp === 'Tutti') return true;
-                                if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
-                                if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                                if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                                if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                                return false;
-                            });
+                            shouldNotify = myFascicoli.some(myF => this.isMatch(myF.ruolo || 'Atleta', grp));
                         }
                         
                         if(shouldNotify) {
@@ -1031,6 +1053,7 @@
                 const ruolo = document.getElementById('t_ruolo').value;
                 const content = document.getElementById('areaMedicaContent');
                 const alertSocio = document.getElementById('alertSocioSostenitore');
+                const boxFascia = document.getElementById('boxFascia');
                 
                 if (ruolo === 'Socio Sostenitore') {
                     if(content) content.classList.add('hidden');
@@ -1038,6 +1061,14 @@
                 } else {
                     if(content) content.classList.remove('hidden');
                     if(alertSocio) alertSocio.classList.add('hidden');
+                }
+
+                // Controllo per le Fasce (Solo Under)
+                if (ruolo.includes('under')) {
+                    if(boxFascia) boxFascia.classList.remove('hidden');
+                } else {
+                    if(boxFascia) boxFascia.classList.add('hidden');
+                    document.getElementById('t_fascia').value = 'Da assegnare';
                 }
             },
 
@@ -1077,11 +1108,17 @@
                     const docsHTML = (a.doc_privacy && a.doc_ci && a.doc_cf) ? `<i class="fa-solid fa-circle-check text-emerald-500 text-xl" title="Completo"></i>` : `<i class="fa-solid fa-circle-exclamation text-orange-400 text-xl" title="Documenti mancanti"></i>`;
                     const isReadOnly = this.state.isAdmin && a.ownerUid !== this.state.user.uid;
                     const actionIcon = isReadOnly ? 'fa-eye' : 'fa-pen';
+                    
+                    // Mostra fascia allenamento se under
+                    let fasciaBadge = '';
+                    if ((a.ruolo || '').includes('under') && a.fascia && a.fascia !== 'Da assegnare') {
+                        fasciaBadge = `<br><span class="inline-block mt-1 text-[9px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-extrabold uppercase border border-purple-200">${a.fascia}</span>`;
+                    }
 
                     return `
                         <tr class="cursor-pointer group" onclick="app.editTesserato('${a.id}')">
                             <td class="p-5"><div class="font-extrabold text-gray-800 text-base">${this.esc(a.nome)}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${this.esc(a.nascita)}</div></td>
-                            <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${this.esc(a.ruolo || 'Atleta')}</span></td>
+                            <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${this.esc(a.ruolo || 'Atleta')}</span>${fasciaBadge}</td>
                             <td class="p-5 flex items-center">${certStatus} ${whatsappBtn}</td>
                             <td class="p-5 text-center">${docsHTML}</td>
                             <td class="p-5 text-right">
@@ -1115,6 +1152,15 @@
                         else label.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
                     }
                 });
+                
+                // La Fascia Allenamento è visibile/modificabile SOLO dagli Admin.
+                // Se l'utente non è admin, la disabilitiamo sempre.
+                const fasciaEl = document.getElementById('t_fascia');
+                if(fasciaEl) {
+                    fasciaEl.disabled = isReadOnly || !this.state.isAdmin;
+                    if(fasciaEl.disabled) fasciaEl.classList.add('opacity-60', 'cursor-not-allowed');
+                    else fasciaEl.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
 
                 const btnSave = document.getElementById('btnSaveTesserato');
                 if(isReadOnly) btnSave.classList.add('hidden');
@@ -1126,6 +1172,7 @@
                 document.querySelectorAll('#modalTesserato input:not([type=file]):not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
                 document.querySelectorAll('#modalTesserato input[type=checkbox]').forEach(el => el.checked = false);
                 document.getElementById('t_ruolo').value = 'Atleta';
+                document.getElementById('t_fascia').value = 'Da assegnare';
                 document.getElementById('boxGenitore').classList.remove('ring-2', 'ring-orange-200', 'p-3', 'rounded-xl', 'bg-orange-50/50');
                 document.getElementById('avvisoMinore').innerText = '(Obbligatorio se minorenne)';
                 
@@ -1150,6 +1197,7 @@
                 ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
                 document.getElementById('t_flag_medico').checked = !!a.flag_medico;
                 document.getElementById('t_flag_docs').checked = !!a.flag_docs;
+                document.getElementById('t_fascia').value = a.fascia || 'Da assegnare';
 
                 ['privacy','ci','cf'].forEach(k => {
                     const val = a['doc_'+k];
@@ -1181,6 +1229,7 @@
                 const id = document.getElementById('t_id').value;
                 const d = {};
                 ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => d[k] = document.getElementById('t_'+k).value);
+                d.fascia = document.getElementById('t_fascia').value;
                 d.flag_medico = document.getElementById('t_flag_medico').checked;
                 d.flag_docs = document.getElementById('t_flag_docs').checked;
                 ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value);
@@ -1397,6 +1446,7 @@
                 
                 const docPdf = new window.jspdf.jsPDF(); 
                 
+                // Header ufficiale
                 docPdf.setFillColor(0, 51, 160);
                 docPdf.rect(0, 0, 210, 30, 'F');
                 docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(18); docPdf.setTextColor(255, 255, 255);
@@ -1404,6 +1454,7 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(255, 228, 94);
                 docPdf.text(`Borgo Don Bosco APS - Generato il ${new Date().toLocaleDateString('it-IT')}`, 105, 22, { align: "center" }); 
                 
+                // Filtra solo Manifestazioni e Gare, e oridna per data
                 const eventiValidi = this.state.eventi.filter(e => e.tipo === 'Gara/Competizione' || e.tipo === 'Esibizione/Sfilata')
                                      .sort((a,b) => new Date(a.data) - new Date(b.data));
 
@@ -1411,12 +1462,15 @@
 
                 let y = 40;
                 
+                // Pesi per l'ordinamento
                 const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Musico under': 3, 'Sbandieratore': 4, 'Sbandieratore under': 5, 'Dirigente': 6, 'Socio Sostenitore': 7 };
                 const getRoleWeight = (r) => roleOrder[r] || 99;
 
                 eventiValidi.forEach(e => {
+                    // Controlla fine pagina
                     if(y > 260) { docPdf.addPage(); y = 20; }
                     
+                    // Box Titolo Evento
                     docPdf.setFillColor(240, 244, 248);
                     docPdf.rect(20, y-5, 170, 8, 'F');
                     docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(11); docPdf.setTextColor(0, 51, 160);
@@ -1425,13 +1479,10 @@
                     
                     docPdf.setTextColor(0);
                     
-                    let atletiTarget = this.state.atleti;
-                    const grp = e.gruppo || 'Tutti';
-                    if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
-                    else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
-                    else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
-                    else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
+                    // Estrai atleti convocati in base al gruppo e alla logica multifascicolo
+                    let atletiTarget = this.state.atleti.filter(a => this.isMatch(a.ruolo || 'Atleta', e.gruppo || 'Tutti'));
                     
+                    // Ordina atleti
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
                         const wB = getRoleWeight(b.ruolo);
@@ -1460,7 +1511,7 @@
                             y += 8;
                         });
                     }
-                    y += 5;
+                    y += 5; // Spazio extra tra gli eventi
                 });
                 
                 docPdf.save(`Report_Uscite_BDB.pdf`);
@@ -1491,27 +1542,21 @@
                 
                 let eventiTarget = this.state.eventi;
 
+                // Filtro per Admin per Eventi Archiviati o Attivi
                 if (this.state.isAdmin) {
                     eventiTarget = eventiTarget.filter(e => !!e.archiviato === this.state.mostraArchiviati);
                 } else {
+                    // L'utente base vede solo gli eventi ATTIVI
                     eventiTarget = eventiTarget.filter(e => !e.archiviato);
                 }
                 
+                // Filtro per Gruppo (ora basato sulla nuova logica multi-fascicolo)
                 if(!this.state.isAdmin) {
                     const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                     
                     eventiTarget = eventiTarget.filter(e => {
                         const grp = e.gruppo || 'Tutti';
-                        if (grp === 'Tutti') return true;
-                        
-                        return myFascicoli.some(myF => {
-                            const myRole = myF.ruolo || 'Atleta';
-                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                            return false;
-                        });
+                        return myFascicoli.some(myF => this.isMatch(myF.ruolo || 'Atleta', grp));
                     });
                 }
 
@@ -1527,15 +1572,8 @@
                         const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                         const grp = e.gruppo || 'Tutti';
                         
-                        const eligibleFascicoli = myFascicoli.filter(myF => {
-                            const myRole = myF.ruolo || 'Atleta';
-                            if (grp === 'Tutti') return true;
-                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                            return false;
-                        });
+                        // Trova quali fascicoli del genitore loggato hanno diritto di vedere questo evento
+                        const eligibleFascicoli = myFascicoli.filter(myF => this.isMatch(myF.ruolo || 'Atleta', grp));
 
                         if(eligibleFascicoli.length > 0) {
                             userAction = '<div class="mt-4 pt-4 border-t border-gray-100 space-y-3">';
@@ -1616,12 +1654,8 @@
                 document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
                 document.getElementById('appelloGruppo').innerText = (e.gruppo || 'Tutti');
                 
-                let atletiTarget = this.state.atleti;
                 const grp = e.gruppo || 'Tutti';
-                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
-                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
-                else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
-                else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
+                let atletiTarget = this.state.atleti.filter(a => this.isMatch(a.ruolo || 'Atleta', grp));
                 
                 if(atletiTarget.length === 0) {
                     document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-400 mt-20 font-bold"><i class="fa-solid fa-ghost text-4xl mb-4 opacity-50 block"></i>Nessun tesserato trovato in questo gruppo.</div>`;
@@ -1634,11 +1668,13 @@
                         if(rsvp==='si') rsvpBadge = `<span class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-check"></i> Disponibile</span>`;
                         if(rsvp==='no') rsvpBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-xmark"></i> Assente</span>`;
 
+                        const fasciaBadge = (a.fascia && a.fascia !== 'Da assegnare' && (a.ruolo||'').includes('under')) ? ` - <span class="text-purple-600">${a.fascia}</span>` : '';
+
                         return `
                         <div class="flex items-center justify-between p-5 bg-white mb-4 rounded-3xl shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100">
                             <div>
                                 <p class="font-extrabold text-gray-800 text-lg flex items-center flex-wrap gap-1">${this.esc(a.nome)} ${rsvpBadge}</p>
-                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')}</p>
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')}${fasciaBadge}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
                                 <input type="checkbox" class="sr-only peer appello-checkbox" ${e.presenzeFisiche&&e.presenzeFisiche[a.id] ? 'checked' : ''} onchange="app.toggleP('${id}', '${a.id}', this.checked)">
