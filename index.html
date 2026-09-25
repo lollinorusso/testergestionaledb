@@ -404,8 +404,10 @@
                             <select id="t_ruolo" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition cursor-pointer" onchange="app.checkRuolo()">
                                 <option value="Atleta">Atleta (Generico)</option>
                                 <option value="Sbandieratore">Sbandieratore</option>
+                                <option value="Sbandieratore under">Sbandieratore under</option>
                                 <option value="Musico (Tamburino)">Musico (Tamburino)</option>
                                 <option value="Musico (Chiarina)">Musico (Chiarina)</option>
+                                <option value="Musico under">Musico under</option>
                                 <option value="Dirigente">Dirigente</option>
                                 <option value="Socio Sostenitore">Socio Sostenitore</option>
                             </select>
@@ -690,8 +692,8 @@
                             adminEls.forEach(el => el.classList.add('hidden'));
                             document.getElementById('nav-finanza').classList.remove('flex');
                             document.getElementById('nav-magazzino').classList.remove('flex');
-                            document.getElementById('anagraficaTitle').innerText = "Il Mio Fascicolo";
-                            document.getElementById('labelAnagraficaNav').innerText = "Il Mio Fascicolo";
+                            document.getElementById('anagraficaTitle').innerText = "I Tuoi Fascicoli";
+                            document.getElementById('labelAnagraficaNav').innerText = "I Tuoi Fascicoli";
                         }
 
                         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
@@ -828,15 +830,18 @@
                         if(this.state.isAdmin) {
                             shouldNotify = true;
                         } else {
-                            const myFascicolo = this.state.atleti.find(a => a.ownerUid === this.state.user.uid);
-                            const myRole = myFascicolo ? (myFascicolo.ruolo || 'Atleta') : 'Atleta';
+                            const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                             const grp = newEventi[0].gruppo || 'Tutti';
                             
-                            if (grp === 'Tutti') shouldNotify = true;
-                            else if (grp === 'Tamburi' && myRole.includes('Tamburino')) shouldNotify = true;
-                            else if (grp === 'Chiarine' && myRole.includes('Chiarina')) shouldNotify = true;
-                            else if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina'))) shouldNotify = true;
-                            else if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) shouldNotify = true;
+                            shouldNotify = myFascicoli.some(myF => {
+                                const myRole = myF.ruolo || 'Atleta';
+                                if (grp === 'Tutti') return true;
+                                if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
+                                if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                                if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                                if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                                return false;
+                            });
                         }
                         
                         if(shouldNotify) {
@@ -1392,7 +1397,6 @@
                 
                 const docPdf = new window.jspdf.jsPDF(); 
                 
-                // Header ufficiale
                 docPdf.setFillColor(0, 51, 160);
                 docPdf.rect(0, 0, 210, 30, 'F');
                 docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(18); docPdf.setTextColor(255, 255, 255);
@@ -1400,7 +1404,6 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(255, 228, 94);
                 docPdf.text(`Borgo Don Bosco APS - Generato il ${new Date().toLocaleDateString('it-IT')}`, 105, 22, { align: "center" }); 
                 
-                // Filtra solo Manifestazioni e Gare, e oridna per data
                 const eventiValidi = this.state.eventi.filter(e => e.tipo === 'Gara/Competizione' || e.tipo === 'Esibizione/Sfilata')
                                      .sort((a,b) => new Date(a.data) - new Date(b.data));
 
@@ -1408,15 +1411,12 @@
 
                 let y = 40;
                 
-                // Pesi per l'ordinamento: Chiarina = 1, Tamburino = 2, Sbandieratore = 3
-                const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Sbandieratore': 3 };
+                const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Musico under': 3, 'Sbandieratore': 4, 'Sbandieratore under': 5, 'Dirigente': 6, 'Socio Sostenitore': 7 };
                 const getRoleWeight = (r) => roleOrder[r] || 99;
 
                 eventiValidi.forEach(e => {
-                    // Controlla fine pagina
                     if(y > 260) { docPdf.addPage(); y = 20; }
                     
-                    // Box Titolo Evento
                     docPdf.setFillColor(240, 244, 248);
                     docPdf.rect(20, y-5, 170, 8, 'F');
                     docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(11); docPdf.setTextColor(0, 51, 160);
@@ -1425,15 +1425,13 @@
                     
                     docPdf.setTextColor(0);
                     
-                    // Estrai atleti convocati
                     let atletiTarget = this.state.atleti;
                     const grp = e.gruppo || 'Tutti';
-                    if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino'));
-                    else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina'));
+                    if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
+                    else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
                     else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                     else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                     
-                    // Ordina atleti per Ruolo (Chiarine -> Tamburi -> Sba) poi Alfabetico
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
                         const wB = getRoleWeight(b.ruolo);
@@ -1462,7 +1460,7 @@
                             y += 8;
                         });
                     }
-                    y += 5; // Spazio extra tra gli eventi
+                    y += 5;
                 });
                 
                 docPdf.save(`Report_Uscite_BDB.pdf`);
@@ -1493,27 +1491,27 @@
                 
                 let eventiTarget = this.state.eventi;
 
-                // Filtro per Admin per Eventi Archiviati o Attivi
                 if (this.state.isAdmin) {
                     eventiTarget = eventiTarget.filter(e => !!e.archiviato === this.state.mostraArchiviati);
                 } else {
-                    // L'utente base vede solo gli eventi ATTIVI
                     eventiTarget = eventiTarget.filter(e => !e.archiviato);
                 }
                 
-                // Filtro per Gruppo
                 if(!this.state.isAdmin) {
-                    const myFascicolo = this.state.atleti.find(a => a.ownerUid === this.state.user.uid);
-                    const myRole = myFascicolo ? (myFascicolo.ruolo || 'Atleta') : 'Atleta';
+                    const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                     
                     eventiTarget = eventiTarget.filter(e => {
                         const grp = e.gruppo || 'Tutti';
                         if (grp === 'Tutti') return true;
-                        if (grp === 'Tamburi' && myRole.includes('Tamburino')) return true;
-                        if (grp === 'Chiarine' && myRole.includes('Chiarina')) return true;
-                        if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina'))) return true;
-                        if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                        return false;
+                        
+                        return myFascicoli.some(myF => {
+                            const myRole = myF.ruolo || 'Atleta';
+                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                            return false;
+                        });
                     });
                 }
 
@@ -1526,15 +1524,34 @@
                     
                     let userAction = '';
                     if(!this.state.isAdmin) {
-                        const myStatus = disp[this.state.user.uid];
-                        userAction = `
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">La tua disponibilità</p>
-                            <div class="flex gap-2">
-                                <button type="button" onclick="app.setDisponibilita('${e.id}', 'si')" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all ${myStatus==='si' ? 'bg-emerald-500 text-white shadow-lg scale-105' : 'bg-gray-50 text-gray-500 hover:bg-emerald-50 hover:text-emerald-600'}"><i class="fa-solid fa-check mr-1"></i> Ci sarò</button>
-                                <button type="button" onclick="app.setDisponibilita('${e.id}', 'no')" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all ${myStatus==='no' ? 'bg-red-500 text-white shadow-lg scale-105' : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600'}"><i class="fa-solid fa-xmark mr-1"></i> Assente</button>
-                            </div>
-                        </div>`;
+                        const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
+                        const grp = e.gruppo || 'Tutti';
+                        
+                        const eligibleFascicoli = myFascicoli.filter(myF => {
+                            const myRole = myF.ruolo || 'Atleta';
+                            if (grp === 'Tutti') return true;
+                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                            return false;
+                        });
+
+                        if(eligibleFascicoli.length > 0) {
+                            userAction = '<div class="mt-4 pt-4 border-t border-gray-100 space-y-3">';
+                            eligibleFascicoli.forEach(f => {
+                                const myStatus = disp[f.id];
+                                userAction += `
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 text-center">Disponibilità: ${this.esc(f.nome)}</p>
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="app.setDisponibilita('${e.id}', '${f.id}', 'si')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all ${myStatus==='si' ? 'bg-emerald-500 text-white shadow-md' : 'bg-gray-50 text-gray-500 hover:bg-emerald-50 hover:text-emerald-600'}"><i class="fa-solid fa-check mr-1"></i> Presente</button>
+                                        <button type="button" onclick="app.setDisponibilita('${e.id}', '${f.id}', 'no')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all ${myStatus==='no' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600'}"><i class="fa-solid fa-xmark mr-1"></i> Assente</button>
+                                    </div>
+                                </div>`;
+                            });
+                            userAction += '</div>';
+                        }
                     }
 
                     const adminAction = this.state.isAdmin ? `
@@ -1556,7 +1573,7 @@
                             </div>
                             ${this.state.isAdmin ? `
                             <div class="flex gap-2">
-                                <button type="button" onclick="app.archiviaEvento('${e.id}',${!e.archiviato})" class="text-gray-400 hover:text-orange-500 p-2 bg-gray-50 rounded-lg transition border border-gray-100" title="${e.archiviato ? 'Ripristina Evento' : 'Archivia Evento'}"><i class="fa-solid ${e.archiviato ? 'fa-box-open' : 'fa-box-archive'}"></i></button>
+                                <button type="button" onclick="app.archiviaEvento('${e.id}', ${!e.archiviato})" class="text-gray-400 hover:text-orange-500 p-2 bg-gray-50 rounded-lg transition border border-gray-100" title="${e.archiviato ? 'Ripristina Evento' : 'Archivia Evento'}"><i class="fa-solid ${e.archiviato ? 'fa-box-open' : 'fa-box-archive'}"></i></button>
                                 <button type="button" onclick="app.deleteDocRef('eventi', '${e.id}')" class="text-gray-400 hover:text-red-500 p-2 bg-gray-50 rounded-lg transition border border-gray-100" title="Elimina Definitivamente"><i class="fa-solid fa-times text-lg"></i></button>
                             </div>
                             ` : ''}
@@ -1588,8 +1605,8 @@
                 this.closeModal('modalEvento'); this.ui.toast("Evento Creato!");
             },
             
-            setDisponibilita: async function(eId, stato) {
-                await updateDoc(doc(db, "eventi", eId), { [`disponibilita.${this.state.user.uid}`]: stato });
+            setDisponibilita: async function(eId, fascicoloId, stato) {
+                await updateDoc(doc(db, "eventi", eId), { [`disponibilita.${fascicoloId}`]: stato });
                 this.ui.toast(stato === 'si' ? "Disponibilità confermata!" : "Assenza registrata.");
             },
             
@@ -1601,8 +1618,8 @@
                 
                 let atletiTarget = this.state.atleti;
                 const grp = e.gruppo || 'Tutti';
-                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino'));
-                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina'));
+                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
+                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
                 else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                 else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                 
@@ -1612,7 +1629,7 @@
                     document.getElementById('countAssenti').innerText = '0';
                 } else {
                     document.getElementById('appelloList').innerHTML = atletiTarget.map(a => {
-                        const rsvp = e.disponibilita && e.disponibilita[a.ownerUid] ? e.disponibilita[a.ownerUid] : 'boh';
+                        const rsvp = e.disponibilita && e.disponibilita[a.id] ? e.disponibilita[a.id] : 'boh';
                         let rsvpBadge = `<span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-400 font-bold ml-2">? Non espresso</span>`;
                         if(rsvp==='si') rsvpBadge = `<span class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-check"></i> Disponibile</span>`;
                         if(rsvp==='no') rsvpBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-xmark"></i> Assente</span>`;
@@ -1707,4 +1724,3 @@
     </script>
 </body>
 </html>
-```eof
