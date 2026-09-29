@@ -1140,29 +1140,52 @@
                 const card = document.getElementById('tesseraDaScaricare');
                 const nome = document.getElementById('cardNome').innerText || 'Atleta';
                 
-                // Rimuove momentaneamente trasformazioni per il rendering di html2canvas
+                // Rimuove momentaneamente trasformazioni per il rendering corretto di html2canvas
                 const oldTransform = card.style.transform;
                 card.style.transform = 'none';
                 
                 try {
                     this.ui.toast("Generazione immagine in corso...", "info");
+                    
                     const canvas = await html2canvas(card, { 
                         scale: 3, // Alta risoluzione
                         backgroundColor: null,
-                        useCORS: true // Per permettere il rendering dell'immagine profilo esterna
+                        useCORS: true // Essenziale per le immagini esterne
                     });
                     
-                    const link = document.createElement('a');
-                    link.download = `Tessera_BDB_${nome.replace(/\s+/g, '_')}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
+                    card.style.transform = oldTransform; // Ripristina subito la visuale
+
+                    canvas.toBlob(async (blob) => {
+                        if (!blob) throw new Error("Generazione fallita");
+
+                        const file = new File([blob], `Tessera_BDB_${nome.replace(/\s+/g, '_')}.png`, { type: "image/png" });
+
+                        // Controlla se il dispositivo supporta la condivisione nativa (iOS/Android)
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            try {
+                                await navigator.share({
+                                    title: 'Tessera Borgo Don Bosco',
+                                    files: [file]
+                                });
+                                this.ui.toast("Tessera elaborata!");
+                            } catch (error) {
+                                console.log("Condivisione annullata dall'utente");
+                            }
+                        } else {
+                            // Fallback classico per PC Desktop
+                            const link = document.createElement('a');
+                            link.download = file.name;
+                            link.href = URL.createObjectURL(blob);
+                            link.click();
+                            URL.revokeObjectURL(link.href);
+                            this.ui.toast("Tessera scaricata!");
+                        }
+                    }, 'image/png');
                     
-                    this.ui.toast("Tessera salvata in Galleria!");
                 } catch(e) {
-                    this.ui.error("Errore", "Impossibile salvare l'immagine.");
-                    console.error(e);
-                } finally {
                     card.style.transform = oldTransform;
+                    this.ui.error("Errore", "Impossibile elaborare l'immagine.");
+                    console.error(e);
                 }
             },
 
