@@ -79,6 +79,26 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
+    <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 pb-[env(safe-area-inset-bottom)]">
+        <div class="text-center max-w-sm w-full">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-28 h-28 mx-auto rounded-3xl shadow-glow mb-6 border-2 border-bdb-yellow object-cover">
+            <h2 class="text-3xl font-extrabold mb-2 tracking-tight">Installa l'App</h2>
+            <p class="text-blue-100 mb-8 text-sm leading-relaxed">Per ricevere le notifiche di convocazione e usare il gestionale al meglio, installa l'app sulla Home del tuo telefono.</p>
+            
+            <div id="pwa-ios" class="hidden bg-white/10 p-6 rounded-3xl border border-white/20 text-left space-y-5 shadow-lg">
+                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-arrow-up-from-bracket"></i></div><p class="text-sm font-bold leading-tight">1. Premi il tasto <span class="text-bdb-yellow">Condividi</span> nella barra in basso di Safari</p></div>
+                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-square-plus"></i></div><p class="text-sm font-bold leading-tight">2. Scorri e fai tap su <span class="text-bdb-yellow">"Aggiungi alla schermata Home"</span></p></div>
+            </div>
+            
+            <div id="pwa-android" class="hidden bg-white/10 p-6 rounded-3xl border border-white/20 text-left space-y-5 shadow-lg">
+                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-ellipsis-vertical"></i></div><p class="text-sm font-bold leading-tight">1. Premi i <span class="text-bdb-yellow">3 puntini</span> in alto a destra su Chrome</p></div>
+                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-mobile-screen"></i></div><p class="text-sm font-bold leading-tight">2. Fai tap su <span class="text-bdb-yellow">"Aggiungi a schermata Home"</span></p></div>
+            </div>
+            
+            <button onclick="document.getElementById('pwaOverlay').classList.add('hidden')" class="mt-10 text-white/50 text-xs font-bold uppercase tracking-widest hover:text-white transition pb-4">Continua dal browser web</button>
+        </div>
+    </div>
+
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
             <div class="w-full md:w-5/12 bg-bdb-blue p-8 flex flex-col items-center justify-center text-white relative overflow-hidden hidden md:flex">
@@ -566,7 +586,7 @@
                 <div>
                     <label class="block text-xs font-bold text-bdb-blue uppercase tracking-wider mb-2">Gruppo Destinatario <span class="text-red-500">*</span></label>
                     <select id="e_gruppo" class="w-full p-3.5 border-2 border-blue-200 bg-blue-50 rounded-xl text-base font-extrabold text-bdb-blue outline-none focus:ring-2 focus:ring-bdb-blue cursor-pointer transition shadow-sm">
-                        <option value="Tutti">Tutti</option>
+                        <option value="Tutti">Tutti (Tamburi, Chiarine e Sbandieratori)</option>
                         <option value="Sbandieratori">Solo Sbandieratori (Grandi)</option>
                         <option value="Tamburi">Solo Tamburi (Grandi)</option>
                         <option value="Chiarine">Solo Chiarine (Grandi)</option>
@@ -581,7 +601,7 @@
         </div>
     </div>
     
-    <!-- MODAL MAGAZZINO E OVERLAYS -->
+    <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -649,6 +669,17 @@
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+        // ==========================================
+        // CONFIGURAZIONE AMMINISTRATORI
+        // Aggiungi o rimuovi le email degli admin qui sotto (tra gli apici, separate da virgola)
+        // ==========================================
+        const ADMIN_EMAILS = [
+            'lollinorusso@icloud.com',
+            'segreteria@borgodonbosco.com',
+            'gianluigi_delmastro@hotmail.it'
+        ];
+        // ==========================================
+
         const firebaseConfig = {
             apiKey: "AIzaSyAUYhZUZ3lUBwISXXcfzLoRt4SVNDFwqr4",
             authDomain: "testergestionaledb.firebaseapp.com",
@@ -677,7 +708,6 @@
 
             esc: (s) => String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
 
-            // Helper centralizzato per le verifiche di gruppo e fascia
             isMatch: function(role, grp) {
                 if (grp === 'Tutti') return true;
                 if (grp === 'Tamburi' && role === 'Musico (Tamburino)') return true;
@@ -691,6 +721,8 @@
             },
 
             init: function() {
+                this.checkPWA();
+
                 document.getElementById('emailLoginBtn').addEventListener('click', () => this.login());
                 document.getElementById('googleLoginBtn').addEventListener('click', () => this.googleLogin());
                 document.getElementById('resetPassBtn').addEventListener('click', () => this.resetPassword());
@@ -699,8 +731,7 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         this.state.user = user;
-                        const adminEmails = ['lollinorusso@icloud.com', 'segreteria@borgodonbosco.com', 'gianluigi_delmastro@hotmail.it'];
-                        this.state.isAdmin = adminEmails.includes((user.email || '').toLowerCase());
+                        this.state.isAdmin = ADMIN_EMAILS.includes((user.email || '').toLowerCase());
                         
                         document.getElementById('authScreen').classList.add('hidden');
                         document.getElementById('mainApp').classList.remove('hidden');
@@ -747,6 +778,24 @@
                         document.getElementById('authPassword').value = '';
                     }
                 });
+            },
+
+            checkPWA: function() {
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                
+                if (isMobile && !isStandalone) {
+                    const overlay = document.getElementById('pwaOverlay');
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+                    
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    if (isIOS) {
+                        document.getElementById('pwa-ios').classList.remove('hidden');
+                    } else {
+                        document.getElementById('pwa-android').classList.remove('hidden');
+                    }
+                }
             },
 
             togglePassword: function() {
@@ -1154,7 +1203,6 @@
                 });
                 
                 // La Fascia Allenamento è visibile/modificabile SOLO dagli Admin.
-                // Se l'utente non è admin, la disabilitiamo sempre.
                 const fasciaEl = document.getElementById('t_fascia');
                 if(fasciaEl) {
                     fasciaEl.disabled = isReadOnly || !this.state.isAdmin;
@@ -1479,8 +1527,13 @@
                     
                     docPdf.setTextColor(0);
                     
-                    // Estrai atleti convocati in base al gruppo e alla logica multifascicolo
-                    let atletiTarget = this.state.atleti.filter(a => this.isMatch(a.ruolo || 'Atleta', e.gruppo || 'Tutti'));
+                    // Estrai atleti convocati
+                    let atletiTarget = this.state.atleti;
+                    const grp = e.gruppo || 'Tutti';
+                    if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
+                    else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
+                    else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
+                    else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                     
                     // Ordina atleti
                     atletiTarget.sort((a,b) => {
@@ -1550,13 +1603,25 @@
                     eventiTarget = eventiTarget.filter(e => !e.archiviato);
                 }
                 
-                // Filtro per Gruppo (ora basato sulla nuova logica multi-fascicolo)
+                // Filtro per Gruppo
                 if(!this.state.isAdmin) {
                     const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                     
                     eventiTarget = eventiTarget.filter(e => {
                         const grp = e.gruppo || 'Tutti';
-                        return myFascicoli.some(myF => this.isMatch(myF.ruolo || 'Atleta', grp));
+                        if (grp === 'Tutti') return true;
+                        
+                        return myFascicoli.some(myF => {
+                            const myRole = myF.ruolo || 'Atleta';
+                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                            if (grp === 'Sbandieratori under' && myRole.includes('Sbandieratore under')) return true;
+                            if (grp === 'Musici under' && myRole.includes('Musico under')) return true;
+                            if (grp === 'Tutti under' && (myRole.includes('Musico under') || myRole.includes('Sbandieratore under'))) return true;
+                            return false;
+                        });
                     });
                 }
 
@@ -1572,8 +1637,18 @@
                         const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                         const grp = e.gruppo || 'Tutti';
                         
-                        // Trova quali fascicoli del genitore loggato hanno diritto di vedere questo evento
-                        const eligibleFascicoli = myFascicoli.filter(myF => this.isMatch(myF.ruolo || 'Atleta', grp));
+                        const eligibleFascicoli = myFascicoli.filter(myF => {
+                            const myRole = myF.ruolo || 'Atleta';
+                            if (grp === 'Tutti') return true;
+                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                            if (grp === 'Sbandieratori under' && myRole.includes('Sbandieratore under')) return true;
+                            if (grp === 'Musici under' && myRole.includes('Musico under')) return true;
+                            if (grp === 'Tutti under' && (myRole.includes('Musico under') || myRole.includes('Sbandieratore under'))) return true;
+                            return false;
+                        });
 
                         if(eligibleFascicoli.length > 0) {
                             userAction = '<div class="mt-4 pt-4 border-t border-gray-100 space-y-3">';
@@ -1654,8 +1729,15 @@
                 document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
                 document.getElementById('appelloGruppo').innerText = (e.gruppo || 'Tutti');
                 
+                let atletiTarget = this.state.atleti;
                 const grp = e.gruppo || 'Tutti';
-                let atletiTarget = this.state.atleti.filter(a => this.isMatch(a.ruolo || 'Atleta', grp));
+                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino'));
+                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina'));
+                else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
+                else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
+                else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore under'));
+                else if(grp === 'Musici under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico under'));
+                else if(grp === 'Tutti under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore under') || (a.ruolo||'').includes('Musico under'));
                 
                 if(atletiTarget.length === 0) {
                     document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-400 mt-20 font-bold"><i class="fa-solid fa-ghost text-4xl mb-4 opacity-50 block"></i>Nessun tesserato trovato in questo gruppo.</div>`;
