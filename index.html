@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
     
-    <!-- PWA & Add to Home Screen Icons -->
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3">
     <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3">
     <link rel="apple-touch-icon" sizes="152x152" href="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3">
@@ -258,7 +257,6 @@
                     </div>
                 </div>
 
-                <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -293,7 +291,6 @@
                     </div>
                 </div>
 
-                <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -330,7 +327,6 @@
                     </div>
                 </div>
 
-                <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -356,7 +352,6 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
-                <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -389,7 +384,6 @@
         </div>
     </div>
 
-    <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
             <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
@@ -552,7 +546,6 @@
         </div>
     </div>
 
-    <!-- MODAL QUOTA -->
     <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Emetti Quota</h3><button type="button" onclick="app.closeModal('modalQuota')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -575,7 +568,6 @@
         </div>
     </div>
     
-    <!-- MODAL EVENTO -->
     <div id="modalEvento" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Nuovo Evento</h3><button type="button" onclick="app.closeModal('modalEvento')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -601,7 +593,6 @@
         </div>
     </div>
     
-    <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -696,7 +687,7 @@
         const formatter = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
 
         const app = {
-            state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [], notificheAttive: false, primoAvvioNotifiche: true, mostraArchiviati: false },
+            state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [], notificheAttive: false, primoAvvioNotifiche: true, primoAvvioAtleti: true, mostraArchiviati: false },
             _unsubs: [],
             
             ui: {
@@ -877,9 +868,24 @@
             loadData: function() {
                 this._unsubs.forEach(fn => fn());
                 this._unsubs = [];
+                
+                this.state.primoAvvioAtleti = true;
+                this.state.primoAvvioNotifiche = true;
+                
                 const qAtleti = this.state.isAdmin ? query(collection(db, "fascicoli")) : query(collection(db, "fascicoli"), where("ownerUid", "==", this.state.user.uid));
                 this._unsubs.push(onSnapshot(qAtleti, (snap) => {
-                    this.state.atleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    const newAtleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    
+                    // Admin Push Notification for New Tesserati
+                    if (this.state.isAdmin && !this.state.primoAvvioAtleti && newAtleti.length > this.state.atleti.length) {
+                        const oldIds = new Set(this.state.atleti.map(a => a.id));
+                        const added = newAtleti.filter(a => !oldIds.has(a.id));
+                        added.forEach(nuovo => {
+                            this.showNativeNotification("Nuova Iscrizione", `${nuovo.nome} si è appena registrato!`);
+                        });
+                    }
+
+                    this.state.atleti = newAtleti;
                     this.state.atleti.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
                     this.renderAnagrafica(); 
                     this.renderEventi(); 
@@ -890,6 +896,8 @@
                     } else {
                         this.renderUserFinance();
                     }
+                    
+                    setTimeout(() => { this.state.primoAvvioAtleti = false; }, 2000);
                 }, (err) => this.ui.error("Errore Dati", "Impossibile caricare i fascicoli: " + err.message)));
 
                 this._unsubs.push(onSnapshot(query(collection(db, "news"), orderBy("date", "desc")), (snap) => {
@@ -1731,8 +1739,8 @@
                 
                 let atletiTarget = this.state.atleti;
                 const grp = e.gruppo || 'Tutti';
-                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino'));
-                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina'));
+                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
+                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
                 else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                 else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                 else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore under'));
