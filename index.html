@@ -23,9 +23,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- External Libraries (jspdf, SweetAlert2, HTML2Canvas) -->
+    <!-- External Libraries (jspdf & SweetAlert2 Modals) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -76,39 +76,9 @@
         tbody tr { transition: all 0.15s ease; }
         tbody tr:hover { background-color: #F1F5F9; }
         .swal2-popup { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 1.5rem !important; }
-        
-        /* Stile per la Tessera Digitale */
-        .digital-card {
-            background: linear-gradient(135deg, #002266 0%, #0033A0 100%);
-            box-shadow: 0 20px 40px rgba(0, 51, 160, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
-        }
-        .digital-card::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,209,0,0.1) 0%, transparent 60%); pointer-events: none;
-        }
     </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
-
-    <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 pb-[env(safe-area-inset-bottom)]">
-        <div class="text-center max-w-sm w-full">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-28 h-28 mx-auto rounded-3xl shadow-glow mb-6 border-2 border-bdb-yellow object-cover">
-            <h2 class="text-3xl font-extrabold mb-2 tracking-tight">Installa l'App</h2>
-            <p class="text-blue-100 mb-8 text-sm leading-relaxed">Per ricevere le notifiche di convocazione e usare il gestionale al meglio, installa l'app sulla Home del tuo telefono.</p>
-            
-            <div id="pwa-ios" class="hidden bg-white/10 p-6 rounded-3xl border border-white/20 text-left space-y-5 shadow-lg">
-                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-arrow-up-from-bracket"></i></div><p class="text-sm font-bold leading-tight">1. Premi il tasto <span class="text-bdb-yellow">Condividi</span> nella barra in basso di Safari</p></div>
-                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-square-plus"></i></div><p class="text-sm font-bold leading-tight">2. Scorri e fai tap su <span class="text-bdb-yellow">"Aggiungi alla schermata Home"</span></p></div>
-            </div>
-            
-            <div id="pwa-android" class="hidden bg-white/10 p-6 rounded-3xl border border-white/20 text-left space-y-5 shadow-lg">
-                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-ellipsis-vertical"></i></div><p class="text-sm font-bold leading-tight">1. Premi i <span class="text-bdb-yellow">3 puntini</span> in alto a destra su Chrome</p></div>
-                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white text-bdb-blue rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm"><i class="fa-solid fa-mobile-screen"></i></div><p class="text-sm font-bold leading-tight">2. Fai tap su <span class="text-bdb-yellow">"Aggiungi a schermata Home"</span></p></div>
-            </div>
-            
-            <button onclick="document.getElementById('pwaOverlay').classList.add('hidden')" class="mt-10 text-white/50 text-xs font-bold uppercase tracking-widest hover:text-white transition pb-4">Continua dal browser web</button>
-        </div>
-    </div>
 
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
@@ -163,9 +133,11 @@
         </div>
     </div>
 
+    <!-- MAIN APP CONTAINER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
         
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-bdb-blue text-white flex flex-col shrink-0 shadow-2xl md:shadow-xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
             <div class="p-6 flex items-center justify-between border-b border-white/10">
                 <div class="flex items-center gap-3">
@@ -212,7 +184,9 @@
             </div>
         </aside>
 
+        <!-- MAIN CONTENT AREA -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
+            <!-- MOBILE HEADER -->
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-8 h-8 rounded-full border border-bdb-yellow object-cover">
@@ -223,12 +197,14 @@
 
             <main id="views-container" class="flex-1 overflow-y-auto relative bg-bdb-gray">
                 
+                <!-- VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section active p-4 md:p-8">
                     <header class="mb-8 mt-2 md:mt-0">
                         <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight" id="greetingTitle">Buongiorno!</h2>
                         <p class="text-gray-500 text-sm md:text-base">Benvenuto nella bacheca ufficiale dell'associazione.</p>
                     </header>
                     
+                    <!-- ADMIN STATS -->
                     <div id="adminStats" class="admin-only hidden grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
                         <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
                             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
@@ -244,7 +220,7 @@
                         </div>
                     </div>
 
-                    <!-- Notifiche Promo Banner -->
+                    <!-- PUSH NOTIFICATION PROMO -->
                     <div id="pushPromo" class="hidden bg-gradient-to-r from-bdb-blue to-blue-500 rounded-3xl shadow-glow p-6 mb-8 text-white flex flex-col md:flex-row items-center justify-between gap-4 transform transition-all hover:scale-[1.01]">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl shrink-0"><i class="fa-solid fa-bell"></i></div>
@@ -256,9 +232,10 @@
                         <button onclick="app.requestNotificationPermission()" class="w-full md:w-auto px-6 py-3 bg-white text-bdb-blue font-extrabold rounded-xl shadow-md hover:bg-gray-50 transition shrink-0">Attiva Ora</button>
                     </div>
 
-                    <!-- User Finance Alert Box -->
+                    <!-- USER FINANCE ALERT BOX -->
                     <div id="userFinanceBox"></div>
 
+                    <!-- NEWS FEED -->
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden mt-8">
                         <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Avvisi Direttivo</h3>
@@ -268,6 +245,7 @@
                     </div>
                 </div>
 
+                <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -302,6 +280,7 @@
                     </div>
                 </div>
 
+                <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -320,7 +299,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="finanzaStats"></div>
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
                         <div class="overflow-x-auto scrollbar-hide">
-                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
+                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
                                 <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
                                     <tr>
                                         <th class="p-5">Data</th>
@@ -338,6 +317,7 @@
                     </div>
                 </div>
 
+                <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -363,6 +343,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
+                <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
@@ -395,6 +376,7 @@
         </div>
     </div>
 
+    <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
             <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
@@ -457,20 +439,6 @@
                         <div class="md:col-span-2" id="boxGenitore">
                             <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Genitore / Tutore Legale <span class="text-orange-500" id="avvisoMinore">(Obbligatorio se minorenne)</span></label>
                             <input type="text" id="t_genitore" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Nome e Cognome del genitore">
-                        </div>
-                        
-                        <!-- Riquadro Fasce: Solo per Under e modificabile solo da Admin -->
-                        <div id="boxFascia" class="hidden md:col-span-2 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                            <label class="block text-xs font-bold text-bdb-blue mb-1.5 uppercase tracking-wider flex justify-between items-center">
-                                Fascia Allenamento 
-                                <span class="text-[10px] bg-white text-bdb-blue px-2 py-0.5 rounded border border-blue-100 normal-case font-bold"><i class="fa-solid fa-lock mr-1 text-gray-400"></i>Gestita dagli Allenatori</span>
-                            </label>
-                            <select id="t_fascia" class="w-full p-3.5 border border-blue-200 rounded-xl bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-extrabold text-bdb-blue transition cursor-pointer">
-                                <option value="Da assegnare">Da assegnare</option>
-                                <option value="Prima Fascia">Prima Fascia</option>
-                                <option value="Seconda Fascia">Seconda Fascia</option>
-                                <option value="Terza Fascia">Terza Fascia</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -594,6 +562,7 @@
         </div>
     </div>
     
+    <!-- MODAL EVENTO -->
     <div id="modalEvento" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Nuovo Evento</h3><button type="button" onclick="app.closeModal('modalEvento')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -619,6 +588,7 @@
         </div>
     </div>
     
+    <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -646,6 +616,7 @@
         </div>
     </div>
 
+    <!-- OVERLAY APPELLO -->
     <div id="modalAppello" class="fixed inset-0 bg-gray-50 z-[110] hidden flex flex-col transform transition-transform duration-300 translate-y-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-bdb-blue text-white flex flex-col shrink-0 shadow-xl relative z-10 rounded-b-3xl">
             <div class="p-5 flex items-center justify-between">
@@ -685,33 +656,35 @@
         <div class="w-full max-w-sm relative flex flex-col items-center">
             <button type="button" onclick="app.closeModal('modalTessera')" class="absolute -top-14 right-0 w-10 h-10 rounded-full bg-white/20 text-white hover:bg-white/30 flex items-center justify-center transition backdrop-blur-sm"><i class="fa-solid fa-times text-xl"></i></button>
             
-            <div id="tesseraDaScaricare" class="digital-card rounded-3xl p-6 relative overflow-hidden text-white w-full aspect-[85/54] transition-transform duration-300">
-                <!-- Sfondi circolari sfumati -->
-                <div class="absolute -right-16 -top-16 w-48 h-48 bg-[#FFD100] rounded-full opacity-20 blur-3xl"></div>
-                <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-[#FFE45E] rounded-full opacity-20 blur-3xl"></div>
+            <div id="tesseraDaScaricare" class="rounded-3xl relative overflow-hidden text-white w-full aspect-[85/54] shadow-2xl transition-transform duration-300 border border-white/10 bg-gradient-to-br from-[#002266] to-[#0033A0]">
+                <!-- Design Grafico Moderno Giallo -->
+                <div class="absolute top-0 -right-10 w-40 h-[150%] bg-gradient-to-b from-[#FFD100] to-[#FFE45E] opacity-90 origin-top-right -skew-x-[25deg] shadow-[-15px_0_30px_rgba(0,0,0,0.4)] z-0"></div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-[#FFE45E] rounded-full opacity-20 blur-3xl z-0"></div>
                 
-                <div class="relative z-10 flex flex-col h-full justify-between">
-                    <div class="flex justify-between items-start">
-                        <div class="pr-2">
-                            <h4 class="font-extrabold text-[10px] uppercase tracking-widest text-bdb-yellow mb-0.5 opacity-90">Borgo Don Bosco</h4>
-                            <h3 class="font-bold text-sm leading-tight uppercase tracking-wider text-white shadow-sm">Tessera Associativa</h3>
+                <div class="relative z-10 flex flex-col h-full justify-between p-5">
+                    <div class="flex justify-between items-start w-full">
+                        <div class="flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-12 h-12 rounded-full border-2 border-white shadow-lg shrink-0 object-cover bg-white" crossorigin="anonymous">
+                            <div>
+                                <h4 class="font-black text-[10px] uppercase tracking-widest text-[#FFD100] drop-shadow-sm mb-0.5">Borgo Don Bosco</h4>
+                                <h3 class="font-bold text-xs leading-tight uppercase tracking-wider text-white shadow-sm">Tessera<br>Associativa</h3>
+                            </div>
                         </div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-12 h-12 rounded-full border-2 border-bdb-yellow shadow-md shrink-0 object-cover bg-white" crossorigin="anonymous">
+                        <!-- Anno spostato in alto a destra sopra la fascia gialla -->
+                        <div class="bg-white/95 px-3 py-1.5 rounded-xl border-2 border-white text-[#0033A0] font-black text-sm tracking-widest shadow-lg transform rotate-3">
+                            <span id="cardAnno"></span>
+                        </div>
                     </div>
                     
-                    <div class="flex items-end gap-4 mt-auto">
+                    <div class="flex items-end gap-3 mt-auto">
                         <!-- Box Foto Tesserato -->
-                        <div class="w-16 h-16 rounded-xl bg-white/10 border-2 border-white/30 overflow-hidden shrink-0 shadow-inner" id="cardFoto">
+                        <div class="w-[60px] h-[60px] rounded-xl bg-white border-2 border-[#FFD100] overflow-hidden shrink-0 shadow-lg relative z-10" id="cardFoto">
                             <!-- La foto verrà iniettata via JS -->
                         </div>
-                        <div class="overflow-hidden pb-1">
-                            <p class="text-xl font-extrabold truncate drop-shadow-md tracking-tight leading-none mb-1" id="cardNome"></p>
-                            <p class="text-[10px] text-blue-200 uppercase font-extrabold tracking-widest" id="cardRuolo"></p>
+                        <div class="overflow-hidden flex-1 z-10 bg-black/25 p-2 rounded-xl backdrop-blur-md border border-white/10 shadow-inner">
+                            <p class="text-base sm:text-[17px] font-black text-white drop-shadow-md tracking-tight leading-none mb-1 break-words w-full" id="cardNome"></p>
+                            <p class="text-[9px] sm:text-[10px] text-[#FFE45E] uppercase font-extrabold tracking-widest drop-shadow-sm" id="cardRuolo"></p>
                         </div>
-                    </div>
-                    
-                    <div class="absolute bottom-5 right-5 text-right opacity-30">
-                        <p class="text-3xl font-black italic leading-none tracking-tighter" id="cardAnno"></p>
                     </div>
                 </div>
             </div>
@@ -719,7 +692,7 @@
             <p class="text-center text-white/50 text-xs mt-6 font-medium px-4">Mostra questa tessera per accedere alle agevolazioni o agli eventi del Borgo.</p>
             
             <button onclick="app.downloadTessera()" class="mt-4 bg-white/20 text-white px-6 py-3 rounded-xl font-bold border border-white/30 hover:bg-white/30 transition flex items-center justify-center gap-2 w-full backdrop-blur-sm shadow-lg">
-                <i class="fa-solid fa-download"></i> Salva come Immagine
+                <i class="fa-solid fa-download"></i> Salva in Galleria
             </button>
         </div>
     </div>
@@ -1167,14 +1140,16 @@
                 const card = document.getElementById('tesseraDaScaricare');
                 const nome = document.getElementById('cardNome').innerText || 'Atleta';
                 
+                // Rimuove momentaneamente trasformazioni per il rendering di html2canvas
+                const oldTransform = card.style.transform;
                 card.style.transform = 'none';
                 
                 try {
                     this.ui.toast("Generazione immagine in corso...", "info");
                     const canvas = await html2canvas(card, { 
-                        scale: 3, 
+                        scale: 3, // Alta risoluzione
                         backgroundColor: null,
-                        useCORS: true
+                        useCORS: true // Per permettere il rendering dell'immagine profilo esterna
                     });
                     
                     const link = document.createElement('a');
@@ -1186,6 +1161,8 @@
                 } catch(e) {
                     this.ui.error("Errore", "Impossibile salvare l'immagine.");
                     console.error(e);
+                } finally {
+                    card.style.transform = oldTransform;
                 }
             },
 
@@ -1685,6 +1662,7 @@
                 
                 const docPdf = new window.jspdf.jsPDF(); 
                 
+                // Header ufficiale
                 docPdf.setFillColor(0, 51, 160);
                 docPdf.rect(0, 0, 210, 30, 'F');
                 docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(18); docPdf.setTextColor(255, 255, 255);
@@ -1692,6 +1670,7 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(255, 228, 94);
                 docPdf.text(`Borgo Don Bosco APS - Generato il ${new Date().toLocaleDateString('it-IT')}`, 105, 22, { align: "center" }); 
                 
+                // Filtra solo Manifestazioni e Gare, e oridna per data
                 const eventiValidi = this.state.eventi.filter(e => e.tipo === 'Gara/Competizione' || e.tipo === 'Esibizione/Sfilata')
                                      .sort((a,b) => new Date(a.data) - new Date(b.data));
 
@@ -1699,12 +1678,15 @@
 
                 let y = 40;
                 
+                // Pesi per l'ordinamento: Chiarina = 1, Tamburino = 2, Sbandieratore = 3
                 const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Musico under': 3, 'Sbandieratore': 4, 'Sbandieratore under': 5, 'Dirigente': 6, 'Socio Sostenitore': 7 };
                 const getRoleWeight = (r) => roleOrder[r] || 99;
 
                 eventiValidi.forEach(e => {
+                    // Controlla fine pagina
                     if(y > 260) { docPdf.addPage(); y = 20; }
                     
+                    // Box Titolo Evento
                     docPdf.setFillColor(240, 244, 248);
                     docPdf.rect(20, y-5, 170, 8, 'F');
                     docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(11); docPdf.setTextColor(0, 51, 160);
@@ -1713,6 +1695,7 @@
                     
                     docPdf.setTextColor(0);
                     
+                    // Estrai atleti convocati
                     let atletiTarget = this.state.atleti;
                     const grp = e.gruppo || 'Tutti';
                     if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
@@ -1720,6 +1703,7 @@
                     else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                     else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                     
+                    // Ordina atleti per Ruolo (Chiarine -> Tamburi -> Sba) poi Alfabetico
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
                         const wB = getRoleWeight(b.ruolo);
@@ -1748,7 +1732,7 @@
                             y += 8;
                         });
                     }
-                    y += 5; 
+                    y += 5; // Spazio extra tra gli eventi
                 });
                 
                 docPdf.save(`Report_Uscite_BDB.pdf`);
@@ -1779,12 +1763,15 @@
                 
                 let eventiTarget = this.state.eventi;
 
+                // Filtro per Admin per Eventi Archiviati o Attivi
                 if (this.state.isAdmin) {
                     eventiTarget = eventiTarget.filter(e => !!e.archiviato === this.state.mostraArchiviati);
                 } else {
+                    // L'utente base vede solo gli eventi ATTIVI
                     eventiTarget = eventiTarget.filter(e => !e.archiviato);
                 }
                 
+                // Filtro per Gruppo
                 if(!this.state.isAdmin) {
                     const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                     
