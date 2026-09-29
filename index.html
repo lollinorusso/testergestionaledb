@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
     
+    <!-- PWA & Add to Home Screen Icons -->
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3">
     <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3">
     <link rel="apple-touch-icon" sizes="152x152" href="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3">
@@ -22,11 +23,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- External Libraries (jspdf & SweetAlert2 Modals) -->
+    <!-- External Libraries (jspdf, SweetAlert2, HTML2Canvas) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -74,6 +76,16 @@
         tbody tr { transition: all 0.15s ease; }
         tbody tr:hover { background-color: #F1F5F9; }
         .swal2-popup { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 1.5rem !important; }
+        
+        /* Stile per la Tessera Digitale */
+        .digital-card {
+            background: linear-gradient(135deg, #002266 0%, #0033A0 100%);
+            box-shadow: 0 20px 40px rgba(0, 51, 160, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .digital-card::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,209,0,0.1) 0%, transparent 60%); pointer-events: none;
+        }
     </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
@@ -211,7 +223,6 @@
 
             <main id="views-container" class="flex-1 overflow-y-auto relative bg-bdb-gray">
                 
-                <!-- VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section active p-4 md:p-8">
                     <header class="mb-8 mt-2 md:mt-0">
                         <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight" id="greetingTitle">Buongiorno!</h2>
@@ -309,7 +320,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="finanzaStats"></div>
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
                         <div class="overflow-x-auto scrollbar-hide">
-                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
+                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
                                 <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
                                     <tr>
                                         <th class="p-5">Data</th>
@@ -404,6 +415,19 @@
                 <input type="hidden" id="t_id">
                 
                 <div id="tab-base" class="inner-tab-content active space-y-5">
+                    
+                    <!-- Upload Foto Profilo -->
+                    <div class="flex justify-center mb-6">
+                        <label class="relative cursor-pointer group">
+                            <div id="fotoPreview" class="w-24 h-24 rounded-full bg-gray-50 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 overflow-hidden group-hover:border-bdb-blue group-hover:bg-blue-50 transition shadow-sm">
+                                <i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition"></i>
+                                <span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition">Foto</span>
+                            </div>
+                            <input type="file" id="inputFotoTesserato" class="hidden" accept="image/*" onchange="app.handleFotoUpload(this)">
+                            <input type="hidden" id="t_foto" value="">
+                        </label>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Nome e Cognome <span class="text-red-500">*</span></label>
@@ -546,6 +570,7 @@
         </div>
     </div>
 
+    <!-- MODAL QUOTA -->
     <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Emetti Quota</h3><button type="button" onclick="app.closeModal('modalQuota')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
@@ -556,6 +581,7 @@
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Causale e Importo <span class="text-red-500">*</span></label>
                     <select id="q_causale" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" onchange="app.autoFillQuotaAmount()">
                         <option value="Comitato 50€">Comitato 50€</option>
+                        <option value="FISB 50€">FISB 50€</option>
                         <option value="Fisb + Comitato 100€">Fisb + Comitato 100€</option>
                     </select>
                 </div>
@@ -620,7 +646,6 @@
         </div>
     </div>
 
-    <!-- OVERLAY APPELLO -->
     <div id="modalAppello" class="fixed inset-0 bg-gray-50 z-[110] hidden flex flex-col transform transition-transform duration-300 translate-y-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-bdb-blue text-white flex flex-col shrink-0 shadow-xl relative z-10 rounded-b-3xl">
             <div class="p-5 flex items-center justify-between">
@@ -655,6 +680,50 @@
         </div>
     </div>
 
+    <!-- MODAL TESSERA DIGITALE -->
+    <div id="modalTessera" class="glass-modal fixed inset-0 z-[130] hidden flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-sm relative flex flex-col items-center">
+            <button type="button" onclick="app.closeModal('modalTessera')" class="absolute -top-14 right-0 w-10 h-10 rounded-full bg-white/20 text-white hover:bg-white/30 flex items-center justify-center transition backdrop-blur-sm"><i class="fa-solid fa-times text-xl"></i></button>
+            
+            <div id="tesseraDaScaricare" class="digital-card rounded-3xl p-6 relative overflow-hidden text-white w-full aspect-[85/54] transition-transform duration-300">
+                <!-- Sfondi circolari sfumati -->
+                <div class="absolute -right-16 -top-16 w-48 h-48 bg-[#FFD100] rounded-full opacity-20 blur-3xl"></div>
+                <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-[#FFE45E] rounded-full opacity-20 blur-3xl"></div>
+                
+                <div class="relative z-10 flex flex-col h-full justify-between">
+                    <div class="flex justify-between items-start">
+                        <div class="pr-2">
+                            <h4 class="font-extrabold text-[10px] uppercase tracking-widest text-bdb-yellow mb-0.5 opacity-90">Borgo Don Bosco</h4>
+                            <h3 class="font-bold text-sm leading-tight uppercase tracking-wider text-white shadow-sm">Tessera Associativa</h3>
+                        </div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-12 h-12 rounded-full border-2 border-bdb-yellow shadow-md shrink-0 object-cover bg-white" crossorigin="anonymous">
+                    </div>
+                    
+                    <div class="flex items-end gap-4 mt-auto">
+                        <!-- Box Foto Tesserato -->
+                        <div class="w-16 h-16 rounded-xl bg-white/10 border-2 border-white/30 overflow-hidden shrink-0 shadow-inner" id="cardFoto">
+                            <!-- La foto verrà iniettata via JS -->
+                        </div>
+                        <div class="overflow-hidden pb-1">
+                            <p class="text-xl font-extrabold truncate drop-shadow-md tracking-tight leading-none mb-1" id="cardNome"></p>
+                            <p class="text-[10px] text-blue-200 uppercase font-extrabold tracking-widest" id="cardRuolo"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-5 right-5 text-right opacity-30">
+                        <p class="text-3xl font-black italic leading-none tracking-tighter" id="cardAnno"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-center text-white/50 text-xs mt-6 font-medium px-4">Mostra questa tessera per accedere alle agevolazioni o agli eventi del Borgo.</p>
+            
+            <button onclick="app.downloadTessera()" class="mt-4 bg-white/20 text-white px-6 py-3 rounded-xl font-bold border border-white/30 hover:bg-white/30 transition flex items-center justify-center gap-2 w-full backdrop-blur-sm shadow-lg">
+                <i class="fa-solid fa-download"></i> Salva come Immagine
+            </button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -662,7 +731,7 @@
 
         // ==========================================
         // CONFIGURAZIONE AMMINISTRATORI
-        // Aggiungi o rimuovi le email degli admin qui sotto (tra gli apici, separate da virgola)
+        // Aggiungi o rimuovi le email degli admin qui sotto
         // ==========================================
         const ADMIN_EMAILS = [
             'lollinorusso@icloud.com',
@@ -709,6 +778,24 @@
                 if (grp === 'Sbandieratori under' && role === 'Sbandieratore under') return true;
                 if (grp === 'Tutti under' && (role === 'Musico under' || role === 'Sbandieratore under')) return true;
                 return false;
+            },
+
+            isEligibleForTessera: function(atleta, quotaCausale) {
+                if (!atleta) return false;
+                if (quotaCausale === 'FISB 50€') return false;
+                if ((atleta.ruolo || '').toLowerCase().includes('under')) return false;
+
+                if (atleta.nascita) {
+                    const dob = new Date(atleta.nascita);
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const m = today.getMonth() - dob.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                        age--;
+                    }
+                    if (age < 18) return false;
+                }
+                return true;
             },
 
             init: function() {
@@ -876,7 +963,6 @@
                 this._unsubs.push(onSnapshot(qAtleti, (snap) => {
                     const newAtleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
                     
-                    // Admin Push Notification for New Tesserati
                     if (this.state.isAdmin && !this.state.primoAvvioAtleti && newAtleti.length > this.state.atleti.length) {
                         const oldIds = new Set(this.state.atleti.map(a => a.id));
                         const added = newAtleti.filter(a => !oldIds.has(a.id));
@@ -1036,20 +1122,71 @@
                             </div>
                         </div>`;
                     } else {
+                        const isEligible = this.isEligibleForTessera(tesserato, q.causale);
+                        const userTesseraBtn = isEligible ? `<button onclick="app.showTessera('${tesserato.id}')" class="bg-gradient-to-r from-bdb-yellow to-yellow-400 px-5 py-3 rounded-xl font-extrabold text-bdb-blue-dark shadow-md whitespace-nowrap hover:scale-105 transition border border-yellow-300 flex items-center gap-2"><i class="fa-solid fa-id-card"></i> Mostra Tessera</button>` : '';
+
                         html += `
                         <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm opacity-90 hover:opacity-100 transition">
                             <div>
                                 <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1"><i class="fa-solid fa-check-circle mr-1"></i>Saldato</p>
                                 <h4 class="font-extrabold text-gray-800 text-lg">${this.esc(q.causale)} - ${this.esc(nome)}</h4>
                             </div>
-                            <button onclick="app.generaRicevutaPDF('${this.esc(nome)}', '${this.esc(q.causale)}', ${q.versato}, ${q.totale})" class="bg-white px-5 py-3 rounded-xl font-extrabold text-emerald-600 shadow-sm whitespace-nowrap hover:bg-emerald-100 transition border border-emerald-100 flex items-center gap-2">
-                                <i class="fa-solid fa-download"></i> Scarica Ricevuta
-                            </button>
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="app.generaRicevutaPDF('${this.esc(nome)}', '${this.esc(q.causale)}', ${q.versato}, ${q.totale})" class="bg-white px-5 py-3 rounded-xl font-extrabold text-emerald-600 shadow-sm whitespace-nowrap hover:bg-emerald-100 transition border border-emerald-100 flex items-center gap-2">
+                                    <i class="fa-solid fa-download"></i> Ricevuta PDF
+                                </button>
+                                ${userTesseraBtn}
+                            </div>
                         </div>`;
                     }
                 });
                 html += '</div>';
                 box.innerHTML = html;
+            },
+
+            showTessera: function(id) {
+                const t = this.state.atleti.find(a => a.id === id);
+                if(!t) return;
+                
+                document.getElementById('cardNome').innerText = t.nome || '';
+                document.getElementById('cardRuolo').innerText = t.ruolo || 'Socio';
+                document.getElementById('cardAnno').innerText = new Date().getFullYear();
+                
+                const fotoContainer = document.getElementById('cardFoto');
+                if(t.foto) {
+                    fotoContainer.innerHTML = `<img src="${t.foto}" class="w-full h-full object-cover">`;
+                } else {
+                    fotoContainer.innerHTML = `<div class="w-full h-full bg-white flex items-center justify-center text-gray-300"><i class="fa-solid fa-user text-3xl"></i></div>`;
+                }
+                
+                document.getElementById('modalTessera').classList.remove('hidden');
+            },
+
+            downloadTessera: async function() {
+                if(!window.html2canvas) return this.ui.error("Errore", "Libreria salvataggio non caricata.");
+                const card = document.getElementById('tesseraDaScaricare');
+                const nome = document.getElementById('cardNome').innerText || 'Atleta';
+                
+                card.style.transform = 'none';
+                
+                try {
+                    this.ui.toast("Generazione immagine in corso...", "info");
+                    const canvas = await html2canvas(card, { 
+                        scale: 3, 
+                        backgroundColor: null,
+                        useCORS: true
+                    });
+                    
+                    const link = document.createElement('a');
+                    link.download = `Tessera_BDB_${nome.replace(/\s+/g, '_')}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    this.ui.toast("Tessera salvata in Galleria!");
+                } catch(e) {
+                    this.ui.error("Errore", "Impossibile salvare l'immagine.");
+                    console.error(e);
+                }
             },
 
             renderNews: function() {
@@ -1120,7 +1257,6 @@
                     if(alertSocio) alertSocio.classList.add('hidden');
                 }
 
-                // Controllo per le Fasce (Solo Under)
                 if (ruolo.includes('under')) {
                     if(boxFascia) boxFascia.classList.remove('hidden');
                 } else {
@@ -1166,7 +1302,6 @@
                     const isReadOnly = this.state.isAdmin && a.ownerUid !== this.state.user.uid;
                     const actionIcon = isReadOnly ? 'fa-eye' : 'fa-pen';
                     
-                    // Mostra fascia allenamento se under
                     let fasciaBadge = '';
                     if ((a.ruolo || '').includes('under') && a.fascia && a.fascia !== 'Da assegnare') {
                         fasciaBadge = `<br><span class="inline-block mt-1 text-[9px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-extrabold uppercase border border-purple-200">${a.fascia}</span>`;
@@ -1174,7 +1309,14 @@
 
                     return `
                         <tr class="cursor-pointer group" onclick="app.editTesserato('${a.id}')">
-                            <td class="p-5"><div class="font-extrabold text-gray-800 text-base">${this.esc(a.nome)}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${this.esc(a.nascita)}</div></td>
+                            <td class="p-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
+                                        ${a.foto ? `<img src="${a.foto}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-solid fa-user text-[10px]"></i></div>`}
+                                    </div>
+                                    <div><div class="font-extrabold text-gray-800 text-base">${this.esc(a.nome)}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${this.esc(a.nascita)}</div></div>
+                                </div>
+                            </td>
                             <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${this.esc(a.ruolo || 'Atleta')}</span>${fasciaBadge}</td>
                             <td class="p-5 flex items-center">${certStatus} ${whatsappBtn}</td>
                             <td class="p-5 text-center">${docsHTML}</td>
@@ -1209,8 +1351,15 @@
                         else label.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
                     }
                 });
-                
-                // La Fascia Allenamento è visibile/modificabile SOLO dagli Admin.
+
+                const fotoInput = document.getElementById('inputFotoTesserato');
+                if (fotoInput) {
+                    fotoInput.disabled = isReadOnly;
+                    const fotoLabel = fotoInput.closest('label');
+                    if (isReadOnly) fotoLabel.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                    else fotoLabel.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                }
+
                 const fasciaEl = document.getElementById('t_fascia');
                 if(fasciaEl) {
                     fasciaEl.disabled = isReadOnly || !this.state.isAdmin;
@@ -1240,6 +1389,9 @@
                     document.getElementById('view-'+k).classList.add('hidden');
                 });
                 
+                document.getElementById('t_foto').value = '';
+                document.getElementById('fotoPreview').innerHTML = `<i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition"></i><span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition">Foto</span>`;
+
                 this.toggleTesseratoForm(false);
                 this.checkRuolo();
                 document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
@@ -1270,6 +1422,13 @@
                         document.getElementById('view-'+k).classList.add('hidden');
                     }
                 });
+
+                document.getElementById('t_foto').value = a.foto || '';
+                if(a.foto) {
+                    document.getElementById('fotoPreview').innerHTML = `<img src="${a.foto}" class="w-full h-full object-cover">`;
+                } else {
+                    document.getElementById('fotoPreview').innerHTML = `<i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition"></i><span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition">Foto</span>`;
+                }
                 
                 const isReadOnly = this.state.isAdmin && a.ownerUid !== this.state.user.uid;
                 this.toggleTesseratoForm(isReadOnly);
@@ -1288,6 +1447,7 @@
                 d.fascia = document.getElementById('t_fascia').value;
                 d.flag_medico = document.getElementById('t_flag_medico').checked;
                 d.flag_docs = document.getElementById('t_flag_docs').checked;
+                d.foto = document.getElementById('t_foto').value;
                 ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value);
                 
                 if(!d.nome || d.nome.trim() === '') return this.ui.error("Attenzione", "Il campo Nome e Cognome è obbligatorio.");
@@ -1330,6 +1490,24 @@
                 }
             },
 
+            handleFotoUpload: function(input) {
+                if(input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const MAX_SIZE = 700 * 1024; // 700KB
+                    if(file.size > MAX_SIZE) {
+                        input.value = '';
+                        return this.ui.error("Foto troppo pesante", "La fototessera deve essere inferiore a 700KB. Prova a comprimerla o a fare uno screenshot.");
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const b64 = e.target.result;
+                        document.getElementById('t_foto').value = b64;
+                        document.getElementById('fotoPreview').innerHTML = `<img src="${b64}" class="w-full h-full object-cover">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            },
+
             viewDoc: function(type) {
                 const dataUrl = document.getElementById('t_doc_'+type).value;
                 if(!dataUrl) return;
@@ -1359,6 +1537,10 @@
                         const diff = Number(q.totale) - Number(q.versato);
                         const isSaldato = diff <= 0;
                         prev += Number(q.totale); inc += Number(q.versato);
+                        
+                        const isEligible = this.isEligibleForTessera(t, q.causale);
+                        const tesseraBtn = (isSaldato && isEligible && t) ? `<button type="button" class="bg-bdb-yellow text-bdb-blue-dark px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:scale-105 transition" onclick="app.showTessera('${t.id}')"><i class="fa-solid fa-id-card"></i> Tessera</button>` : '';
+
                         return `<tr>
                             <td class="p-5 text-gray-500">${new Date(q.dataCreazione).toLocaleDateString()}</td>
                             <td class="p-5 font-extrabold text-gray-800">${t ? this.esc(t.nome) : 'Rimosso'}</td>
@@ -1366,10 +1548,11 @@
                             <td class="p-5 text-right font-bold text-gray-400">${formatter.format(q.totale)}</td>
                             <td class="p-5 text-right font-extrabold text-bdb-blue">${formatter.format(q.versato)}</td>
                             <td class="p-5 text-center">${isSaldato ? '<span class="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-xs font-bold">Saldato</span>' : '<span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-xs font-bold">Da saldare</span>'}</td>
-                            <td class="p-5 text-right flex justify-end gap-2">
+                            <td class="p-5 text-right flex justify-end gap-2 items-center">
                                 ${!isSaldato ? `<button type="button" class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition" onclick="app.aggiungiAcconto('${q.id}', ${diff})">Incassa</button>` : ''}
-                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border" onclick="app.generaRicevutaPDF('${t?t.nome:'Sconosciuto'}', '${q.causale}', ${q.versato}, ${q.totale})" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
-                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
+                                ${tesseraBtn}
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border flex items-center justify-center" onclick="app.generaRicevutaPDF('${t?t.nome:'Sconosciuto'}', '${q.causale}', ${q.versato}, ${q.totale})" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border flex items-center justify-center" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
                             </td></tr>`;
                     }).join('');
                 }
@@ -1502,7 +1685,6 @@
                 
                 const docPdf = new window.jspdf.jsPDF(); 
                 
-                // Header ufficiale
                 docPdf.setFillColor(0, 51, 160);
                 docPdf.rect(0, 0, 210, 30, 'F');
                 docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(18); docPdf.setTextColor(255, 255, 255);
@@ -1510,7 +1692,6 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(255, 228, 94);
                 docPdf.text(`Borgo Don Bosco APS - Generato il ${new Date().toLocaleDateString('it-IT')}`, 105, 22, { align: "center" }); 
                 
-                // Filtra solo Manifestazioni e Gare, e oridna per data
                 const eventiValidi = this.state.eventi.filter(e => e.tipo === 'Gara/Competizione' || e.tipo === 'Esibizione/Sfilata')
                                      .sort((a,b) => new Date(a.data) - new Date(b.data));
 
@@ -1518,15 +1699,12 @@
 
                 let y = 40;
                 
-                // Pesi per l'ordinamento
                 const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Musico under': 3, 'Sbandieratore': 4, 'Sbandieratore under': 5, 'Dirigente': 6, 'Socio Sostenitore': 7 };
                 const getRoleWeight = (r) => roleOrder[r] || 99;
 
                 eventiValidi.forEach(e => {
-                    // Controlla fine pagina
                     if(y > 260) { docPdf.addPage(); y = 20; }
                     
-                    // Box Titolo Evento
                     docPdf.setFillColor(240, 244, 248);
                     docPdf.rect(20, y-5, 170, 8, 'F');
                     docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(11); docPdf.setTextColor(0, 51, 160);
@@ -1535,7 +1713,6 @@
                     
                     docPdf.setTextColor(0);
                     
-                    // Estrai atleti convocati
                     let atletiTarget = this.state.atleti;
                     const grp = e.gruppo || 'Tutti';
                     if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
@@ -1543,7 +1720,6 @@
                     else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                     else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                     
-                    // Ordina atleti
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
                         const wB = getRoleWeight(b.ruolo);
@@ -1572,7 +1748,7 @@
                             y += 8;
                         });
                     }
-                    y += 5; // Spazio extra tra gli eventi
+                    y += 5; 
                 });
                 
                 docPdf.save(`Report_Uscite_BDB.pdf`);
@@ -1603,15 +1779,12 @@
                 
                 let eventiTarget = this.state.eventi;
 
-                // Filtro per Admin per Eventi Archiviati o Attivi
                 if (this.state.isAdmin) {
                     eventiTarget = eventiTarget.filter(e => !!e.archiviato === this.state.mostraArchiviati);
                 } else {
-                    // L'utente base vede solo gli eventi ATTIVI
                     eventiTarget = eventiTarget.filter(e => !e.archiviato);
                 }
                 
-                // Filtro per Gruppo
                 if(!this.state.isAdmin) {
                     const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                     
@@ -1625,9 +1798,6 @@
                             if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                            if (grp === 'Sbandieratori under' && myRole.includes('Sbandieratore under')) return true;
-                            if (grp === 'Musici under' && myRole.includes('Musico under')) return true;
-                            if (grp === 'Tutti under' && (myRole.includes('Musico under') || myRole.includes('Sbandieratore under'))) return true;
                             return false;
                         });
                     });
@@ -1652,9 +1822,6 @@
                             if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                            if (grp === 'Sbandieratori under' && myRole.includes('Sbandieratore under')) return true;
-                            if (grp === 'Musici under' && myRole.includes('Musico under')) return true;
-                            if (grp === 'Tutti under' && (myRole.includes('Musico under') || myRole.includes('Sbandieratore under'))) return true;
                             return false;
                         });
 
@@ -1743,9 +1910,6 @@
                 else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
                 else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                 else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
-                else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore under'));
-                else if(grp === 'Musici under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico under'));
-                else if(grp === 'Tutti under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore under') || (a.ruolo||'').includes('Musico under'));
                 
                 if(atletiTarget.length === 0) {
                     document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-400 mt-20 font-bold"><i class="fa-solid fa-ghost text-4xl mb-4 opacity-50 block"></i>Nessun tesserato trovato in questo gruppo.</div>`;
@@ -1758,13 +1922,11 @@
                         if(rsvp==='si') rsvpBadge = `<span class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-check"></i> Disponibile</span>`;
                         if(rsvp==='no') rsvpBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-xmark"></i> Assente</span>`;
 
-                        const fasciaBadge = (a.fascia && a.fascia !== 'Da assegnare' && (a.ruolo||'').includes('under')) ? ` - <span class="text-purple-600">${a.fascia}</span>` : '';
-
                         return `
                         <div class="flex items-center justify-between p-5 bg-white mb-4 rounded-3xl shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100">
                             <div>
                                 <p class="font-extrabold text-gray-800 text-lg flex items-center flex-wrap gap-1">${this.esc(a.nome)} ${rsvpBadge}</p>
-                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')}${fasciaBadge}</p>
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
                                 <input type="checkbox" class="sr-only peer appello-checkbox" ${e.presenzeFisiche&&e.presenzeFisiche[a.id] ? 'checked' : ''} onchange="app.toggleP('${id}', '${a.id}', this.checked)">
