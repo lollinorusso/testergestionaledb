@@ -25,7 +25,7 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- External Libraries (jspdf & SweetAlert2 Modals) -->
+    <!-- External Libraries (jspdf & SweetAlert2 Modals & html2canvas) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -80,6 +80,36 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
+    <!-- PWA TUTORIAL OVERLAY -->
+    <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 text-center">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-24 h-24 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 object-cover">
+        <h2 class="text-2xl font-extrabold mb-4 tracking-tight">Installa l'App</h2>
+        <p class="mb-8 text-blue-100 max-w-sm">Per ricevere le notifiche e usare il gestionale al meglio, aggiungi questa pagina alla tua schermata Home.</p>
+        
+        <div id="pwa-ios" class="hidden flex-col items-center bg-white/10 p-6 rounded-3xl border border-white/20 w-full max-w-sm shadow-xl">
+            <div class="text-4xl mb-4 text-bdb-yellow"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+            <p class="font-bold text-lg mb-2">1. Premi il tasto Condividi</p>
+            <p class="text-sm text-blue-100">Si trova in basso (o in alto) nel tuo browser Safari.</p>
+            <div class="h-px w-full bg-white/20 my-4"></div>
+            <div class="text-3xl mb-3 text-bdb-yellow"><i class="fa-regular fa-square-plus"></i></div>
+            <p class="font-bold text-lg mb-2">2. Aggiungi a Schermata Home</p>
+            <p class="text-sm text-blue-100">Scorri il menu e seleziona questa voce.</p>
+        </div>
+        
+        <div id="pwa-android" class="hidden flex-col items-center bg-white/10 p-6 rounded-3xl border border-white/20 w-full max-w-sm shadow-xl">
+            <div class="text-4xl mb-4 text-bdb-yellow"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+            <p class="font-bold text-lg mb-2">1. Premi i 3 puntini</p>
+            <p class="text-sm text-blue-100">Si trovano in alto a destra nel browser Chrome.</p>
+            <div class="h-px w-full bg-white/20 my-4"></div>
+            <div class="text-3xl mb-3 text-bdb-yellow"><i class="fa-solid fa-mobile-screen"></i></div>
+            <p class="font-bold text-lg mb-2">2. Aggiungi a Schermata Home</p>
+            <p class="text-sm text-blue-100">Seleziona questa voce dal menu.</p>
+        </div>
+
+        <button onclick="document.getElementById('pwaOverlay').classList.add('hidden')" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (non consigliato)</button>
+    </div>
+
+    <!-- SCHERMATA DI LOGIN -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
             <div class="w-full md:w-5/12 bg-bdb-blue p-8 flex flex-col items-center justify-center text-white relative overflow-hidden hidden md:flex">
@@ -432,6 +462,15 @@
                                 <option value="Socio Sostenitore">Socio Sostenitore</option>
                             </select>
                         </div>
+                        <div id="boxFascia" class="hidden">
+                            <label class="block text-xs font-bold text-purple-600 mb-1.5 uppercase tracking-wider">Fascia Allenamento (Solo Admin)</label>
+                            <select id="t_fascia" class="w-full p-3.5 border border-purple-200 rounded-xl bg-purple-50 focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none text-base font-medium transition cursor-pointer text-purple-800">
+                                <option value="Da assegnare">Da assegnare</option>
+                                <option value="Prima Fascia">Prima Fascia</option>
+                                <option value="Seconda Fascia">Seconda Fascia</option>
+                                <option value="Terza Fascia">Terza Fascia</option>
+                            </select>
+                        </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Cellulare</label>
                             <input type="tel" id="t_tel" class="w-full p-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-bdb-blue outline-none text-base font-medium transition" placeholder="Es. 333 1234567">
@@ -670,16 +709,13 @@
                                 <h3 class="font-bold text-xs leading-tight uppercase tracking-wider text-white shadow-sm">Tessera<br>Associativa</h3>
                             </div>
                         </div>
-                        <!-- Anno spostato in alto a destra sopra la fascia gialla -->
                         <div class="bg-white/95 px-3 py-1.5 rounded-xl border-2 border-white text-[#0033A0] font-black text-sm tracking-widest shadow-lg transform rotate-3">
                             <span id="cardAnno"></span>
                         </div>
                     </div>
                     
                     <div class="flex items-end gap-3 mt-auto">
-                        <!-- Box Foto Tesserato -->
                         <div class="w-[60px] h-[60px] rounded-xl bg-white border-2 border-[#FFD100] overflow-hidden shrink-0 shadow-lg relative z-10" id="cardFoto">
-                            <!-- La foto verrà iniettata via JS -->
                         </div>
                         <div class="overflow-hidden flex-1 z-10 bg-black/25 p-2 rounded-xl backdrop-blur-md border border-white/10 shadow-inner">
                             <p class="text-base sm:text-[17px] font-black text-white drop-shadow-md tracking-tight leading-none mb-1 break-words w-full" id="cardNome"></p>
@@ -837,14 +873,18 @@
                 
                 if (isMobile && !isStandalone) {
                     const overlay = document.getElementById('pwaOverlay');
-                    overlay.classList.remove('hidden');
-                    overlay.classList.add('flex');
-                    
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    if (isIOS) {
-                        document.getElementById('pwa-ios').classList.remove('hidden');
-                    } else {
-                        document.getElementById('pwa-android').classList.remove('hidden');
+                    if(overlay) {
+                        overlay.classList.remove('hidden');
+                        overlay.classList.add('flex');
+                        
+                        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                        if (isIOS) {
+                            document.getElementById('pwa-ios').classList.remove('hidden');
+                            document.getElementById('pwa-ios').classList.add('flex');
+                        } else {
+                            document.getElementById('pwa-android').classList.remove('hidden');
+                            document.getElementById('pwa-android').classList.add('flex');
+                        }
                     }
                 }
             },
@@ -1140,7 +1180,6 @@
                 const card = document.getElementById('tesseraDaScaricare');
                 const nome = document.getElementById('cardNome').innerText || 'Atleta';
                 
-                // Rimuove momentaneamente trasformazioni per il rendering corretto di html2canvas
                 const oldTransform = card.style.transform;
                 card.style.transform = 'none';
                 
@@ -1148,19 +1187,18 @@
                     this.ui.toast("Generazione immagine in corso...", "info");
                     
                     const canvas = await html2canvas(card, { 
-                        scale: 3, // Alta risoluzione
+                        scale: 3, 
                         backgroundColor: null,
-                        useCORS: true // Essenziale per le immagini esterne
+                        useCORS: true 
                     });
                     
-                    card.style.transform = oldTransform; // Ripristina subito la visuale
+                    card.style.transform = oldTransform; 
 
                     canvas.toBlob(async (blob) => {
                         if (!blob) throw new Error("Generazione fallita");
 
                         const file = new File([blob], `Tessera_BDB_${nome.replace(/\s+/g, '_')}.png`, { type: "image/png" });
 
-                        // Controlla se il dispositivo supporta la condivisione nativa (iOS/Android)
                         if (navigator.canShare && navigator.canShare({ files: [file] })) {
                             try {
                                 await navigator.share({
@@ -1172,7 +1210,6 @@
                                 console.log("Condivisione annullata dall'utente");
                             }
                         } else {
-                            // Fallback classico per PC Desktop
                             const link = document.createElement('a');
                             link.download = file.name;
                             link.href = URL.createObjectURL(blob);
@@ -1701,7 +1738,7 @@
 
                 let y = 40;
                 
-                // Pesi per l'ordinamento: Chiarina = 1, Tamburino = 2, Sbandieratore = 3
+                // Pesi per l'ordinamento
                 const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Musico under': 3, 'Sbandieratore': 4, 'Sbandieratore under': 5, 'Dirigente': 6, 'Socio Sostenitore': 7 };
                 const getRoleWeight = (r) => roleOrder[r] || 99;
 
@@ -1726,7 +1763,7 @@
                     else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                     else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
                     
-                    // Ordina atleti per Ruolo (Chiarine -> Tamburi -> Sba) poi Alfabetico
+                    // Ordina atleti
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
                         const wB = getRoleWeight(b.ruolo);
