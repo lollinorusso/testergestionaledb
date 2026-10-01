@@ -1145,7 +1145,7 @@
                                 <h4 class="font-extrabold text-gray-800 text-lg">${this.esc(q.causale)} - ${this.esc(nome)}</h4>
                             </div>
                             <div class="flex gap-2 flex-wrap">
-                                <button onclick="app.generaRicevutaPDF('${this.esc(nome)}', '${this.esc(q.causale)}', ${q.versato}, ${q.totale})" class="bg-white px-5 py-3 rounded-xl font-extrabold text-emerald-600 shadow-sm whitespace-nowrap hover:bg-emerald-100 transition border border-emerald-100 flex items-center gap-2">
+                                <button onclick="app.generaRicevutaPDF('${q.id}')" class="bg-white px-5 py-3 rounded-xl font-extrabold text-emerald-600 shadow-sm whitespace-nowrap hover:bg-emerald-100 transition border border-emerald-100 flex items-center gap-2">
                                     <i class="fa-solid fa-download"></i> Ricevuta PDF
                                 </button>
                                 ${userTesseraBtn}
@@ -1588,7 +1588,7 @@
                             <td class="p-5 text-right flex justify-end gap-2 items-center">
                                 ${!isSaldato ? `<button type="button" class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition" onclick="app.aggiungiAcconto('${q.id}', ${diff})">Incassa</button>` : ''}
                                 ${tesseraBtn}
-                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border flex items-center justify-center" onclick="app.generaRicevutaPDF('${t?t.nome:'Sconosciuto'}', '${q.causale}', ${q.versato}, ${q.totale})" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border flex items-center justify-center" onclick="app.generaRicevutaPDF('${q.id}')" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
                                 <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border flex items-center justify-center" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
                             </td></tr>`;
                     }).join('');
@@ -1615,7 +1615,25 @@
             saveQuota: async function() {
                 const t = document.getElementById('q_tesserato').value, c = document.getElementById('q_causale').value, tot = document.getElementById('q_totale').value, v = document.getElementById('q_versato').value;
                 if(!t || !tot || tot <= 0) return this.ui.error("Errore", "Seleziona un tesserato e verifica i campi obbligatori.");
-                await addDoc(collection(db, "finanza"), { tesseratoId: t, causale: c, totale: Number(tot), versato: Number(v), dataCreazione: new Date().toISOString() });
+                
+                const adminName = this.state.user.displayName || this.state.user.email.split('@')[0] || "Admin";
+                const nowIso = new Date().toISOString();
+                
+                const docData = { 
+                    tesseratoId: t, 
+                    causale: c, 
+                    totale: Number(tot), 
+                    versato: Number(v), 
+                    dataCreazione: nowIso 
+                };
+
+                // Se viene saldato (o in parte) subito al momento della creazione
+                if (Number(v) > 0) {
+                    docData.saldatoDa = adminName;
+                    docData.saldatoIl = nowIso;
+                }
+
+                await addDoc(collection(db, "finanza"), docData);
                 this.closeModal('modalQuota'); this.ui.toast("Quota emessa!");
             },
             
@@ -1623,7 +1641,13 @@
                 const { value: imp } = await Swal.fire({ title: 'Incasso Quota', input: 'number', inputLabel: `Massimo riscuotibile: ${formatter.format(rimanente)}`, showCancelButton: true, confirmButtonColor: '#10b981' });
                 if(imp && Number(imp) > 0 && Number(imp) <= rimanente) {
                     const q = this.state.quote.find(x => x.id === id); 
-                    await updateDoc(doc(db, "finanza", id), { versato: Number(q.versato) + Number(imp) });
+                    const adminName = this.state.user.displayName || this.state.user.email.split('@')[0] || "Admin";
+                    
+                    await updateDoc(doc(db, "finanza", id), { 
+                        versato: Number(q.versato) + Number(imp),
+                        saldatoDa: adminName,
+                        saldatoIl: new Date().toISOString()
+                    });
                     this.ui.toast("Incasso registrato!");
                 }
             },
@@ -1656,8 +1680,17 @@
                 }
             },
             
-            generaRicevutaPDF: function(nome, causale, versato, totale) {
+            generaRicevutaPDF: function(quotaId) {
                 if(!window.jspdf) return;
+                const q = this.state.quote.find(x => x.id === quotaId);
+                if(!q) return;
+
+                const tesserato = this.state.atleti.find(a => a.id === q.tesseratoId);
+                const nome = tesserato ? tesserato.nome : 'Sconosciuto';
+                const causale = q.causale;
+                const versato = q.versato;
+                const totale = q.totale;
+
                 const docPdf = new window.jspdf.jsPDF(); 
                 
                 docPdf.setFillColor(0, 51, 160);
@@ -1675,8 +1708,10 @@
                 docPdf.setLineWidth(0.5);
                 docPdf.line(20, 68, 190, 68);
 
+                // Mostra data di emissione originale
+                const emissionDate = new Date(q.dataCreazione || new Date()).toLocaleDateString('it-IT');
                 docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal"); 
-                docPdf.text(`Data emissione: ${new Date().toLocaleDateString('it-IT')}`, 20, 80); 
+                docPdf.text(`Data emissione: ${emissionDate}`, 20, 80); 
                 
                 docPdf.text("Intestato a:", 20, 95);
                 docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0); docPdf.setFontSize(13);
@@ -1703,10 +1738,12 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
                 docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 195, { align: "center" });
                 
-                const adminName = this.state.user.displayName || this.state.user.email.split('@')[0] || "Admin";
-                const now = new Date();
-                const dataStr = now.toLocaleDateString('it-IT');
-                const oraStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                // Ricerca di chi ha incassato l'ultimo saldo e quando
+                let adminName = q.saldatoDa || "Segreteria BDB";
+                let paymentDateObj = q.saldatoIl ? new Date(q.saldatoIl) : new Date(q.dataCreazione || new Date());
+                
+                const dataStr = paymentDateObj.toLocaleDateString('it-IT');
+                const oraStr = paymentDateObj.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
                 
                 docPdf.setFontSize(9);
                 docPdf.setFont("helvetica", "italic");
