@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <!-- STREAMING_CHUNK:Configuring the document head and metadata... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
@@ -31,7 +30,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- STREAMING_CHUNK:Styling the Tailwind configuration and custom CSS... -->
     <script>
         tailwind.config = {
             theme: {
@@ -87,7 +85,6 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
-    <!-- STREAMING_CHUNK:Rendering the PWA installation tutorial overlay... -->
     <!-- TUTORIAL PWA -->
     <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 text-center">
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-24 h-24 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 object-cover">
@@ -117,7 +114,6 @@
         <button onclick="app.dismissPwaTutorial()" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (Non consigliato)</button>
     </div>
 
-    <!-- STREAMING_CHUNK:Rendering the authentication screen... -->
     <!-- AUTHENTICATION -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
@@ -172,7 +168,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Rendering the main application wrapper and sidebar navigation... -->
     <!-- MAIN APP WRAPPER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
@@ -223,7 +218,6 @@
             </div>
         </aside>
 
-        <!-- STREAMING_CHUNK:Rendering the main content area (Dashboard and News feed)... -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
@@ -281,7 +275,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering the Anagrafica (Registry) view... -->
                 <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -321,7 +314,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering the Finanza (Accounting) view... -->
                 <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -359,7 +351,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering the Eventi (Calendar) view... -->
                 <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -386,7 +377,6 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering the Magazzino (Inventory) view... -->
                 <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -420,7 +410,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Building the modals for creating profiles and events... -->
     <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
@@ -497,7 +486,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Configuring the medical and documents sub-tabs... -->
                 <div id="tab-medico" class="inner-tab-content space-y-5">
                     <div id="alertSocioSostenitore" class="hidden bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col items-center justify-center text-center">
                         <i class="fa-solid fa-file-medical text-bdb-blue text-3xl mb-3 opacity-50"></i>
@@ -593,7 +581,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Building modal interfaces for Quota and Evento... -->
     <!-- MODAL QUOTA -->
     <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
@@ -644,7 +631,6 @@
         </div>
     </div>
     
-    <!-- STREAMING_CHUNK:Building modal interface for Magazzino (Inventory)... -->
     <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
@@ -711,12 +697,14 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Building the Digital Card interface... -->
     <!-- TESSERA DIGITALE MODAL -->
-    <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex-col items-center justify-center p-4">
-        <div class="w-full max-w-sm relative">
-            <button type="button" onclick="app.closeModal('modalTessera')" class="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition"><i class="fa-solid fa-times"></i></button>
-            
+    <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex flex-col items-center justify-center p-4">
+        <!-- Nuova X fissa e centrata in alto a destra dello schermo -->
+        <div class="absolute top-4 right-4 md:top-8 md:right-8 z-[160]">
+             <button type="button" onclick="app.closeModal('modalTessera')" class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition backdrop-blur-md border border-white/30 shadow-lg"><i class="fa-solid fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="w-full max-w-sm relative z-[155]">
             <div id="tessera-card" class="w-full aspect-[1.58/1] rounded-2xl shadow-2xl relative overflow-hidden text-white font-sans p-6 flex flex-col justify-between">
                 <div class="tessera-lama"></div>
                 <div class="tessera-content flex justify-between items-start">
@@ -724,7 +712,11 @@
                     <div class="bg-white text-bdb-blue font-extrabold px-3 py-1 rounded-lg text-lg shadow-sm z-10" id="tes-anno">2026</div>
                 </div>
                 <div class="tessera-content self-end text-right z-10 w-full mt-4 flex justify-between items-end">
-                    <div id="tes-foto" class="w-20 h-20 rounded-xl border-2 border-white/50 bg-gray-200 shadow-inner bg-cover bg-center shrink-0"></div>
+                    <!-- Nuovo box foto con tag IMG ottimizzato per l'esportazione -->
+                    <div id="tes-foto-container" class="w-20 h-20 rounded-xl border-2 border-white/50 bg-black/20 shadow-inner overflow-hidden shrink-0 flex items-center justify-center">
+                        <img id="tes-foto-img" src="" class="w-full h-full object-cover hidden">
+                        <i id="tes-foto-icon" class="fa-solid fa-user text-3xl text-white/50"></i>
+                    </div>
                     <div class="bg-black/40 backdrop-blur-md p-3 rounded-xl max-w-[65%] shadow-lg border border-white/10">
                         <p class="text-[9px] uppercase tracking-widest text-bdb-yellow font-bold mb-0.5">Tessera Associativa</p>
                         <h3 class="font-extrabold text-white text-lg leading-tight break-words" id="tes-nome">Nome Cognome</h3>
@@ -739,7 +731,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Initializing Firebase configuration and core logic... -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -878,7 +869,6 @@
                 }
             },
 
-            // STREAMING_CHUNK:Setting up user interaction and Firebase data listeners...
             toggleMenu: function(forceOpen) {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('mobileOverlay');
@@ -1045,7 +1035,6 @@
                 } catch(e) { console.log(e); }
             },
 
-            // STREAMING_CHUNK:Configuring system notifications and dashboard stats...
             showNativeNotification: function(title, body) {
                 if (!("Notification" in window)) return;
                 
@@ -1186,7 +1175,6 @@
                 });
             },
 
-            // STREAMING_CHUNK:Rendering Anagrafica logic and modal states...
             checkMinorenne: function() {
                 const nascita = document.getElementById('t_nascita').value;
                 if(!nascita) return;
@@ -1350,7 +1338,6 @@
                 }
             },
 
-            // STREAMING_CHUNK:Opening the modal and loading file base64 data...
             openTesseratoModal: function() {
                 document.getElementById('t_id').value = '';
                 document.querySelectorAll('#modalTesserato input:not([type=file]):not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
@@ -1489,7 +1476,6 @@
                 document.getElementById('modalViewer').classList.add('hidden');
             },
 
-            // STREAMING_CHUNK:Rendering the Finanza view and accounting logic...
             updateQuotaDropdown: function() {
                 const select = document.getElementById('q_tesserato');
                 if(!select) return;
@@ -1684,22 +1670,28 @@
                 docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
             },
 
-            // STREAMING_CHUNK:Building the Digital Card dynamic content generator...
             generaTesseraDigitale: function(tesseratoId) {
                 const a = this.state.atleti.find(x => x.id === tesseratoId);
                 if(!a) return;
                 
                 document.getElementById('tes-nome').innerText = a.nome;
                 document.getElementById('tes-ruolo').innerText = a.ruolo || 'Socio';
-                const f = document.getElementById('tes-foto');
+                
+                const img = document.getElementById('tes-foto-img');
+                const icon = document.getElementById('tes-foto-icon');
+                
                 if(a.doc_foto_profilo) {
-                    f.style.backgroundImage = `url(${a.doc_foto_profilo})`;
+                    img.src = a.doc_foto_profilo;
+                    img.classList.remove('hidden');
+                    icon.classList.add('hidden');
                 } else {
-                    f.style.backgroundImage = 'none';
-                    f.innerHTML = '<i class="fa-solid fa-user text-3xl text-gray-400 mt-5 text-center w-full"></i>';
+                    img.src = '';
+                    img.classList.add('hidden');
+                    icon.classList.remove('hidden');
                 }
 
                 document.getElementById('modalTessera').classList.remove('hidden');
+                document.getElementById('modalTessera').style.display = 'flex';
             },
 
             downloadTessera: async function() {
@@ -1739,7 +1731,6 @@
                 }
             },
 
-            // STREAMING_CHUNK:Configuring the Eventi calendar list, filtering, and admin report generation...
             resetYearlyPayments: async function() {
                 const r = await this.ui.confirm("Nuovo Anno Associativo", "Vuoi davvero azzerare e cancellare tutti i pagamenti registrati per iniziare un nuovo anno? Questa operazione non è reversibile.");
                 if(r.isConfirmed) {
@@ -2062,7 +2053,6 @@
                 app.updateAppelloCounters();
             },
 
-            // STREAMING_CHUNK:Rendering the flexible Magazzino inventory list...
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
                 if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
