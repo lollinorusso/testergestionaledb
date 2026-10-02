@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <!-- STREAMING_CHUNK:Configuring the document head and metadata... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
@@ -30,6 +31,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- STREAMING_CHUNK:Styling the Tailwind configuration and custom CSS... -->
     <script>
         tailwind.config = {
             theme: {
@@ -85,6 +87,7 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
+    <!-- STREAMING_CHUNK:Rendering the PWA installation tutorial overlay... -->
     <!-- TUTORIAL PWA -->
     <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 text-center">
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-24 h-24 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 object-cover">
@@ -114,6 +117,7 @@
         <button onclick="app.dismissPwaTutorial()" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (Non consigliato)</button>
     </div>
 
+    <!-- STREAMING_CHUNK:Rendering the authentication screen... -->
     <!-- AUTHENTICATION -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
@@ -168,6 +172,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Rendering the main application wrapper and sidebar navigation... -->
     <!-- MAIN APP WRAPPER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
@@ -218,6 +223,7 @@
             </div>
         </aside>
 
+        <!-- STREAMING_CHUNK:Rendering the main content area (Dashboard and News feed)... -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
@@ -275,6 +281,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering the Anagrafica (Registry) view... -->
                 <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -314,6 +321,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering the Finanza (Accounting) view... -->
                 <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -351,6 +359,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering the Eventi (Calendar) view... -->
                 <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -377,6 +386,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering the Magazzino (Inventory) view... -->
                 <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -395,7 +405,7 @@
                                     <tr>
                                         <th class="p-5">Articolo</th>
                                         <th class="p-5">Categoria</th>
-                                        <th class="p-5">Dettaglio / Nome / N.</th>
+                                        <th class="p-5">Dettaglio e Assegnazione</th>
                                         <th class="p-5 text-center">Quantità</th>
                                         <th class="p-5 text-right">Azioni</th>
                                     </tr>
@@ -410,6 +420,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Building the modals for creating profiles and events... -->
     <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
@@ -486,6 +497,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Configuring the medical and documents sub-tabs... -->
                 <div id="tab-medico" class="inner-tab-content space-y-5">
                     <div id="alertSocioSostenitore" class="hidden bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col items-center justify-center text-center">
                         <i class="fa-solid fa-file-medical text-bdb-blue text-3xl mb-3 opacity-50"></i>
@@ -581,6 +593,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Building modal interfaces for Quota and Evento... -->
     <!-- MODAL QUOTA -->
     <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
@@ -631,10 +644,11 @@
         </div>
     </div>
     
+    <!-- STREAMING_CHUNK:Building modal interface for Magazzino (Inventory)... -->
     <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo Magazzino</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-extrabold text-xl text-gray-800">Aggiungi Articolo</h3><button type="button" onclick="app.closeModal('modalItem')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-lg"></i></button></div>
             <div class="p-6 space-y-5 bg-gray-50">
                 <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nome Articolo <span class="text-red-500">*</span></label><input type="text" id="i_nome" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" placeholder="Es. Tamburo Principale"></div>
                 <div>
@@ -650,10 +664,10 @@
                         <option value="Mantelli">Mantelli</option>
                     </select>
                 </div>
-                <div id="field-desc" class="block"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Descrizione</label><input type="text" id="i_desc" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Specifiche tecniche..."></div>
+                <div id="field-desc" class="block"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Descrizione</label><input type="text" id="i_desc" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Note, taglia o specifiche..."></div>
                 <div id="field-num" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Numero Stivale</label><input type="text" id="i_num" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Es. 42"></div>
-                <div id="field-prop" class="hidden">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assegnato A</label>
+                <div id="field-prop" class="block">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assegnato A (Facoltativo)</label>
                     <select id="i_prop" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white cursor-pointer"></select>
                 </div>
                 <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quantità <span class="text-red-500">*</span></label><input type="number" id="i_tot" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="1" min="1"></div>
@@ -697,6 +711,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Building the Digital Card interface... -->
     <!-- TESSERA DIGITALE MODAL -->
     <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex-col items-center justify-center p-4">
         <div class="w-full max-w-sm relative">
@@ -724,6 +739,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Initializing Firebase configuration and core logic... -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -862,6 +878,7 @@
                 }
             },
 
+            // STREAMING_CHUNK:Setting up user interaction and Firebase data listeners...
             toggleMenu: function(forceOpen) {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('mobileOverlay');
@@ -920,7 +937,14 @@
                 document.getElementById(tabId).classList.add('active');
                 document.getElementById('btn-' + tabId).classList.add('active');
             },
-            closeModal: (id) => document.getElementById(id).classList.add('hidden'),
+            
+            closeModal: (id) => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.add('hidden');
+                    el.style.display = ''; 
+                }
+            },
 
             loadData: function() {
                 this._unsubs.forEach(fn => fn());
@@ -1021,6 +1045,7 @@
                 } catch(e) { console.log(e); }
             },
 
+            // STREAMING_CHUNK:Configuring system notifications and dashboard stats...
             showNativeNotification: function(title, body) {
                 if (!("Notification" in window)) return;
                 
@@ -1161,6 +1186,7 @@
                 });
             },
 
+            // STREAMING_CHUNK:Rendering Anagrafica logic and modal states...
             checkMinorenne: function() {
                 const nascita = document.getElementById('t_nascita').value;
                 if(!nascita) return;
@@ -1324,6 +1350,7 @@
                 }
             },
 
+            // STREAMING_CHUNK:Opening the modal and loading file base64 data...
             openTesseratoModal: function() {
                 document.getElementById('t_id').value = '';
                 document.querySelectorAll('#modalTesserato input:not([type=file]):not([type=checkbox]), #modalTesserato textarea, #modalTesserato select').forEach(el => el.value = '');
@@ -1425,7 +1452,7 @@
             handleFileUpload: function(input, type) {
                 if(input.files && input.files[0]) {
                     const file = input.files[0];
-                    const MAX_SIZE = 700 * 1024; // Manteniamo la sicurezza Base64 limitata per non bloccare
+                    const MAX_SIZE = 700 * 1024;
                     if(file.size > MAX_SIZE) {
                         input.value = '';
                         return this.ui.error("File troppo grande", "Il file selezionato supera 700KB. Comprimi il PDF/foto o scegline uno più leggero prima di caricarlo.");
@@ -1462,6 +1489,7 @@
                 document.getElementById('modalViewer').classList.add('hidden');
             },
 
+            // STREAMING_CHUNK:Rendering the Finanza view and accounting logic...
             updateQuotaDropdown: function() {
                 const select = document.getElementById('q_tesserato');
                 if(!select) return;
@@ -1656,6 +1684,7 @@
                 docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
             },
 
+            // STREAMING_CHUNK:Building the Digital Card dynamic content generator...
             generaTesseraDigitale: function(tesseratoId) {
                 const a = this.state.atleti.find(x => x.id === tesseratoId);
                 if(!a) return;
@@ -1671,7 +1700,6 @@
                 }
 
                 document.getElementById('modalTessera').classList.remove('hidden');
-                document.getElementById('modalTessera').style.display = 'flex';
             },
 
             downloadTessera: async function() {
@@ -1711,6 +1739,7 @@
                 }
             },
 
+            // STREAMING_CHUNK:Configuring the Eventi calendar list, filtering, and admin report generation...
             resetYearlyPayments: async function() {
                 const r = await this.ui.confirm("Nuovo Anno Associativo", "Vuoi davvero azzerare e cancellare tutti i pagamenti registrati per iniziare un nuovo anno? Questa operazione non è reversibile.");
                 if(r.isConfirmed) {
@@ -2033,23 +2062,27 @@
                 app.updateAppelloCounters();
             },
 
+            // STREAMING_CHUNK:Rendering the flexible Magazzino inventory list...
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
                 if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
                 
                 tbody.innerHTML = this.state.magazzino.map(i => {
-                    let det = this.esc(i.descrizione || '-');
-                    if(i.categoria === 'Stivali' && i.numero) det = `Numero: <strong>${this.esc(i.numero)}</strong>`;
+                    let detParts = [];
+                    if(i.descrizione) detParts.push(this.esc(i.descrizione));
+                    if(i.categoria === 'Stivali' && i.numero) detParts.push(`Misura: <strong>${this.esc(i.numero)}</strong>`);
                     
-                    if((i.categoria === 'Ponchi' || i.categoria === 'Mantelli') && i.proprietario) {
+                    if(i.proprietario) {
                         const ass = this.state.atleti.find(a => a.id === i.proprietario);
-                        det = `Assegnato a: <strong>${ass ? this.esc(ass.nome) : 'Atleta rimosso'}</strong>`;
+                        detParts.push(`Assegnato a: <strong>${ass ? this.esc(ass.nome) : 'Atleta rimosso'}</strong>`);
                     }
+                    
+                    const det = detParts.length > 0 ? detParts.join('<br>') : '-';
                     
                     return `<tr>
                         <td class="p-5 font-extrabold text-gray-800">${this.esc(i.nome)}</td>
                         <td class="p-5"><span class="text-[10px] font-bold uppercase bg-blue-50 text-bdb-blue px-3 py-1.5 rounded-lg">${i.categoria}</span></td>
-                        <td class="p-5 text-gray-600">${det}</td>
+                        <td class="p-5 text-gray-600 text-xs">${det}</td>
                         <td class="p-5 text-center font-extrabold text-gray-800">${i.totale}</td>
                         <td class="p-5 text-right"><button type="button" onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-gray-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>`;
@@ -2072,9 +2105,7 @@
             },
             toggleItemFields: () => {
                 const cat = document.getElementById('i_cat').value;
-                document.getElementById('field-desc').style.display = ['Tamburi','Chiarine','Bandiere'].includes(cat) ? 'block' : 'none';
                 document.getElementById('field-num').style.display = cat === 'Stivali' ? 'block' : 'none';
-                document.getElementById('field-prop').style.display = ['Ponchi','Mantelli'].includes(cat) ? 'block' : 'none';
             },
             saveItem: async function() {
                 const n = document.getElementById('i_nome').value; if(!n) return;
