@@ -25,10 +25,10 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- External Libraries (jspdf & SweetAlert2 Modals & html2canvas) -->
+    <!-- External Libraries (jspdf, html2canvas, SweetAlert2) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         tailwind.config = {
@@ -76,20 +76,25 @@
         tbody tr { transition: all 0.15s ease; }
         tbody tr:hover { background-color: #F1F5F9; }
         .swal2-popup { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 1.5rem !important; }
+
+        /* Stile specifico per la Tessera Digitale da esportare */
+        #tessera-card { background: linear-gradient(135deg, #002266, #0033A0); position: relative; overflow: hidden; }
+        .tessera-lama { position: absolute; top: 0; right: -20%; width: 60%; height: 150%; background: linear-gradient(to right, #FFD100, #FFE45E); transform: skewX(-25deg); z-index: 1; box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
+        .tessera-content { position: relative; z-index: 10; }
     </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
-    <!-- PWA TUTORIAL OVERLAY -->
+    <!-- TUTORIAL PWA -->
     <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 text-center">
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-24 h-24 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 object-cover">
-        <h2 class="text-2xl font-extrabold mb-4 tracking-tight">Installa l'App</h2>
-        <p class="mb-8 text-blue-100 max-w-sm">Per ricevere le notifiche e usare il gestionale al meglio, aggiungi questa pagina alla tua schermata Home.</p>
+        <h2 class="text-2xl font-extrabold mb-4 tracking-tight">Installa l'App BDB</h2>
+        <p class="mb-8 text-blue-100 max-w-sm">Per ricevere le notifiche e usare il gestionale al meglio, aggiungi questa app alla tua schermata Home.</p>
         
         <div id="pwa-ios" class="hidden flex-col items-center bg-white/10 p-6 rounded-3xl border border-white/20 w-full max-w-sm shadow-xl">
             <div class="text-4xl mb-4 text-bdb-yellow"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
             <p class="font-bold text-lg mb-2">1. Premi il tasto Condividi</p>
-            <p class="text-sm text-blue-100">Si trova in basso (o in alto) nel tuo browser Safari.</p>
+            <p class="text-sm text-blue-100">Si trova in basso nel tuo browser Safari.</p>
             <div class="h-px w-full bg-white/20 my-4"></div>
             <div class="text-3xl mb-3 text-bdb-yellow"><i class="fa-regular fa-square-plus"></i></div>
             <p class="font-bold text-lg mb-2">2. Aggiungi a Schermata Home</p>
@@ -99,17 +104,17 @@
         <div id="pwa-android" class="hidden flex-col items-center bg-white/10 p-6 rounded-3xl border border-white/20 w-full max-w-sm shadow-xl">
             <div class="text-4xl mb-4 text-bdb-yellow"><i class="fa-solid fa-ellipsis-vertical"></i></div>
             <p class="font-bold text-lg mb-2">1. Premi i 3 puntini</p>
-            <p class="text-sm text-blue-100">Si trovano in alto a destra nel browser Chrome.</p>
+            <p class="text-sm text-blue-100">In alto a destra nel tuo browser Chrome.</p>
             <div class="h-px w-full bg-white/20 my-4"></div>
             <div class="text-3xl mb-3 text-bdb-yellow"><i class="fa-solid fa-mobile-screen"></i></div>
             <p class="font-bold text-lg mb-2">2. Aggiungi a Schermata Home</p>
             <p class="text-sm text-blue-100">Seleziona questa voce dal menu.</p>
         </div>
 
-        <button onclick="document.getElementById('pwaOverlay').classList.add('hidden')" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (non consigliato)</button>
+        <button onclick="app.dismissPwaTutorial()" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (Non consigliato)</button>
     </div>
 
-    <!-- SCHERMATA DI LOGIN -->
+    <!-- AUTHENTICATION -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
             <div class="w-full md:w-5/12 bg-bdb-blue p-8 flex flex-col items-center justify-center text-white relative overflow-hidden hidden md:flex">
@@ -163,11 +168,10 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
+    <!-- MAIN APP WRAPPER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
         
-        <!-- SIDEBAR -->
         <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-bdb-blue text-white flex flex-col shrink-0 shadow-2xl md:shadow-xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
             <div class="p-6 flex items-center justify-between border-b border-white/10">
                 <div class="flex items-center gap-3">
@@ -214,9 +218,7 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
-            <!-- MOBILE HEADER -->
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-8 h-8 rounded-full border border-bdb-yellow object-cover">
@@ -234,7 +236,6 @@
                         <p class="text-gray-500 text-sm md:text-base">Benvenuto nella bacheca ufficiale dell'associazione.</p>
                     </header>
                     
-                    <!-- ADMIN STATS -->
                     <div id="adminStats" class="admin-only hidden grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
                         <div class="bg-white p-5 rounded-3xl shadow-soft border border-gray-100 flex items-center gap-4 hover:-translate-y-1 transition-transform">
                             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-bdb-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
@@ -250,7 +251,7 @@
                         </div>
                     </div>
 
-                    <!-- PUSH NOTIFICATION PROMO -->
+                    <!-- Notifiche Promo Banner -->
                     <div id="pushPromo" class="hidden bg-gradient-to-r from-bdb-blue to-blue-500 rounded-3xl shadow-glow p-6 mb-8 text-white flex flex-col md:flex-row items-center justify-between gap-4 transform transition-all hover:scale-[1.01]">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl shrink-0"><i class="fa-solid fa-bell"></i></div>
@@ -262,10 +263,9 @@
                         <button onclick="app.requestNotificationPermission()" class="w-full md:w-auto px-6 py-3 bg-white text-bdb-blue font-extrabold rounded-xl shadow-md hover:bg-gray-50 transition shrink-0">Attiva Ora</button>
                     </div>
 
-                    <!-- USER FINANCE ALERT BOX -->
+                    <!-- User Finance Alert Box -->
                     <div id="userFinanceBox"></div>
 
-                    <!-- NEWS FEED -->
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden mt-8">
                         <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullhorn text-bdb-yellow"></i> Avvisi Direttivo</h3>
@@ -281,8 +281,12 @@
                         <div>
                             <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight" id="anagraficaTitle">I Tuoi Fascicoli</h2>
                             <p class="text-gray-500 text-sm">Gestisci le anagrafiche in totale sicurezza.</p>
+                            <div class="flex gap-2 mt-4 admin-only hidden" id="anagraficaTabs">
+                                <button onclick="app.setAnagraficaTab(false)" id="tab-ana-attivi" class="px-5 py-2 rounded-xl text-sm font-bold bg-bdb-blue text-white shadow-md transition-all">Attivi</button>
+                                <button onclick="app.setAnagraficaTab(true)" id="tab-ana-archiviati" class="px-5 py-2 rounded-xl text-sm font-bold bg-white text-gray-500 border border-gray-200 transition-all hover:bg-gray-50">Archiviati</button>
+                            </div>
                         </div>
-                        <div class="flex gap-2 w-full md:w-auto">
+                        <div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
                             <div class="relative flex-grow md:w-64">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-magnifying-glass text-gray-400"></i></div>
                                 <input type="text" id="searchAnagrafica" placeholder="Cerca nome..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-bdb-blue outline-none shadow-sm text-base bg-white" oninput="app.renderAnagrafica()">
@@ -332,7 +336,7 @@
                             <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
                                 <thead class="bg-gray-50/80 text-gray-600 border-b border-gray-100 uppercase tracking-wider text-xs font-extrabold">
                                     <tr>
-                                        <th class="p-5">Data</th>
+                                        <th class="p-5">Data Emissione</th>
                                         <th class="p-5">Tesserato</th>
                                         <th class="p-5">Causale</th>
                                         <th class="p-5 text-right">Totale</th>
@@ -431,12 +435,12 @@
                     <!-- Upload Foto Profilo -->
                     <div class="flex justify-center mb-6">
                         <label class="relative cursor-pointer group">
-                            <div id="fotoPreview" class="w-24 h-24 rounded-full bg-gray-50 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 overflow-hidden group-hover:border-bdb-blue group-hover:bg-blue-50 transition shadow-sm">
-                                <i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition"></i>
-                                <span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition">Foto</span>
+                            <div id="fotoPreview" class="w-24 h-24 rounded-full bg-gray-50 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 overflow-hidden group-hover:border-bdb-blue group-hover:bg-blue-50 transition shadow-sm bg-cover bg-center">
+                                <i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition" id="fotoIcon"></i>
+                                <span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition" id="fotoTesto">Foto</span>
                             </div>
-                            <input type="file" id="inputFotoTesserato" class="hidden" accept="image/*" onchange="app.handleFotoUpload(this)">
-                            <input type="hidden" id="t_foto" value="">
+                            <input type="file" id="inputFotoTesserato" class="hidden" accept="image/*" onchange="app.handleFileUpload(this, 'foto_profilo')">
+                            <input type="hidden" id="t_doc_foto_profilo" value="">
                         </label>
                     </div>
 
@@ -613,13 +617,13 @@
                     <label class="block text-xs font-bold text-bdb-blue uppercase tracking-wider mb-2">Gruppo Destinatario <span class="text-red-500">*</span></label>
                     <select id="e_gruppo" class="w-full p-3.5 border-2 border-blue-200 bg-blue-50 rounded-xl text-base font-extrabold text-bdb-blue outline-none focus:ring-2 focus:ring-bdb-blue cursor-pointer transition shadow-sm">
                         <option value="Tutti">Tutti (Tamburi, Chiarine e Sbandieratori)</option>
-                        <option value="Sbandieratori">Solo Sbandieratori (Grandi)</option>
-                        <option value="Tamburi">Solo Tamburi (Grandi)</option>
-                        <option value="Chiarine">Solo Chiarine (Grandi)</option>
-                        <option value="Musici">Gruppo Musici Grandi (Tamburi + Chiarine)</option>
-                        <option value="Sbandieratori under">Solo Sbandieratori Under</option>
-                        <option value="Musici under">Solo Musici Under</option>
-                        <option value="Tutti under">Tutti gli Under (Sbandieratori e Musici piccoli)</option>
+                        <option value="Sbandieratori">Solo Sbandieratori</option>
+                        <option value="Tamburi">Solo Tamburi</option>
+                        <option value="Chiarine">Solo Chiarine</option>
+                        <option value="Musici">Gruppo Musici (Tamburi + Chiarine)</option>
+                        <option value="Tutti under">Tutti under (Piccoli Sba e Musici)</option>
+                        <option value="Sbandieratori under">Sbandieratori under</option>
+                        <option value="Musici under">Musici under</option>
                     </select>
                 </div>
             </div>
@@ -648,7 +652,10 @@
                 </div>
                 <div id="field-desc" class="block"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Descrizione</label><input type="text" id="i_desc" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Specifiche tecniche..."></div>
                 <div id="field-num" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Numero Stivale</label><input type="text" id="i_num" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Es. 42"></div>
-                <div id="field-prop" class="hidden"><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assegnato A (Nome)</label><input type="text" id="i_prop" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium bg-white" placeholder="Nome proprietario..."></div>
+                <div id="field-prop" class="hidden">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assegnato A</label>
+                    <select id="i_prop" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white cursor-pointer"></select>
+                </div>
                 <div><label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quantità <span class="text-red-500">*</span></label><input type="number" id="i_tot" class="w-full p-3.5 border border-gray-200 rounded-xl text-base font-medium outline-none focus:ring-2 focus:ring-bdb-blue bg-white" value="1" min="1"></div>
             </div>
             <div class="p-5 border-t border-gray-100 flex justify-end gap-3 bg-white"><button type="button" onclick="app.closeModal('modalItem')" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition">Annulla</button><button type="button" onclick="app.saveItem()" class="px-6 py-2.5 rounded-xl bg-bdb-blue text-white font-bold shadow-md hover:bg-bdb-blue-dark transition">Salva</button></div>
@@ -690,45 +697,29 @@
         </div>
     </div>
 
-    <!-- MODAL TESSERA DIGITALE -->
-    <div id="modalTessera" class="glass-modal fixed inset-0 z-[130] hidden flex flex-col items-center justify-center p-4">
-        <div class="w-full max-w-sm relative flex flex-col items-center">
-            <button type="button" onclick="app.closeModal('modalTessera')" class="absolute -top-14 right-0 w-10 h-10 rounded-full bg-white/20 text-white hover:bg-white/30 flex items-center justify-center transition backdrop-blur-sm"><i class="fa-solid fa-times text-xl"></i></button>
+    <!-- TESSERA DIGITALE MODAL -->
+    <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex-col items-center justify-center p-4">
+        <div class="w-full max-w-sm relative">
+            <button type="button" onclick="app.closeModal('modalTessera')" class="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition"><i class="fa-solid fa-times"></i></button>
             
-            <div id="tesseraDaScaricare" class="rounded-3xl relative overflow-hidden text-white w-full aspect-[85/54] shadow-2xl transition-transform duration-300 border border-white/10 bg-gradient-to-br from-[#002266] to-[#0033A0]">
-                <!-- Design Grafico Moderno Giallo -->
-                <div class="absolute top-0 -right-10 w-40 h-[150%] bg-gradient-to-b from-[#FFD100] to-[#FFE45E] opacity-90 origin-top-right -skew-x-[25deg] shadow-[-15px_0_30px_rgba(0,0,0,0.4)] z-0"></div>
-                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-[#FFE45E] rounded-full opacity-20 blur-3xl z-0"></div>
-                
-                <div class="relative z-10 flex flex-col h-full justify-between p-5">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="flex items-center gap-3">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-12 h-12 rounded-full border-2 border-white shadow-lg shrink-0 object-cover bg-white" crossorigin="anonymous">
-                            <div>
-                                <h4 class="font-black text-[10px] uppercase tracking-widest text-[#FFD100] drop-shadow-sm mb-0.5">Borgo Don Bosco</h4>
-                                <h3 class="font-bold text-xs leading-tight uppercase tracking-wider text-white shadow-sm">Tessera<br>Associativa</h3>
-                            </div>
-                        </div>
-                        <div class="bg-white/95 px-3 py-1.5 rounded-xl border-2 border-white text-[#0033A0] font-black text-sm tracking-widest shadow-lg transform rotate-3">
-                            <span id="cardAnno"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-end gap-3 mt-auto">
-                        <div class="w-[60px] h-[60px] rounded-xl bg-white border-2 border-[#FFD100] overflow-hidden shrink-0 shadow-lg relative z-10" id="cardFoto">
-                        </div>
-                        <div class="overflow-hidden flex-1 z-10 bg-black/25 p-2 rounded-xl backdrop-blur-md border border-white/10 shadow-inner">
-                            <p class="text-base sm:text-[17px] font-black text-white drop-shadow-md tracking-tight leading-none mb-1 break-words w-full" id="cardNome"></p>
-                            <p class="text-[9px] sm:text-[10px] text-[#FFE45E] uppercase font-extrabold tracking-widest drop-shadow-sm" id="cardRuolo"></p>
-                        </div>
+            <div id="tessera-card" class="w-full aspect-[1.58/1] rounded-2xl shadow-2xl relative overflow-hidden text-white font-sans p-6 flex flex-col justify-between">
+                <div class="tessera-lama"></div>
+                <div class="tessera-content flex justify-between items-start">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover">
+                    <div class="bg-white text-bdb-blue font-extrabold px-3 py-1 rounded-lg text-lg shadow-sm z-10" id="tes-anno">2026</div>
+                </div>
+                <div class="tessera-content self-end text-right z-10 w-full mt-4 flex justify-between items-end">
+                    <div id="tes-foto" class="w-20 h-20 rounded-xl border-2 border-white/50 bg-gray-200 shadow-inner bg-cover bg-center shrink-0"></div>
+                    <div class="bg-black/40 backdrop-blur-md p-3 rounded-xl max-w-[65%] shadow-lg border border-white/10">
+                        <p class="text-[9px] uppercase tracking-widest text-bdb-yellow font-bold mb-0.5">Tessera Associativa</p>
+                        <h3 class="font-extrabold text-white text-lg leading-tight break-words" id="tes-nome">Nome Cognome</h3>
+                        <p class="text-xs text-blue-100 font-medium mt-1" id="tes-ruolo">Atleta</p>
                     </div>
                 </div>
             </div>
             
-            <p class="text-center text-white/50 text-xs mt-6 font-medium px-4">Mostra questa tessera per accedere alle agevolazioni o agli eventi del Borgo.</p>
-            
-            <button onclick="app.downloadTessera()" class="mt-4 bg-white/20 text-white px-6 py-3 rounded-xl font-bold border border-white/30 hover:bg-white/30 transition flex items-center justify-center gap-2 w-full backdrop-blur-sm shadow-lg">
-                <i class="fa-solid fa-download"></i> Salva in Galleria
+            <button type="button" onclick="app.downloadTessera()" class="w-full mt-6 bg-white text-bdb-blue font-extrabold py-3.5 rounded-xl shadow-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition active:scale-95">
+                <i class="fa-solid fa-share-nodes"></i> Salva / Condividi
             </button>
         </div>
     </div>
@@ -737,17 +728,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-        // ==========================================
-        // CONFIGURAZIONE AMMINISTRATORI
-        // Aggiungi o rimuovi le email degli admin qui sotto
-        // ==========================================
-        const ADMIN_EMAILS = [
-            'lollinorusso@icloud.com',
-            'segreteria@borgodonbosco.com',
-            'gianluigi_delmastro@hotmail.it'
-        ];
-        // ==========================================
 
         const firebaseConfig = {
             apiKey: "AIzaSyAUYhZUZ3lUBwISXXcfzLoRt4SVNDFwqr4",
@@ -764,8 +744,19 @@
         const googleProvider = new GoogleAuthProvider();
         const formatter = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
 
+        // ==========================================
+        // CONFIGURAZIONE AMMINISTRATORI
+        // Aggiungi o rimuovi le email degli admin qui sotto
+        // ==========================================
+        const ADMIN_EMAILS = [
+            'lollinorusso@icloud.com',
+            'segreteria@borgodonbosco.com',
+            'gianluigi_delmastro@hotmail.it'
+        ];
+        // ==========================================
+
         const app = {
-            state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [], notificheAttive: false, primoAvvioNotifiche: true, primoAvvioAtleti: true, mostraArchiviati: false },
+            state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [], notificheAttive: false, primoAvvioNotifiche: true, mostraArchiviatiAtleti: false, mostraArchiviatiEventi: false, lastAtletiCount: undefined },
             _unsubs: [],
             
             ui: {
@@ -777,43 +768,24 @@
 
             esc: (s) => String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
 
-            isMatch: function(role, grp) {
-                if (grp === 'Tutti') return true;
-                if (grp === 'Tamburi' && role === 'Musico (Tamburino)') return true;
-                if (grp === 'Chiarine' && role === 'Musico (Chiarina)') return true;
-                if (grp === 'Musici' && (role === 'Musico (Tamburino)' || role === 'Musico (Chiarina)')) return true;
-                if (grp === 'Sbandieratori' && role === 'Sbandieratore') return true;
-                if (grp === 'Musici under' && role === 'Musico under') return true;
-                if (grp === 'Sbandieratori under' && role === 'Sbandieratore under') return true;
-                if (grp === 'Tutti under' && (role === 'Musico under' || role === 'Sbandieratore under')) return true;
-                return false;
-            },
-
-            isEligibleForTessera: function(atleta, quotaCausale) {
-                if (!atleta) return false;
-                if (quotaCausale === 'FISB 50€') return false;
-                if ((atleta.ruolo || '').toLowerCase().includes('under')) return false;
-
-                if (atleta.nascita) {
-                    const dob = new Date(atleta.nascita);
-                    const today = new Date();
-                    let age = today.getFullYear() - dob.getFullYear();
-                    const m = today.getMonth() - dob.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-                        age--;
-                    }
-                    if (age < 18) return false;
-                }
-                return true;
-            },
-
             init: function() {
-                this.checkPWA();
-
                 document.getElementById('emailLoginBtn').addEventListener('click', () => this.login());
                 document.getElementById('googleLoginBtn').addEventListener('click', () => this.googleLogin());
                 document.getElementById('resetPassBtn').addEventListener('click', () => this.resetPassword());
                 document.getElementById('registerBtn').addEventListener('click', () => this.register());
+
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+                if(!isStandalone && !localStorage.getItem('pwaTutorialSkipped')) {
+                    document.getElementById('pwaOverlay').classList.remove('hidden');
+                    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    if(isIos) {
+                        document.getElementById('pwa-ios').classList.remove('hidden');
+                        document.getElementById('pwa-android').classList.add('hidden');
+                    } else {
+                        document.getElementById('pwa-android').classList.remove('hidden');
+                        document.getElementById('pwa-ios').classList.add('hidden');
+                    }
+                }
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
@@ -824,7 +796,7 @@
                         document.getElementById('mainApp').classList.remove('hidden');
                         
                         document.getElementById('userEmailDisplay').innerText = user.email || user.displayName || 'Utente BDB';
-                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Admin / Direttivo' : 'Socio / Genitore';
+                        document.getElementById('userRoleDisplay').innerText = this.state.isAdmin ? 'Admin / Direttivo' : 'Atleta / Socio';
                         document.getElementById('userInitial').innerText = (user.email || user.displayName || 'U').charAt(0).toUpperCase();
                         
                         this.setGreeting();
@@ -836,12 +808,14 @@
                             document.getElementById('nav-magazzino').classList.add('flex');
                             document.getElementById('anagraficaTitle').innerText = "Anagrafica Completa";
                             document.getElementById('labelAnagraficaNav').innerText = "Tutti i Fascicoli";
+                            document.getElementById('anagraficaTabs').classList.remove('hidden');
                         } else {
                             adminEls.forEach(el => el.classList.add('hidden'));
                             document.getElementById('nav-finanza').classList.remove('flex');
                             document.getElementById('nav-magazzino').classList.remove('flex');
                             document.getElementById('anagraficaTitle').innerText = "I Tuoi Fascicoli";
                             document.getElementById('labelAnagraficaNav').innerText = "I Tuoi Fascicoli";
+                            document.getElementById('anagraficaTabs').classList.add('hidden');
                         }
 
                         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
@@ -867,26 +841,9 @@
                 });
             },
 
-            checkPWA: function() {
-                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                
-                if (isMobile && !isStandalone) {
-                    const overlay = document.getElementById('pwaOverlay');
-                    if(overlay) {
-                        overlay.classList.remove('hidden');
-                        overlay.classList.add('flex');
-                        
-                        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                        if (isIOS) {
-                            document.getElementById('pwa-ios').classList.remove('hidden');
-                            document.getElementById('pwa-ios').classList.add('flex');
-                        } else {
-                            document.getElementById('pwa-android').classList.remove('hidden');
-                            document.getElementById('pwa-android').classList.add('flex');
-                        }
-                    }
-                }
+            dismissPwaTutorial: function() {
+                localStorage.setItem('pwaTutorialSkipped', 'true');
+                document.getElementById('pwaOverlay').classList.add('hidden');
             },
 
             togglePassword: function() {
@@ -968,23 +925,14 @@
             loadData: function() {
                 this._unsubs.forEach(fn => fn());
                 this._unsubs = [];
-                
-                this.state.primoAvvioAtleti = true;
-                this.state.primoAvvioNotifiche = true;
-                
                 const qAtleti = this.state.isAdmin ? query(collection(db, "fascicoli")) : query(collection(db, "fascicoli"), where("ownerUid", "==", this.state.user.uid));
                 this._unsubs.push(onSnapshot(qAtleti, (snap) => {
-                    const newAtleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                    
-                    if (this.state.isAdmin && !this.state.primoAvvioAtleti && newAtleti.length > this.state.atleti.length) {
-                        const oldIds = new Set(this.state.atleti.map(a => a.id));
-                        const added = newAtleti.filter(a => !oldIds.has(a.id));
-                        added.forEach(nuovo => {
-                            this.showNativeNotification("Nuova Iscrizione", `${nuovo.nome} si è appena registrato!`);
-                        });
+                    if(this.state.isAdmin && this.state.lastAtletiCount !== undefined && snap.docs.length > this.state.lastAtletiCount) {
+                        this.showNativeNotification("Nuova Iscrizione!", "Un nuovo fascicolo è stato appena registrato nel sistema.");
                     }
+                    this.state.lastAtletiCount = snap.docs.length;
 
-                    this.state.atleti = newAtleti;
+                    this.state.atleti = snap.docs.map(d => ({id: d.id, ...d.data()}));
                     this.state.atleti.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
                     this.renderAnagrafica(); 
                     this.renderEventi(); 
@@ -995,8 +943,6 @@
                     } else {
                         this.renderUserFinance();
                     }
-                    
-                    setTimeout(() => { this.state.primoAvvioAtleti = false; }, 2000);
                 }, (err) => this.ui.error("Errore Dati", "Impossibile caricare i fascicoli: " + err.message)));
 
                 this._unsubs.push(onSnapshot(query(collection(db, "news"), orderBy("date", "desc")), (snap) => {
@@ -1019,7 +965,18 @@
                             const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                             const grp = newEventi[0].gruppo || 'Tutti';
                             
-                            shouldNotify = myFascicoli.some(myF => this.isMatch(myF.ruolo || 'Atleta', grp));
+                            shouldNotify = myFascicoli.some(myF => {
+                                const myRole = myF.ruolo || 'Atleta';
+                                if (grp === 'Tutti') return true;
+                                if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
+                                if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                                if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
+                                if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                                if (grp === 'Tutti under' && (myRole.includes('under'))) return true;
+                                if (grp === 'Sbandieratori under' && myRole === 'Sbandieratore under') return true;
+                                if (grp === 'Musici under' && myRole === 'Musico under') return true;
+                                return false;
+                            });
                         }
                         
                         if(shouldNotify) {
@@ -1085,9 +1042,9 @@
             },
 
             updateDashboardStats: function() {
-                document.getElementById('dash-tesserati').innerText = this.state.atleti.length;
+                document.getElementById('dash-tesserati').innerText = this.state.atleti.filter(a=>!a.archiviato).length;
                 let scaduti = 0; const oggi = new Date(); oggi.setHours(0,0,0,0);
-                this.state.atleti.forEach(a => { if(a.cert_scad && new Date(a.cert_scad) < oggi) scaduti++; });
+                this.state.atleti.filter(a=>!a.archiviato).forEach(a => { if(a.cert_scad && new Date(a.cert_scad) < oggi) scaduti++; });
                 document.getElementById('dash-scaduti').innerText = scaduti;
             },
             
@@ -1096,6 +1053,21 @@
                 const today = new Date();
                 if(date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) return "Oggi";
                 return date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
+            },
+
+            isTesseraEligible: function(tesserato, causaleQuota) {
+                if(!tesserato) return false;
+                if(tesserato.ruolo && tesserato.ruolo.includes('under')) return false;
+                if(causaleQuota === 'FISB 50€') return false;
+                if(tesserato.nascita) {
+                    const dob = new Date(tesserato.nascita);
+                    const oggi = new Date();
+                    let eta = oggi.getFullYear() - dob.getFullYear();
+                    const m = oggi.getMonth() - dob.getMonth();
+                    if (m < 0 || (m === 0 && oggi.getDate() < dob.getDate())) eta--;
+                    if(eta < 18) return false;
+                }
+                return true;
             },
 
             renderUserFinance: function() {
@@ -1121,6 +1093,7 @@
                     const nome = tesserato ? tesserato.nome : 'Sconosciuto';
                     const diff = Number(q.totale) - Number(q.versato);
                     const isSaldato = diff <= 0;
+                    const canTessera = isSaldato && this.isTesseraEligible(tesserato, q.causale);
                     
                     if (!isSaldato) {
                         html += `
@@ -1135,9 +1108,6 @@
                             </div>
                         </div>`;
                     } else {
-                        const isEligible = this.isEligibleForTessera(tesserato, q.causale);
-                        const userTesseraBtn = isEligible ? `<button onclick="app.showTessera('${tesserato.id}')" class="bg-gradient-to-r from-bdb-yellow to-yellow-400 px-5 py-3 rounded-xl font-extrabold text-bdb-blue-dark shadow-md whitespace-nowrap hover:scale-105 transition border border-yellow-300 flex items-center gap-2"><i class="fa-solid fa-id-card"></i> Mostra Tessera</button>` : '';
-
                         html += `
                         <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm opacity-90 hover:opacity-100 transition">
                             <div>
@@ -1145,85 +1115,16 @@
                                 <h4 class="font-extrabold text-gray-800 text-lg">${this.esc(q.causale)} - ${this.esc(nome)}</h4>
                             </div>
                             <div class="flex gap-2 flex-wrap">
+                                ${canTessera ? `<button onclick="app.generaTesseraDigitale('${tesserato.id}')" class="bg-gradient-to-r from-bdb-yellow to-yellow-400 px-5 py-3 rounded-xl font-extrabold text-bdb-blue-dark shadow-md hover:scale-105 transition border border-yellow-300 flex items-center gap-2"><i class="fa-solid fa-id-badge"></i> Tessera</button>` : ''}
                                 <button onclick="app.generaRicevutaPDF('${q.id}')" class="bg-white px-5 py-3 rounded-xl font-extrabold text-emerald-600 shadow-sm whitespace-nowrap hover:bg-emerald-100 transition border border-emerald-100 flex items-center gap-2">
                                     <i class="fa-solid fa-download"></i> Ricevuta PDF
                                 </button>
-                                ${userTesseraBtn}
                             </div>
                         </div>`;
                     }
                 });
                 html += '</div>';
                 box.innerHTML = html;
-            },
-
-            showTessera: function(id) {
-                const t = this.state.atleti.find(a => a.id === id);
-                if(!t) return;
-                
-                document.getElementById('cardNome').innerText = t.nome || '';
-                document.getElementById('cardRuolo').innerText = t.ruolo || 'Socio';
-                document.getElementById('cardAnno').innerText = new Date().getFullYear();
-                
-                const fotoContainer = document.getElementById('cardFoto');
-                if(t.foto) {
-                    fotoContainer.innerHTML = `<img src="${t.foto}" class="w-full h-full object-cover">`;
-                } else {
-                    fotoContainer.innerHTML = `<div class="w-full h-full bg-white flex items-center justify-center text-gray-300"><i class="fa-solid fa-user text-3xl"></i></div>`;
-                }
-                
-                document.getElementById('modalTessera').classList.remove('hidden');
-            },
-
-            downloadTessera: async function() {
-                if(!window.html2canvas) return this.ui.error("Errore", "Libreria salvataggio non caricata.");
-                const card = document.getElementById('tesseraDaScaricare');
-                const nome = document.getElementById('cardNome').innerText || 'Atleta';
-                
-                const oldTransform = card.style.transform;
-                card.style.transform = 'none';
-                
-                try {
-                    this.ui.toast("Generazione immagine in corso...", "info");
-                    
-                    const canvas = await html2canvas(card, { 
-                        scale: 3, 
-                        backgroundColor: null,
-                        useCORS: true 
-                    });
-                    
-                    card.style.transform = oldTransform; 
-
-                    canvas.toBlob(async (blob) => {
-                        if (!blob) throw new Error("Generazione fallita");
-
-                        const file = new File([blob], `Tessera_BDB_${nome.replace(/\s+/g, '_')}.png`, { type: "image/png" });
-
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                            try {
-                                await navigator.share({
-                                    title: 'Tessera Borgo Don Bosco',
-                                    files: [file]
-                                });
-                                this.ui.toast("Tessera elaborata!");
-                            } catch (error) {
-                                console.log("Condivisione annullata dall'utente");
-                            }
-                        } else {
-                            const link = document.createElement('a');
-                            link.download = file.name;
-                            link.href = URL.createObjectURL(blob);
-                            link.click();
-                            URL.revokeObjectURL(link.href);
-                            this.ui.toast("Tessera scaricata!");
-                        }
-                    }, 'image/png');
-                    
-                } catch(e) {
-                    card.style.transform = oldTransform;
-                    this.ui.error("Errore", "Impossibile elaborare l'immagine.");
-                    console.error(e);
-                }
             },
 
             renderNews: function() {
@@ -1255,8 +1156,8 @@
             },
             
             deleteDocRef: function(colName, id) {
-                this.ui.confirm("Sei sicuro?", "Vuoi eliminare questo elemento in modo permanente?").then(async (r) => {
-                    if(r.isConfirmed) { await deleteDoc(doc(db, colName, id)); this.ui.toast("Eliminato con successo."); }
+                this.ui.confirm("Elimina Definitivamente", "Sei sicuro? Questa azione non può essere annullata ed eliminerà il record per sempre.").then(async (r) => {
+                    if(r.isConfirmed) { await deleteDoc(doc(db, colName, id)); this.ui.toast("Eliminato definitivamente."); }
                 });
             },
 
@@ -1294,18 +1195,45 @@
                     if(alertSocio) alertSocio.classList.add('hidden');
                 }
 
-                if (ruolo.includes('under')) {
+                if(this.state.isAdmin && (ruolo.includes('under'))) {
                     if(boxFascia) boxFascia.classList.remove('hidden');
                 } else {
                     if(boxFascia) boxFascia.classList.add('hidden');
-                    document.getElementById('t_fascia').value = 'Da assegnare';
                 }
+            },
+
+            setAnagraficaTab: function(isArchiviato) {
+                this.state.mostraArchiviatiAtleti = isArchiviato;
+                const btnA = document.getElementById('tab-ana-attivi');
+                const btnAr = document.getElementById('tab-ana-archiviati');
+                
+                if(!isArchiviato) {
+                    btnA.className = "px-5 py-2 rounded-xl text-sm font-bold bg-bdb-blue text-white shadow-md transition-all";
+                    btnAr.className = "px-5 py-2 rounded-xl text-sm font-bold bg-white text-gray-500 border border-gray-200 transition-all hover:bg-gray-50";
+                } else {
+                    btnA.className = "px-5 py-2 rounded-xl text-sm font-bold bg-white text-gray-500 border border-gray-200 transition-all hover:bg-gray-50";
+                    btnAr.className = "px-5 py-2 rounded-xl text-sm font-bold bg-bdb-blue text-white shadow-md transition-all";
+                }
+                this.renderAnagrafica();
+            },
+
+            archiviaFascicolo: async function(id, newState) {
+                await updateDoc(doc(db, "fascicoli", id), { archiviato: newState });
+                this.ui.toast(newState ? "Fascicolo Archiviato" : "Fascicolo Ripristinato");
             },
 
             renderAnagrafica: function() {
                 const tbody = document.getElementById('anagraficaTableBody');
                 const search = document.getElementById('searchAnagrafica').value.toLowerCase();
-                const filtered = this.state.atleti.filter(a => (a.nome || '').toLowerCase().includes(search));
+                let filtered = this.state.atleti;
+                
+                if (this.state.isAdmin) {
+                    filtered = filtered.filter(a => !!a.archiviato === this.state.mostraArchiviatiAtleti);
+                } else {
+                    filtered = filtered.filter(a => !a.archiviato);
+                }
+
+                filtered = filtered.filter(a => (a.nome || '').toLowerCase().includes(search));
                 
                 if(!filtered.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-folder-open', 'Nessun fascicolo trovato.')}</td></tr>`;
 
@@ -1322,44 +1250,40 @@
                             certStatus = `<span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-red-100">Scaduto</span>`;
                             if(this.state.isAdmin && a.tel) {
                                 const msg = encodeURIComponent(`Ciao ${a.nome}, ti ricordiamo che il certificato medico per Borgo Don Bosco risulta SCADUTO. Ti chiediamo di provvedere al rinnovo al più presto. Grazie!`);
-                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp Scadenza"><i class="fa-brands fa-whatsapp text-sm"></i> Sollecita</a>`;
+                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>`;
                             }
                         } else if(diff <= 30) {
                             certStatus = `<span class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-orange-100">${diff} gg</span>`;
                             if(this.state.isAdmin && a.tel) {
                                 const msg = encodeURIComponent(`Ciao ${a.nome}, ti ricordiamo che il certificato medico per Borgo Don Bosco scadrà tra ${diff} giorni (${a.cert_scad}). Ti chiediamo di provvedere al rinnovo. Grazie!`);
-                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp Scadenza"><i class="fa-brands fa-whatsapp text-sm"></i> Sollecita</a>`;
+                                whatsappBtn = `<a href="https://wa.me/${a.tel.replace(/\s+/g,'')}?text=${msg}" target="_blank" class="ml-2 text-emerald-600 bg-emerald-50 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1" title="Invia WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>`;
                             }
                         } else {
                             certStatus = `<span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-[11px] uppercase font-extrabold border border-emerald-100">Valido</span>`;
                         }
                     }
                     
+                    let fasciaBadge = '';
+                    if(this.state.isAdmin && a.fascia && a.fascia !== 'Da assegnare') {
+                        fasciaBadge = `<span class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-md text-[10px] font-bold border border-purple-200"><i class="fa-solid fa-layer-group mr-1"></i>${a.fascia}</span>`;
+                    }
+
                     const docsHTML = (a.doc_privacy && a.doc_ci && a.doc_cf) ? `<i class="fa-solid fa-circle-check text-emerald-500 text-xl" title="Completo"></i>` : `<i class="fa-solid fa-circle-exclamation text-orange-400 text-xl" title="Documenti mancanti"></i>`;
                     const isReadOnly = this.state.isAdmin && a.ownerUid !== this.state.user.uid;
                     const actionIcon = isReadOnly ? 'fa-eye' : 'fa-pen';
-                    
-                    let fasciaBadge = '';
-                    if ((a.ruolo || '').includes('under') && a.fascia && a.fascia !== 'Da assegnare') {
-                        fasciaBadge = `<br><span class="inline-block mt-1 text-[9px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-extrabold uppercase border border-purple-200">${a.fascia}</span>`;
-                    }
 
                     return `
                         <tr class="cursor-pointer group" onclick="app.editTesserato('${a.id}')">
-                            <td class="p-5">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
-                                        ${a.foto ? `<img src="${a.foto}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-solid fa-user text-[10px]"></i></div>`}
-                                    </div>
-                                    <div><div class="font-extrabold text-gray-800 text-base">${this.esc(a.nome)}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${this.esc(a.nascita)}</div></div>
-                                </div>
-                            </td>
-                            <td class="p-5"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${this.esc(a.ruolo || 'Atleta')}</span>${fasciaBadge}</td>
-                            <td class="p-5 flex items-center">${certStatus} ${whatsappBtn}</td>
+                            <td class="p-5"><div class="font-extrabold text-gray-800 text-base">${this.esc(a.nome)}</div><div class="text-xs text-gray-400 font-medium mt-0.5"><i class="fa-regular fa-calendar text-[10px] mr-1"></i>${this.esc(a.nascita)}</div></td>
+                            <td class="p-5 flex items-center"><span class="px-3 py-1.5 bg-blue-50 text-bdb-blue rounded-lg font-bold text-xs">${this.esc(a.ruolo || 'Atleta')}</span> ${fasciaBadge}</td>
+                            <td class="p-5">${certStatus} ${whatsappBtn}</td>
                             <td class="p-5 text-center">${docsHTML}</td>
-                            <td class="p-5 text-right">
-                                <button type="button" class="text-gray-400 hover:text-bdb-blue p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition" onclick="event.stopPropagation(); app.editTesserato('${a.id}')"><i class="fa-solid ${actionIcon}"></i></button>
-                                ${this.state.isAdmin ? `<button type="button" class="text-gray-400 hover:text-red-500 p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition ml-2" onclick="event.stopPropagation(); app.deleteDocRef('fascicoli', '${a.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            <td class="p-5 text-right whitespace-nowrap">
+                                <button type="button" class="text-gray-400 hover:text-bdb-blue p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition" onclick="event.stopPropagation(); app.editTesserato('${a.id}')" title="Apri/Modifica"><i class="fa-solid ${actionIcon}"></i></button>
+                                ${this.state.isAdmin ? `
+                                <button type="button" class="text-gray-400 hover:text-orange-500 p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition ml-1" onclick="event.stopPropagation(); app.archiviaFascicolo('${a.id}', ${!a.archiviato})" title="${a.archiviato ? 'Ripristina' : 'Archivia'}"><i class="fa-solid ${a.archiviato ? 'fa-box-open' : 'fa-box-archive'}"></i></button>
+                                <button type="button" class="text-gray-400 hover:text-red-500 p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition ml-1" onclick="event.stopPropagation(); app.deleteDocRef('fascicoli', '${a.id}')" title="Elimina Definitivamente"><i class="fa-solid fa-trash"></i></button>
+                                ` : ''}
                             </td>
                         </tr>`;
                 }).join('');
@@ -1379,34 +1303,25 @@
                     }
                 });
                 
-                ['privacy','ci','cf'].forEach(k => {
+                ['privacy','ci','cf','foto_profilo'].forEach(k => {
                     const fileInput = document.querySelector(`input[onchange="app.handleFileUpload(this, '${k}')"]`);
                     if(fileInput) fileInput.disabled = isReadOnly;
-                    const label = document.getElementById('name-'+k).closest('label');
-                    if(label) {
-                        if(isReadOnly) label.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
-                        else label.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                    const elName = document.getElementById('name-'+k) || document.getElementById('fotoTesto');
+                    if(elName) {
+                        const label = elName.closest('label');
+                        if(label) {
+                            if(isReadOnly) label.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                            else label.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                        }
                     }
                 });
 
-                const fotoInput = document.getElementById('inputFotoTesserato');
-                if (fotoInput) {
-                    fotoInput.disabled = isReadOnly;
-                    const fotoLabel = fotoInput.closest('label');
-                    if (isReadOnly) fotoLabel.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
-                    else fotoLabel.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
-                }
-
-                const fasciaEl = document.getElementById('t_fascia');
-                if(fasciaEl) {
-                    fasciaEl.disabled = isReadOnly || !this.state.isAdmin;
-                    if(fasciaEl.disabled) fasciaEl.classList.add('opacity-60', 'cursor-not-allowed');
-                    else fasciaEl.classList.remove('opacity-60', 'cursor-not-allowed');
-                }
-
                 const btnSave = document.getElementById('btnSaveTesserato');
-                if(isReadOnly) btnSave.classList.add('hidden');
-                else btnSave.classList.remove('hidden');
+                if(isReadOnly && !this.state.isAdmin) {
+                    btnSave.classList.add('hidden');
+                } else {
+                    btnSave.classList.remove('hidden');
+                }
             },
 
             openTesseratoModal: function() {
@@ -1425,10 +1340,9 @@
                     document.getElementById('name-'+k).innerText = `Carica ${k.toUpperCase()}`;
                     document.getElementById('view-'+k).classList.add('hidden');
                 });
+                document.getElementById('t_doc_foto_profilo').value = '';
+                document.getElementById('fotoPreview').style.backgroundImage = 'none';
                 
-                document.getElementById('t_foto').value = '';
-                document.getElementById('fotoPreview').innerHTML = `<i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition"></i><span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition">Foto</span>`;
-
                 this.toggleTesseratoForm(false);
                 this.checkRuolo();
                 document.getElementById('modalTesseratoTitle').innerText = 'Nuovo Tesserato';
@@ -1439,10 +1353,12 @@
             editTesserato: function(id) {
                 const a = this.state.atleti.find(x => x.id === id); if(!a) return;
                 document.getElementById('t_id').value = a.id;
-                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => document.getElementById('t_'+k).value = a[k] || '');
+                ['nome','nascita','ruolo','fascia','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => {
+                    const el = document.getElementById('t_'+k);
+                    if(el) el.value = a[k] || (k==='fascia' ? 'Da assegnare' : '');
+                });
                 document.getElementById('t_flag_medico').checked = !!a.flag_medico;
                 document.getElementById('t_flag_docs').checked = !!a.flag_docs;
-                document.getElementById('t_fascia').value = a.fascia || 'Da assegnare';
 
                 ['privacy','ci','cf'].forEach(k => {
                     const val = a['doc_'+k];
@@ -1460,18 +1376,16 @@
                     }
                 });
 
-                document.getElementById('t_foto').value = a.foto || '';
-                if(a.foto) {
-                    document.getElementById('fotoPreview').innerHTML = `<img src="${a.foto}" class="w-full h-full object-cover">`;
-                } else {
-                    document.getElementById('fotoPreview').innerHTML = `<i class="fa-solid fa-camera text-xl mb-1 group-hover:text-bdb-blue transition"></i><span class="text-[10px] font-bold uppercase tracking-wider group-hover:text-bdb-blue transition">Foto</span>`;
-                }
+                document.getElementById('t_doc_foto_profilo').value = a.doc_foto_profilo || '';
+                if(a.doc_foto_profilo) document.getElementById('fotoPreview').style.backgroundImage = `url(${a.doc_foto_profilo})`;
+                else document.getElementById('fotoPreview').style.backgroundImage = 'none';
                 
                 const isReadOnly = this.state.isAdmin && a.ownerUid !== this.state.user.uid;
                 this.toggleTesseratoForm(isReadOnly);
-                this.checkRuolo();
+                if(this.state.isAdmin) { document.getElementById('btnSaveTesserato').classList.remove('hidden'); document.getElementById('t_fascia').disabled = false; }
                 
-                document.getElementById('modalTesseratoTitle').innerText = isReadOnly ? (a.nome + ' (Sola Lettura)') : (a.nome || 'Modifica Fascicolo');
+                this.checkRuolo();
+                document.getElementById('modalTesseratoTitle').innerText = isReadOnly ? (a.nome + ' (Admin)') : (a.nome || 'Modifica Fascicolo');
                 this.checkMinorenne();
                 this.switchInnerTab('tab-base'); 
                 document.getElementById('modalTesserato').classList.remove('hidden');
@@ -1480,12 +1394,13 @@
             saveTesserato: async function() {
                 const id = document.getElementById('t_id').value;
                 const d = {};
-                ['nome','nascita','ruolo','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => d[k] = document.getElementById('t_'+k).value);
-                d.fascia = document.getElementById('t_fascia').value;
+                ['nome','nascita','ruolo','fascia','tel','genitore','cert_emiss','cert_scad','note_mediche'].forEach(k => {
+                    const el = document.getElementById('t_'+k);
+                    if(el) d[k] = el.value;
+                });
                 d.flag_medico = document.getElementById('t_flag_medico').checked;
                 d.flag_docs = document.getElementById('t_flag_docs').checked;
-                d.foto = document.getElementById('t_foto').value;
-                ['privacy','ci','cf'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value);
+                ['privacy','ci','cf','foto_profilo'].forEach(k => d['doc_'+k] = document.getElementById('t_doc_'+k).value);
                 
                 if(!d.nome || d.nome.trim() === '') return this.ui.error("Attenzione", "Il campo Nome e Cognome è obbligatorio.");
                 if(!d.nascita) return this.ui.error("Attenzione", "La Data di Nascita è obbligatoria.");
@@ -1497,7 +1412,11 @@
                 
                 try {
                     if(id) { await updateDoc(doc(db, "fascicoli", id), d); }
-                    else { d.ownerUid = this.state.user.uid; await addDoc(collection(db, "fascicoli"), d); }
+                    else { 
+                        d.ownerUid = this.state.user.uid; 
+                        d.archiviato = false;
+                        await addDoc(collection(db, "fascicoli"), d); 
+                    }
                     this.closeModal('modalTesserato'); 
                     this.ui.toast("Fascicolo salvato con successo!");
                 } catch(err) { this.ui.error("Errore", err.message); }
@@ -1506,7 +1425,7 @@
             handleFileUpload: function(input, type) {
                 if(input.files && input.files[0]) {
                     const file = input.files[0];
-                    const MAX_SIZE = 700 * 1024;
+                    const MAX_SIZE = 700 * 1024; // Manteniamo la sicurezza Base64 limitata per non bloccare
                     if(file.size > MAX_SIZE) {
                         input.value = '';
                         return this.ui.error("File troppo grande", "Il file selezionato supera 700KB. Comprimi il PDF/foto o scegline uno più leggero prima di caricarlo.");
@@ -1515,32 +1434,18 @@
                     reader.onload = (e) => {
                         const base64String = e.target.result;
                         document.getElementById('t_doc_'+type).value = base64String;
-                        document.getElementById('icon-'+type).innerHTML = '<i class="fa-solid fa-check"></i>';
-                        document.getElementById('icon-'+type).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition scale-110";
-                        document.getElementById('name-'+type).innerText = "✅ " + file.name.substring(0, 20);
-                        document.getElementById('view-'+type).classList.remove('hidden');
-                        setTimeout(() => document.getElementById('icon-'+type).classList.remove('scale-110'), 200);
-                        this.ui.toast("Documento acquisito!");
+                        if(type === 'foto_profilo') {
+                            document.getElementById('fotoPreview').style.backgroundImage = `url(${base64String})`;
+                        } else {
+                            document.getElementById('icon-'+type).innerHTML = '<i class="fa-solid fa-check"></i>';
+                            document.getElementById('icon-'+type).className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center transition scale-110";
+                            document.getElementById('name-'+type).innerText = "✅ " + file.name.substring(0, 20);
+                            document.getElementById('view-'+type).classList.remove('hidden');
+                            setTimeout(() => document.getElementById('icon-'+type).classList.remove('scale-110'), 200);
+                        }
+                        this.ui.toast("File acquisito!");
                     };
                     reader.onerror = () => this.ui.error("Errore Lettura", "Impossibile leggere il file selezionato.");
-                    reader.readAsDataURL(file);
-                }
-            },
-
-            handleFotoUpload: function(input) {
-                if(input.files && input.files[0]) {
-                    const file = input.files[0];
-                    const MAX_SIZE = 700 * 1024; // 700KB
-                    if(file.size > MAX_SIZE) {
-                        input.value = '';
-                        return this.ui.error("Foto troppo pesante", "La fototessera deve essere inferiore a 700KB. Prova a comprimerla o a fare uno screenshot.");
-                    }
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const b64 = e.target.result;
-                        document.getElementById('t_foto').value = b64;
-                        document.getElementById('fotoPreview').innerHTML = `<img src="${b64}" class="w-full h-full object-cover">`;
-                    };
                     reader.readAsDataURL(file);
                 }
             },
@@ -1561,7 +1466,7 @@
                 const select = document.getElementById('q_tesserato');
                 if(!select) return;
                 const pagatiIds = new Set(this.state.quote.filter(q => Number(q.versato) >= Number(q.totale)).map(q => q.tesseratoId));
-                const disponibili = this.state.atleti.filter(a => !pagatiIds.has(a.id));
+                const disponibili = this.state.atleti.filter(a => !a.archiviato && !pagatiIds.has(a.id));
                 select.innerHTML = `<option value="">-- Seleziona --</option>` + disponibili.map(a => `<option value="${a.id}">${a.nome} (${a.ruolo || 'Atleta'})</option>`).join('');
             },
 
@@ -1573,23 +1478,20 @@
                         const t = this.state.atleti.find(a => a.id === q.tesseratoId);
                         const diff = Number(q.totale) - Number(q.versato);
                         const isSaldato = diff <= 0;
+                        const canTessera = isSaldato && this.isTesseraEligible(t, q.causale);
                         prev += Number(q.totale); inc += Number(q.versato);
-                        
-                        const isEligible = this.isEligibleForTessera(t, q.causale);
-                        const tesseraBtn = (isSaldato && isEligible && t) ? `<button type="button" class="bg-bdb-yellow text-bdb-blue-dark px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:scale-105 transition" onclick="app.showTessera('${t.id}')"><i class="fa-solid fa-id-card"></i> Tessera</button>` : '';
-
                         return `<tr>
                             <td class="p-5 text-gray-500">${new Date(q.dataCreazione).toLocaleDateString()}</td>
                             <td class="p-5 font-extrabold text-gray-800">${t ? this.esc(t.nome) : 'Rimosso'}</td>
                             <td class="p-5 text-gray-600">${this.esc(q.causale)}</td>
                             <td class="p-5 text-right font-bold text-gray-400">${formatter.format(q.totale)}</td>
-                            <td class="p-5 text-right font-extrabold text-bdb-blue">${formatter.format(q.versato)}</td>
+                            <td class="p-5 text-right font-extrabold text-bdb-blue cursor-pointer hover:underline" onclick="app.vediAcconti('${q.id}')" title="Vedi storico acconti">${formatter.format(q.versato)} <i class="fa-solid fa-clock-rotate-left text-[10px]"></i></td>
                             <td class="p-5 text-center">${isSaldato ? '<span class="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-xs font-bold">Saldato</span>' : '<span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-xs font-bold">Da saldare</span>'}</td>
-                            <td class="p-5 text-right flex justify-end gap-2 items-center">
-                                ${!isSaldato ? `<button type="button" class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition" onclick="app.aggiungiAcconto('${q.id}', ${diff})">Incassa</button>` : ''}
-                                ${tesseraBtn}
-                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border flex items-center justify-center" onclick="app.generaRicevutaPDF('${q.id}')" title="PDF"><i class="fa-solid fa-file-pdf"></i></button>
-                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border flex items-center justify-center" onclick="app.deleteDocRef('finanza', '${q.id}')"><i class="fa-solid fa-trash"></i></button>
+                            <td class="p-5 text-right flex justify-end gap-2">
+                                ${!isSaldato ? `<button type="button" class="text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 font-bold transition border border-emerald-100" onclick="app.aggiungiAcconto('${q.id}', ${diff})">Incassa</button>` : ''}
+                                ${canTessera ? `<button type="button" class="w-9 h-9 rounded-xl bg-gradient-to-r from-bdb-yellow to-yellow-400 text-bdb-blue-dark shadow-sm border border-yellow-300 hover:scale-110 transition" onclick="app.generaTesseraDigitale('${t.id}')" title="Tessera Card"><i class="fa-solid fa-id-badge"></i></button>` : ''}
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-bdb-blue border" onclick="app.generaRicevutaPDF('${q.id}')" title="Ricevuta PDF"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 border" onclick="app.deleteDocRef('finanza', '${q.id}')" title="Elimina Quota"><i class="fa-solid fa-trash"></i></button>
                             </td></tr>`;
                     }).join('');
                 }
@@ -1616,24 +1518,21 @@
                 const t = document.getElementById('q_tesserato').value, c = document.getElementById('q_causale').value, tot = document.getElementById('q_totale').value, v = document.getElementById('q_versato').value;
                 if(!t || !tot || tot <= 0) return this.ui.error("Errore", "Seleziona un tesserato e verifica i campi obbligatori.");
                 
+                const dataOra = new Date().toISOString();
                 const adminName = this.state.user.displayName || this.state.user.email.split('@')[0] || "Admin";
-                const nowIso = new Date().toISOString();
-                
-                const docData = { 
+                let acconti = [];
+                if(Number(v) > 0) {
+                    acconti.push({ importo: Number(v), data: dataOra, adminName: adminName });
+                }
+
+                await addDoc(collection(db, "finanza"), { 
                     tesseratoId: t, 
                     causale: c, 
                     totale: Number(tot), 
                     versato: Number(v), 
-                    dataCreazione: nowIso 
-                };
-
-                // Se viene saldato (o in parte) subito al momento della creazione
-                if (Number(v) > 0) {
-                    docData.saldatoDa = adminName;
-                    docData.saldatoIl = nowIso;
-                }
-
-                await addDoc(collection(db, "finanza"), docData);
+                    dataCreazione: dataOra,
+                    acconti: acconti
+                });
                 this.closeModal('modalQuota'); this.ui.toast("Quota emessa!");
             },
             
@@ -1642,13 +1541,173 @@
                 if(imp && Number(imp) > 0 && Number(imp) <= rimanente) {
                     const q = this.state.quote.find(x => x.id === id); 
                     const adminName = this.state.user.displayName || this.state.user.email.split('@')[0] || "Admin";
+                    const nuovoAcconto = { importo: Number(imp), data: new Date().toISOString(), adminName: adminName };
+                    const nuoviAcconti = q.acconti ? [...q.acconti, nuovoAcconto] : [nuovoAcconto];
                     
                     await updateDoc(doc(db, "finanza", id), { 
                         versato: Number(q.versato) + Number(imp),
-                        saldatoDa: adminName,
-                        saldatoIl: new Date().toISOString()
+                        acconti: nuoviAcconti
                     });
                     this.ui.toast("Incasso registrato!");
+                }
+            },
+
+            vediAcconti: function(id) {
+                const q = this.state.quote.find(x => x.id === id);
+                if(!q || !q.acconti || q.acconti.length === 0) return this.ui.toast("Nessun dettaglio acconti per questa quota antica.", "info");
+                
+                const list = q.acconti.map((a, i) => `
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-200 mb-2">
+                        <div class="text-left">
+                            <p class="text-xs text-gray-500 font-bold">${new Date(a.data).toLocaleString('it-IT', {dateStyle:'short', timeStyle:'short'})}</p>
+                            <p class="text-[10px] uppercase tracking-wider text-bdb-blue font-extrabold mt-0.5"><i class="fa-solid fa-user-tie mr-1"></i> ${a.adminName}</p>
+                        </div>
+                        <div class="font-extrabold text-emerald-600">${formatter.format(a.importo)}</div>
+                    </div>
+                `).join('');
+
+                Swal.fire({
+                    title: 'Storico Transazioni',
+                    html: `<div class="max-h-64 overflow-y-auto mt-2 px-2">${list}</div>`,
+                    confirmButtonColor: '#0033A0',
+                    confirmButtonText: 'Chiudi'
+                });
+            },
+
+            generaRicevutaPDF: function(quotaId) {
+                if(!window.jspdf) return;
+                const q = this.state.quote.find(x => x.id === quotaId);
+                if(!q) return;
+                const t = this.state.atleti.find(a => a.id === q.tesseratoId);
+                const nome = t ? t.nome : 'Sconosciuto';
+
+                const docPdf = new window.jspdf.jsPDF(); 
+                
+                docPdf.setFillColor(0, 51, 160);
+                docPdf.rect(0, 0, 210, 45, 'F');
+                
+                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(22); docPdf.setTextColor(255, 255, 255);
+                docPdf.text("BORGO DON BOSCO APS", 105, 18, { align: "center" }); 
+                docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(255, 228, 94);
+                docPdf.text("Associazione di Promozione Sociale - Asti", 105, 28, { align: "center" }); 
+
+                docPdf.setFontSize(14); docPdf.setTextColor(0, 51, 160); docPdf.setFont("helvetica", "bold"); 
+                docPdf.text("RICEVUTA QUOTA ASSOCIATIVA / VERSAMENTO", 105, 60, { align: "center" });
+                
+                docPdf.setDrawColor(220, 224, 230);
+                docPdf.setLineWidth(0.5);
+                docPdf.line(20, 68, 190, 68);
+
+                docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal"); 
+                docPdf.text(`Data emissione: ${new Date(q.dataCreazione).toLocaleDateString('it-IT')}`, 20, 80); 
+                
+                docPdf.text("Intestato a:", 20, 95);
+                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0); docPdf.setFontSize(13);
+                docPdf.text(`${nome}`, 50, 95);
+
+                docPdf.setFontSize(11); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(100);
+                docPdf.text("Causale:", 20, 107);
+                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0);
+                docPdf.text(`${q.causale}`, 50, 107);
+
+                docPdf.setFillColor(248, 250, 252);
+                docPdf.setDrawColor(210, 215, 225);
+                docPdf.roundedRect(20, 122, 170, 35, 4, 4, 'FD');
+                
+                docPdf.setFontSize(10); docPdf.setTextColor(100); docPdf.setFont("helvetica", "bold");
+                docPdf.text("IMPORTO DOVUTO", 35, 137);
+                docPdf.text("IMPORTO VERSATO", 125, 137);
+                
+                docPdf.setFontSize(16); docPdf.setTextColor(120, 120, 120);
+                docPdf.text(formatter.format(q.totale), 35, 150);
+                docPdf.setFontSize(18); docPdf.setTextColor(0, 51, 160);
+                docPdf.text(formatter.format(q.versato), 125, 150);
+
+                // LEDGER TRANSAZIONI NEL PDF
+                let y = 175;
+                if(q.acconti && q.acconti.length > 0) {
+                    docPdf.setFontSize(9); docPdf.setTextColor(150); docPdf.setFont("helvetica", "normal");
+                    docPdf.text("Dettaglio Transazioni (Ledger):", 20, y);
+                    y += 6;
+                    q.acconti.forEach((acc, i) => {
+                        docPdf.text(`- ${new Date(acc.data).toLocaleString('it-IT')} | ${formatter.format(acc.importo)} incassato da: ${acc.adminName}`, 25, y);
+                        y += 5;
+                    });
+                }
+
+                docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
+                docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 270, { align: "center" });
+                
+                // FIRMA ULTIMO OPERATORE
+                let signName = "Segreteria BDB";
+                let signDate = new Date(q.dataCreazione);
+                if(q.acconti && q.acconti.length > 0) {
+                    const lastAcc = q.acconti[q.acconti.length - 1];
+                    signName = lastAcc.adminName;
+                    signDate = new Date(lastAcc.data);
+                }
+
+                docPdf.setFontSize(9);
+                docPdf.setFont("helvetica", "italic");
+                docPdf.setTextColor(80);
+                docPdf.text(`Firmato digitalmente da: ${signName.toUpperCase()}`, 190, 280, { align: "right" });
+                docPdf.text(`il giorno ${signDate.toLocaleDateString('it-IT')} alle ore ${signDate.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`, 190, 285, { align: "right" });
+
+                docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
+            },
+
+            generaTesseraDigitale: function(tesseratoId) {
+                const a = this.state.atleti.find(x => x.id === tesseratoId);
+                if(!a) return;
+                
+                document.getElementById('tes-nome').innerText = a.nome;
+                document.getElementById('tes-ruolo').innerText = a.ruolo || 'Socio';
+                const f = document.getElementById('tes-foto');
+                if(a.doc_foto_profilo) {
+                    f.style.backgroundImage = `url(${a.doc_foto_profilo})`;
+                } else {
+                    f.style.backgroundImage = 'none';
+                    f.innerHTML = '<i class="fa-solid fa-user text-3xl text-gray-400 mt-5 text-center w-full"></i>';
+                }
+
+                document.getElementById('modalTessera').classList.remove('hidden');
+                document.getElementById('modalTessera').style.display = 'flex';
+            },
+
+            downloadTessera: async function() {
+                const card = document.getElementById('tessera-card');
+                if(!window.html2canvas) return this.ui.error("Errore", "Libreria grafica non trovata.");
+                
+                try {
+                    const canvas = await window.html2canvas(card, { scale: 3, useCORS: true, backgroundColor: null });
+                    canvas.toBlob(async (blob) => {
+                        const file = new File([blob], "Tessera_BDB.png", { type: "image/png" });
+                        
+                        // WEB SHARE API (Il vero trick per telefoni)
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            try {
+                                await navigator.share({
+                                    files: [file],
+                                    title: 'Tessera BDB',
+                                    text: 'Ecco la mia tessera Borgo Don Bosco!'
+                                });
+                                this.ui.toast("Menu di condivisione aperto!");
+                            } catch(e) {
+                                // Fallback se annullano la condivisione
+                            }
+                        } else {
+                            // FALLBACK PER COMPUTER O BROWSER NON SUPPORTATI
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.download = `Tessera_BDB.png`;
+                            link.href = url;
+                            link.click();
+                            URL.revokeObjectURL(url);
+                            this.ui.toast("Tessera scaricata!");
+                        }
+                    }, "image/png");
+                } catch(e) {
+                    this.ui.error("Errore", "Impossibile generare la tessera. Riprova.");
                 }
             },
 
@@ -1679,87 +1738,12 @@
                     }
                 }
             },
-            
-            generaRicevutaPDF: function(quotaId) {
-                if(!window.jspdf) return;
-                const q = this.state.quote.find(x => x.id === quotaId);
-                if(!q) return;
-
-                const tesserato = this.state.atleti.find(a => a.id === q.tesseratoId);
-                const nome = tesserato ? tesserato.nome : 'Sconosciuto';
-                const causale = q.causale;
-                const versato = q.versato;
-                const totale = q.totale;
-
-                const docPdf = new window.jspdf.jsPDF(); 
-                
-                docPdf.setFillColor(0, 51, 160);
-                docPdf.rect(0, 0, 210, 45, 'F');
-                
-                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(22); docPdf.setTextColor(255, 255, 255);
-                docPdf.text("BORGO DON BOSCO APS", 105, 18, { align: "center" }); 
-                docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(255, 228, 94);
-                docPdf.text("Associazione di Promozione Sociale - Asti", 105, 28, { align: "center" }); 
-
-                docPdf.setFontSize(14); docPdf.setTextColor(0, 51, 160); docPdf.setFont("helvetica", "bold"); 
-                docPdf.text("RICEVUTA QUOTA ASSOCIATIVA / VERSAMENTO", 105, 60, { align: "center" });
-                
-                docPdf.setDrawColor(220, 224, 230);
-                docPdf.setLineWidth(0.5);
-                docPdf.line(20, 68, 190, 68);
-
-                // Mostra data di emissione originale
-                const emissionDate = new Date(q.dataCreazione || new Date()).toLocaleDateString('it-IT');
-                docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.setFont("helvetica", "normal"); 
-                docPdf.text(`Data emissione: ${emissionDate}`, 20, 80); 
-                
-                docPdf.text("Intestato a:", 20, 95);
-                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0); docPdf.setFontSize(13);
-                docPdf.text(`${nome}`, 50, 95);
-
-                docPdf.setFontSize(11); docPdf.setFont("helvetica", "normal"); docPdf.setTextColor(100);
-                docPdf.text("Causale:", 20, 107);
-                docPdf.setFont("helvetica", "bold"); docPdf.setTextColor(0);
-                docPdf.text(`${causale}`, 50, 107);
-
-                docPdf.setFillColor(248, 250, 252);
-                docPdf.setDrawColor(210, 215, 225);
-                docPdf.roundedRect(20, 122, 170, 45, 4, 4, 'FD');
-                
-                docPdf.setFontSize(10); docPdf.setTextColor(100); docPdf.setFont("helvetica", "bold");
-                docPdf.text("IMPORTO DOVUTO", 35, 137);
-                docPdf.text("IMPORTO VERSATO", 125, 137);
-                
-                docPdf.setFontSize(16); docPdf.setTextColor(120, 120, 120);
-                docPdf.text(formatter.format(totale), 35, 153);
-                docPdf.setFontSize(18); docPdf.setTextColor(0, 51, 160);
-                docPdf.text(formatter.format(versato), 125, 153);
-
-                docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
-                docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 195, { align: "center" });
-                
-                // Ricerca di chi ha incassato l'ultimo saldo e quando
-                let adminName = q.saldatoDa || "Segreteria BDB";
-                let paymentDateObj = q.saldatoIl ? new Date(q.saldatoIl) : new Date(q.dataCreazione || new Date());
-                
-                const dataStr = paymentDateObj.toLocaleDateString('it-IT');
-                const oraStr = paymentDateObj.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                
-                docPdf.setFontSize(9);
-                docPdf.setFont("helvetica", "italic");
-                docPdf.setTextColor(80);
-                docPdf.text(`Firmato digitalmente da: ${adminName.toUpperCase()}`, 190, 215, { align: "right" });
-                docPdf.text(`il giorno ${dataStr} alle ore ${oraStr}`, 190, 220, { align: "right" });
-
-                docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
-            },
 
             scaricaReportPresenze: function() {
                 if(!window.jspdf) return this.ui.error("Errore", "Libreria PDF non caricata.");
                 
                 const docPdf = new window.jspdf.jsPDF(); 
                 
-                // Header ufficiale
                 docPdf.setFillColor(0, 51, 160);
                 docPdf.rect(0, 0, 210, 30, 'F');
                 docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(18); docPdf.setTextColor(255, 255, 255);
@@ -1767,7 +1751,6 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(255, 228, 94);
                 docPdf.text(`Borgo Don Bosco APS - Generato il ${new Date().toLocaleDateString('it-IT')}`, 105, 22, { align: "center" }); 
                 
-                // Filtra solo Manifestazioni e Gare, e oridna per data
                 const eventiValidi = this.state.eventi.filter(e => e.tipo === 'Gara/Competizione' || e.tipo === 'Esibizione/Sfilata')
                                      .sort((a,b) => new Date(a.data) - new Date(b.data));
 
@@ -1775,15 +1758,12 @@
 
                 let y = 40;
                 
-                // Pesi per l'ordinamento
                 const roleOrder = { 'Musico (Chiarina)': 1, 'Musico (Tamburino)': 2, 'Musico under': 3, 'Sbandieratore': 4, 'Sbandieratore under': 5, 'Dirigente': 6, 'Socio Sostenitore': 7 };
                 const getRoleWeight = (r) => roleOrder[r] || 99;
 
                 eventiValidi.forEach(e => {
-                    // Controlla fine pagina
                     if(y > 260) { docPdf.addPage(); y = 20; }
                     
-                    // Box Titolo Evento
                     docPdf.setFillColor(240, 244, 248);
                     docPdf.rect(20, y-5, 170, 8, 'F');
                     docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(11); docPdf.setTextColor(0, 51, 160);
@@ -1792,15 +1772,16 @@
                     
                     docPdf.setTextColor(0);
                     
-                    // Estrai atleti convocati
                     let atletiTarget = this.state.atleti;
                     const grp = e.gruppo || 'Tutti';
                     if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
                     else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
                     else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                     else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
+                    else if(grp === 'Tutti under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('under'));
+                    else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Sbandieratore under');
+                    else if(grp === 'Musici under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Musico under');
                     
-                    // Ordina atleti
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
                         const wB = getRoleWeight(b.ruolo);
@@ -1829,14 +1810,14 @@
                             y += 8;
                         });
                     }
-                    y += 5; // Spazio extra tra gli eventi
+                    y += 5; 
                 });
                 
                 docPdf.save(`Report_Uscite_BDB.pdf`);
             },
 
             setEventiTab: function(isArchiviato) {
-                this.state.mostraArchiviati = isArchiviato;
+                this.state.mostraArchiviatiEventi = isArchiviato;
                 const btnA = document.getElementById('tab-ev-attivi');
                 const btnAr = document.getElementById('tab-ev-archiviati');
                 
@@ -1860,17 +1841,14 @@
                 
                 let eventiTarget = this.state.eventi;
 
-                // Filtro per Admin per Eventi Archiviati o Attivi
                 if (this.state.isAdmin) {
-                    eventiTarget = eventiTarget.filter(e => !!e.archiviato === this.state.mostraArchiviati);
+                    eventiTarget = eventiTarget.filter(e => !!e.archiviato === this.state.mostraArchiviatiEventi);
                 } else {
-                    // L'utente base vede solo gli eventi ATTIVI
                     eventiTarget = eventiTarget.filter(e => !e.archiviato);
                 }
                 
-                // Filtro per Gruppo
                 if(!this.state.isAdmin) {
-                    const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
+                    const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid && !a.archiviato);
                     
                     eventiTarget = eventiTarget.filter(e => {
                         const grp = e.gruppo || 'Tutti';
@@ -1882,12 +1860,15 @@
                             if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                            if (grp === 'Tutti under' && (myRole.includes('under'))) return true;
+                            if (grp === 'Sbandieratori under' && myRole === 'Sbandieratore under') return true;
+                            if (grp === 'Musici under' && myRole === 'Musico under') return true;
                             return false;
                         });
                     });
                 }
 
-                if(!eventiTarget.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', this.state.mostraArchiviati ? 'Archivio vuoto.' : 'Nessun evento in programma per te.')}</div>`;
+                if(!eventiTarget.length) return g.innerHTML = `<div class="col-span-full">${this.ui.empty('fa-calendar-xmark', this.state.mostraArchiviatiEventi ? 'Archivio vuoto.' : 'Nessun evento in programma per te.')}</div>`;
                 
                 g.innerHTML = eventiTarget.map(e => {
                     const disp = e.disponibilita || {};
@@ -1896,7 +1877,7 @@
                     
                     let userAction = '';
                     if(!this.state.isAdmin) {
-                        const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
+                        const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid && !a.archiviato);
                         const grp = e.gruppo || 'Tutti';
                         
                         const eligibleFascicoli = myFascicoli.filter(myF => {
@@ -1906,6 +1887,9 @@
                             if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
                             if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
+                            if (grp === 'Tutti under' && (myRole.includes('under'))) return true;
+                            if (grp === 'Sbandieratori under' && myRole === 'Sbandieratore under') return true;
+                            if (grp === 'Musici under' && myRole === 'Musico under') return true;
                             return false;
                         });
 
@@ -1988,12 +1972,15 @@
                 document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
                 document.getElementById('appelloGruppo').innerText = (e.gruppo || 'Tutti');
                 
-                let atletiTarget = this.state.atleti;
+                let atletiTarget = this.state.atleti.filter(a => !a.archiviato);
                 const grp = e.gruppo || 'Tutti';
                 if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
                 else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
                 else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
                 else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
+                else if(grp === 'Tutti under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('under'));
+                else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Sbandieratore under');
+                else if(grp === 'Musici under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Musico under');
                 
                 if(atletiTarget.length === 0) {
                     document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-400 mt-20 font-bold"><i class="fa-solid fa-ghost text-4xl mb-4 opacity-50 block"></i>Nessun tesserato trovato in questo gruppo.</div>`;
@@ -2006,11 +1993,16 @@
                         if(rsvp==='si') rsvpBadge = `<span class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-check"></i> Disponibile</span>`;
                         if(rsvp==='no') rsvpBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold ml-2"><i class="fa-solid fa-xmark"></i> Assente</span>`;
 
+                        let fasciaBadge = '';
+                        if(a.fascia && a.fascia !== 'Da assegnare') {
+                            fasciaBadge = `<span class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-md text-[9px] font-extrabold border border-purple-200">${a.fascia}</span>`;
+                        }
+
                         return `
                         <div class="flex items-center justify-between p-5 bg-white mb-4 rounded-3xl shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100">
                             <div>
                                 <p class="font-extrabold text-gray-800 text-lg flex items-center flex-wrap gap-1">${this.esc(a.nome)} ${rsvpBadge}</p>
-                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')}</p>
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">${this.esc(a.ruolo||'Atleta')} ${fasciaBadge}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
                                 <input type="checkbox" class="sr-only peer appello-checkbox" ${e.presenzeFisiche&&e.presenzeFisiche[a.id] ? 'checked' : ''} onchange="app.toggleP('${id}', '${a.id}', this.checked)">
@@ -2044,10 +2036,16 @@
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
                 if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
+                
                 tbody.innerHTML = this.state.magazzino.map(i => {
                     let det = this.esc(i.descrizione || '-');
                     if(i.categoria === 'Stivali' && i.numero) det = `Numero: <strong>${this.esc(i.numero)}</strong>`;
-                    if((i.categoria === 'Ponchi' || i.categoria === 'Mantelli') && i.proprietario) det = `Assegnato a: <strong>${this.esc(i.proprietario)}</strong>`;
+                    
+                    if((i.categoria === 'Ponchi' || i.categoria === 'Mantelli') && i.proprietario) {
+                        const ass = this.state.atleti.find(a => a.id === i.proprietario);
+                        det = `Assegnato a: <strong>${ass ? this.esc(ass.nome) : 'Atleta rimosso'}</strong>`;
+                    }
+                    
                     return `<tr>
                         <td class="p-5 font-extrabold text-gray-800">${this.esc(i.nome)}</td>
                         <td class="p-5"><span class="text-[10px] font-bold uppercase bg-blue-50 text-bdb-blue px-3 py-1.5 rounded-lg">${i.categoria}</span></td>
@@ -2062,9 +2060,13 @@
                 document.getElementById('i_nome').value=''; 
                 document.getElementById('i_desc').value='';
                 document.getElementById('i_num').value='';
-                document.getElementById('i_prop').value='';
                 document.getElementById('i_cat').value='Tamburi';
                 document.getElementById('i_tot').value='1';
+                
+                const selectProp = document.getElementById('i_prop');
+                const attivi = app.state.atleti.filter(a => !a.archiviato);
+                selectProp.innerHTML = `<option value="">-- Nessuno --</option>` + attivi.map(a => `<option value="${a.id}">${a.nome}</option>`).join('');
+                
                 document.getElementById('modalItem').classList.remove('hidden'); 
                 app.toggleItemFields();
             },
