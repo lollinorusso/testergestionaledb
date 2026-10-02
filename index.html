@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <!-- STREAMING_CHUNK:Configuring metadata and external resources... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
@@ -25,11 +26,12 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- External Libraries (jspdf, html2canvas, SweetAlert2) -->
+    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- STREAMING_CHUNK:Configuring custom styles and Tailwind theme... -->
     <script>
         tailwind.config = {
             theme: {
@@ -85,6 +87,7 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
+    <!-- STREAMING_CHUNK:Rendering PWA installation overlay... -->
     <!-- TUTORIAL PWA -->
     <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 text-center">
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-24 h-24 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 object-cover">
@@ -114,6 +117,7 @@
         <button onclick="app.dismissPwaTutorial()" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (Non consigliato)</button>
     </div>
 
+    <!-- STREAMING_CHUNK:Rendering user authentication screen... -->
     <!-- AUTHENTICATION -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
@@ -168,6 +172,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Rendering Sidebar and App Shell... -->
     <!-- MAIN APP WRAPPER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
@@ -218,6 +223,7 @@
             </div>
         </aside>
 
+        <!-- STREAMING_CHUNK:Rendering the main content area (Dashboard)... -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
@@ -275,6 +281,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering Anagrafica view... -->
                 <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -314,6 +321,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering Finanza view... -->
                 <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -351,6 +359,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering Eventi view... -->
                 <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -377,6 +386,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Rendering Magazzino view... -->
                 <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -410,6 +420,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Building Anagrafica (User Profile) Modal... -->
     <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
@@ -486,6 +497,7 @@
                     </div>
                 </div>
 
+                <!-- STREAMING_CHUNK:Building Medical info inner tab... -->
                 <div id="tab-medico" class="inner-tab-content space-y-5">
                     <div id="alertSocioSostenitore" class="hidden bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col items-center justify-center text-center">
                         <i class="fa-solid fa-file-medical text-bdb-blue text-3xl mb-3 opacity-50"></i>
@@ -581,6 +593,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Building Quota and Evento modals... -->
     <!-- MODAL QUOTA -->
     <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
@@ -616,6 +629,7 @@
                 <div>
                     <label class="block text-xs font-bold text-bdb-blue uppercase tracking-wider mb-2">Gruppo Destinatario <span class="text-red-500">*</span></label>
                     <select id="e_gruppo" class="w-full p-3.5 border-2 border-blue-200 bg-blue-50 rounded-xl text-base font-extrabold text-bdb-blue outline-none focus:ring-2 focus:ring-bdb-blue cursor-pointer transition shadow-sm">
+                        <option value="Intera Associazione">Intera Associazione (Tutti i tesserati)</option>
                         <option value="Tutti">Tutti (Tamburi, Chiarine e Sbandieratori)</option>
                         <option value="Sbandieratori">Solo Sbandieratori</option>
                         <option value="Tamburi">Solo Tamburi</option>
@@ -631,6 +645,7 @@
         </div>
     </div>
     
+    <!-- STREAMING_CHUNK:Building Item and Appello modals... -->
     <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
@@ -697,8 +712,9 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Building Tessera Digitale and starting Firebase imports... -->
     <!-- TESSERA DIGITALE MODAL -->
-    <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex flex-col items-center justify-center p-4">
+    <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex-col items-center justify-center p-4">
         <!-- Nuova X fissa e centrata in alto a destra dello schermo -->
         <div class="absolute top-4 right-4 md:top-8 md:right-8 z-[160]">
              <button type="button" onclick="app.closeModal('modalTessera')" class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition backdrop-blur-md border border-white/30 shadow-lg"><i class="fa-solid fa-times text-xl"></i></button>
@@ -753,7 +769,6 @@
 
         // ==========================================
         // CONFIGURAZIONE AMMINISTRATORI
-        // Aggiungi o rimuovi le email degli admin qui sotto
         // ==========================================
         const ADMIN_EMAILS = [
             'lollinorusso@icloud.com',
@@ -774,6 +789,24 @@
             },
 
             esc: (s) => String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
+
+            // STREAMING_CHUNK:Implementing logic for rigid Role/Group matching...
+            matchGruppo: function(ruolo, gruppo) {
+                const r = ruolo || 'Atleta';
+                const g = gruppo || 'Tutti';
+                
+                if (g === 'Intera Associazione') return true;
+                if (g === 'Tutti') return r === 'Sbandieratore' || r === 'Musico (Tamburino)' || r === 'Musico (Chiarina)' || r === 'Atleta';
+                if (g === 'Sbandieratori') return r === 'Sbandieratore';
+                if (g === 'Tamburi') return r === 'Musico (Tamburino)';
+                if (g === 'Chiarine') return r === 'Musico (Chiarina)';
+                if (g === 'Musici') return r === 'Musico (Tamburino)' || r === 'Musico (Chiarina)';
+                if (g === 'Tutti under') return r === 'Sbandieratore under' || r === 'Musico under';
+                if (g === 'Sbandieratori under') return r === 'Sbandieratore under';
+                if (g === 'Musici under') return r === 'Musico under';
+                
+                return false;
+            },
 
             init: function() {
                 document.getElementById('emailLoginBtn').addEventListener('click', () => this.login());
@@ -853,6 +886,7 @@
                 document.getElementById('pwaOverlay').classList.add('hidden');
             },
 
+            // STREAMING_CHUNK:Implementing logic for realtime sync and push notifications...
             togglePassword: function() {
                 const p = document.getElementById('authPassword');
                 const i = document.getElementById('eyeIcon');
@@ -940,6 +974,7 @@
                 this._unsubs.forEach(fn => fn());
                 this._unsubs = [];
                 const qAtleti = this.state.isAdmin ? query(collection(db, "fascicoli")) : query(collection(db, "fascicoli"), where("ownerUid", "==", this.state.user.uid));
+                
                 this._unsubs.push(onSnapshot(qAtleti, (snap) => {
                     if(this.state.isAdmin && this.state.lastAtletiCount !== undefined && snap.docs.length > this.state.lastAtletiCount) {
                         this.showNativeNotification("Nuova Iscrizione!", "Un nuovo fascicolo è stato appena registrato nel sistema.");
@@ -978,19 +1013,8 @@
                         } else {
                             const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                             const grp = newEventi[0].gruppo || 'Tutti';
-                            
-                            shouldNotify = myFascicoli.some(myF => {
-                                const myRole = myF.ruolo || 'Atleta';
-                                if (grp === 'Tutti') return true;
-                                if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
-                                if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                                if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                                if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                                if (grp === 'Tutti under' && (myRole.includes('under'))) return true;
-                                if (grp === 'Sbandieratori under' && myRole === 'Sbandieratore under') return true;
-                                if (grp === 'Musici under' && myRole === 'Musico under') return true;
-                                return false;
-                            });
+                            // Uso il nuovo filtro globale per inviare le notifiche in modo corretto
+                            shouldNotify = myFascicoli.some(myF => app.matchGruppo(myF.ruolo, grp));
                         }
                         
                         if(shouldNotify) {
@@ -1018,6 +1042,7 @@
                 }
             },
 
+            // STREAMING_CHUNK:Building components for dashboard stats and finance summaries...
             requestNotificationPermission: async function() {
                 if (!("Notification" in window)) {
                     this.ui.error("Non supportato", "Il tuo dispositivo o browser non supporta le notifiche native.");
@@ -1141,6 +1166,7 @@
                 box.innerHTML = html;
             },
 
+            // STREAMING_CHUNK:Configuring the user forms and profile rendering methods...
             renderNews: function() {
                 const c = document.getElementById('newsFeed');
                 if(!this.state.news.length) return c.innerHTML = this.ui.empty('fa-wind', 'Nessuna comunicazione in bacheca.');
@@ -1303,6 +1329,7 @@
                 }).join('');
             },
             
+            // STREAMING_CHUNK:Building functions for creating and editing profiles...
             toggleTesseratoForm: function(isReadOnly) {
                 const fields = ['t_nome','t_nascita','t_ruolo','t_tel','t_genitore','t_cert_emiss','t_cert_scad','t_note_mediche','t_flag_medico','t_flag_docs'];
                 fields.forEach(f => {
@@ -1476,6 +1503,7 @@
                 document.getElementById('modalViewer').classList.add('hidden');
             },
 
+            // STREAMING_CHUNK:Implementing financial methods and transaction tracking...
             updateQuotaDropdown: function() {
                 const select = document.getElementById('q_tesserato');
                 if(!select) return;
@@ -1670,6 +1698,7 @@
                 docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
             },
 
+            // STREAMING_CHUNK:Implementing Tessera logic and Web Share API exports...
             generaTesseraDigitale: function(tesseratoId) {
                 const a = this.state.atleti.find(x => x.id === tesseratoId);
                 if(!a) return;
@@ -1703,7 +1732,6 @@
                     canvas.toBlob(async (blob) => {
                         const file = new File([blob], "Tessera_BDB.png", { type: "image/png" });
                         
-                        // WEB SHARE API (Il vero trick per telefoni)
                         if (navigator.canShare && navigator.canShare({ files: [file] })) {
                             try {
                                 await navigator.share({
@@ -1716,7 +1744,6 @@
                                 // Fallback se annullano la condivisione
                             }
                         } else {
-                            // FALLBACK PER COMPUTER O BROWSER NON SUPPORTATI
                             const url = URL.createObjectURL(blob);
                             const link = document.createElement('a');
                             link.download = `Tessera_BDB.png`;
@@ -1731,6 +1758,7 @@
                 }
             },
 
+            // STREAMING_CHUNK:Implementing event controls, filtering, and report generation...
             resetYearlyPayments: async function() {
                 const r = await this.ui.confirm("Nuovo Anno Associativo", "Vuoi davvero azzerare e cancellare tutti i pagamenti registrati per iniziare un nuovo anno? Questa operazione non è reversibile.");
                 if(r.isConfirmed) {
@@ -1792,15 +1820,9 @@
                     
                     docPdf.setTextColor(0);
                     
-                    let atletiTarget = this.state.atleti;
                     const grp = e.gruppo || 'Tutti';
-                    if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
-                    else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
-                    else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
-                    else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
-                    else if(grp === 'Tutti under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('under'));
-                    else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Sbandieratore under');
-                    else if(grp === 'Musici under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Musico under');
+                    // Uso il filtro corretto globale!
+                    let atletiTarget = this.state.atleti.filter(a => app.matchGruppo(a.ruolo, grp));
                     
                     atletiTarget.sort((a,b) => {
                         const wA = getRoleWeight(a.ruolo);
@@ -1856,6 +1878,7 @@
                 this.ui.toast(newState ? "Evento Archiviato" : "Evento Ripristinato");
             },
 
+            // STREAMING_CHUNK:Rendering filtered Eventi feed and Appello controls...
             renderEventi: function() {
                 const g = document.getElementById('eventiGrid');
                 
@@ -1872,19 +1895,8 @@
                     
                     eventiTarget = eventiTarget.filter(e => {
                         const grp = e.gruppo || 'Tutti';
-                        if (grp === 'Tutti') return true;
-                        
-                        return myFascicoli.some(myF => {
-                            const myRole = myF.ruolo || 'Atleta';
-                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                            if (grp === 'Tutti under' && (myRole.includes('under'))) return true;
-                            if (grp === 'Sbandieratori under' && myRole === 'Sbandieratore under') return true;
-                            if (grp === 'Musici under' && myRole === 'Musico under') return true;
-                            return false;
-                        });
+                        // Uso il filtro corretto e rigoroso!
+                        return myFascicoli.some(myF => app.matchGruppo(myF.ruolo, grp));
                     });
                 }
 
@@ -1900,18 +1912,8 @@
                         const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid && !a.archiviato);
                         const grp = e.gruppo || 'Tutti';
                         
-                        const eligibleFascicoli = myFascicoli.filter(myF => {
-                            const myRole = myF.ruolo || 'Atleta';
-                            if (grp === 'Tutti') return true;
-                            if (grp === 'Tamburi' && (myRole.includes('Tamburino') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Chiarine' && (myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Musici' && (myRole.includes('Tamburino') || myRole.includes('Chiarina') || myRole.includes('Musico under'))) return true;
-                            if (grp === 'Sbandieratori' && myRole.includes('Sbandieratore')) return true;
-                            if (grp === 'Tutti under' && (myRole.includes('under'))) return true;
-                            if (grp === 'Sbandieratori under' && myRole === 'Sbandieratore under') return true;
-                            if (grp === 'Musici under' && myRole === 'Musico under') return true;
-                            return false;
-                        });
+                        // Uso il filtro corretto per i bottoni!
+                        const eligibleFascicoli = myFascicoli.filter(myF => app.matchGruppo(myF.ruolo, grp));
 
                         if(eligibleFascicoli.length > 0) {
                             userAction = '<div class="mt-4 pt-4 border-t border-gray-100 space-y-3">';
@@ -1992,15 +1994,9 @@
                 document.getElementById('appelloDate').innerText = new Date(e.data).toLocaleDateString();
                 document.getElementById('appelloGruppo').innerText = (e.gruppo || 'Tutti');
                 
-                let atletiTarget = this.state.atleti.filter(a => !a.archiviato);
                 const grp = e.gruppo || 'Tutti';
-                if(grp === 'Tamburi') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Tamburino') || (a.ruolo||'').includes('Musico under'));
-                else if(grp === 'Chiarine') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Chiarina') || (a.ruolo||'').includes('Musico under'));
-                else if(grp === 'Musici') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Musico'));
-                else if(grp === 'Sbandieratori') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('Sbandieratore'));
-                else if(grp === 'Tutti under') atletiTarget = atletiTarget.filter(a => (a.ruolo||'').includes('under'));
-                else if(grp === 'Sbandieratori under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Sbandieratore under');
-                else if(grp === 'Musici under') atletiTarget = atletiTarget.filter(a => a.ruolo === 'Musico under');
+                // Uso il filtro corretto e rigoroso!
+                let atletiTarget = this.state.atleti.filter(a => !a.archiviato && app.matchGruppo(a.ruolo, grp));
                 
                 if(atletiTarget.length === 0) {
                     document.getElementById('appelloList').innerHTML = `<div class="text-center text-gray-400 mt-20 font-bold"><i class="fa-solid fa-ghost text-4xl mb-4 opacity-50 block"></i>Nessun tesserato trovato in questo gruppo.</div>`;
@@ -2053,6 +2049,7 @@
                 app.updateAppelloCounters();
             },
 
+            // STREAMING_CHUNK:Finalizing Magazzino management and concluding initialization...
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
                 if(!this.state.magazzino.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Magazzino vuoto.')}</td></tr>`;
