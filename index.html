@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <!-- STREAMING_CHUNK:Configuring metadata and external resources... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Borgo Don Bosco - Gestione APS</title>
@@ -31,7 +30,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- STREAMING_CHUNK:Configuring custom styles and Tailwind theme... -->
     <script>
         tailwind.config = {
             theme: {
@@ -87,7 +85,6 @@
 </head>
 <body class="text-gray-800 antialiased selection:bg-bdb-yellow selection:text-bdb-blue-dark">
 
-    <!-- STREAMING_CHUNK:Rendering PWA installation overlay... -->
     <!-- TUTORIAL PWA -->
     <div id="pwaOverlay" class="fixed inset-0 bg-bdb-blue z-[200] hidden flex-col items-center justify-center text-white p-6 text-center">
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Borgodonboscoasti.jpg?v=3" class="w-24 h-24 rounded-full border-4 border-bdb-yellow shadow-glow mb-6 object-cover">
@@ -117,7 +114,6 @@
         <button onclick="app.dismissPwaTutorial()" class="mt-8 px-6 py-2 rounded-full border border-white/30 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all">Continua nel browser (Non consigliato)</button>
     </div>
 
-    <!-- STREAMING_CHUNK:Rendering user authentication screen... -->
     <!-- AUTHENTICATION -->
     <div id="authScreen" class="fixed inset-0 bg-bdb-gray z-50 flex items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[100dvh]">
@@ -172,7 +168,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Rendering Sidebar and App Shell... -->
     <!-- MAIN APP WRAPPER -->
     <div id="mainApp" class="hidden w-full h-[100dvh] flex relative overflow-hidden bg-bdb-gray">
         <div id="mobileOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity duration-300 md:hidden" onclick="app.toggleMenu(false)"></div>
@@ -223,7 +218,6 @@
             </div>
         </aside>
 
-        <!-- STREAMING_CHUNK:Rendering the main content area (Dashboard)... -->
         <div class="flex-1 flex flex-col h-[100dvh] min-w-0 overflow-hidden">
             <header class="md:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] shrink-0 z-20">
                 <div class="flex items-center gap-3">
@@ -281,7 +275,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering Anagrafica view... -->
                 <!-- VIEW: ANAGRAFICA -->
                 <div id="view-anagrafica" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -321,7 +314,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering Finanza view... -->
                 <!-- VIEW: FINANZA -->
                 <div id="view-finanza" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -359,7 +351,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering Eventi view... -->
                 <!-- VIEW: EVENTI -->
                 <div id="view-eventi" class="view-section p-4 md:p-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -386,7 +377,6 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="eventiGrid"></div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Rendering Magazzino view... -->
                 <!-- VIEW: MAGAZZINO -->
                 <div id="view-magazzino" class="view-section p-4 md:p-8">
                     <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-4">
@@ -442,7 +432,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Building Anagrafica (User Profile) Modal... -->
     <!-- MODAL TESSERATO -->
     <div id="modalTesserato" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col h-auto max-h-[calc(100dvh-2rem)] overflow-hidden relative">
@@ -465,7 +454,6 @@
                 
                 <div id="tab-base" class="inner-tab-content active space-y-5">
                     
-                    <!-- Upload Foto Profilo -->
                     <div class="flex justify-center mb-6">
                         <label class="relative cursor-pointer group">
                             <div id="fotoPreview" class="w-24 h-24 rounded-full bg-gray-50 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 overflow-hidden group-hover:border-bdb-blue group-hover:bg-blue-50 transition shadow-sm bg-cover bg-center">
@@ -519,7 +507,6 @@
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK:Building Medical info inner tab... -->
                 <div id="tab-medico" class="inner-tab-content space-y-5">
                     <div id="alertSocioSostenitore" class="hidden bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col items-center justify-center text-center">
                         <i class="fa-solid fa-file-medical text-bdb-blue text-3xl mb-3 opacity-50"></i>
@@ -615,7 +602,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Building Quota and Evento modals... -->
     <!-- MODAL QUOTA -->
     <div id="modalQuota" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
@@ -667,7 +653,6 @@
         </div>
     </div>
     
-    <!-- STREAMING_CHUNK:Building Item and Appello modals... -->
     <!-- MODAL MAGAZZINO -->
     <div id="modalItem" class="glass-modal fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md flex flex-col max-h-[95dvh]">
@@ -744,7 +729,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK:Building Tessera Digitale and starting Firebase imports... -->
     <!-- TESSERA DIGITALE MODAL -->
     <div id="modalTessera" class="glass-modal fixed inset-0 z-[150] hidden flex-col items-center justify-center p-4">
         <!-- Nuova X fissa e centrata in alto a destra dello schermo -->
@@ -760,7 +744,6 @@
                     <div class="bg-white text-bdb-blue font-extrabold px-3 py-1 rounded-lg text-lg shadow-sm z-10" id="tes-anno">2026</div>
                 </div>
                 <div class="tessera-content self-end text-right z-10 w-full mt-4 flex justify-between items-end">
-                    <!-- Nuovo box foto con tag IMG ottimizzato per l'esportazione -->
                     <div id="tes-foto-container" class="w-20 h-20 rounded-xl border-2 border-white/50 bg-black/20 shadow-inner overflow-hidden shrink-0 flex items-center justify-center">
                         <img id="tes-foto-img" src="" class="w-full h-full object-cover hidden">
                         <i id="tes-foto-icon" class="fa-solid fa-user text-3xl text-white/50"></i>
@@ -799,16 +782,12 @@
         const googleProvider = new GoogleAuthProvider();
         const formatter = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
 
-        // ==========================================
-        // CONFIGURAZIONE AMMINISTRATORI
-        // ==========================================
         const ADMIN_EMAILS = [
             'lollinorusso@icloud.com',
             'segreteria@borgodonbosco.com',
             'gianluigi_delmastro@hotmail.it',
             'letiziaolivero3@gmail.com',
         ];
-        // ==========================================
 
         const app = {
             state: { user: null, isAdmin: false, atleti: [], news: [], quote: [], eventi: [], magazzino: [], notificheAttive: false, primoAvvioNotifiche: true, mostraArchiviatiAtleti: false, mostraArchiviatiEventi: false, lastAtletiCount: undefined },
@@ -821,7 +800,6 @@
                 empty: (icon, text) => `<div class="flex flex-col items-center justify-center py-16 text-gray-300"><i class="fa-solid ${icon} text-6xl mb-5 opacity-40"></i><p class="font-bold text-gray-400 text-lg">${text}</p></div>`
             },
 
-            // STREAMING_CHUNK:Implementing logic for rigid Role/Group matching...
             matchGruppo: function(ruolo, gruppo) {
                 const r = ruolo || 'Atleta';
                 const g = gruppo || 'Tutti';
@@ -917,7 +895,6 @@
                 document.getElementById('pwaOverlay').classList.add('hidden');
             },
 
-            // STREAMING_CHUNK:Implementing logic for realtime sync and push notifications...
             togglePassword: function() {
                 const p = document.getElementById('authPassword');
                 const i = document.getElementById('eyeIcon');
@@ -1044,13 +1021,9 @@
                         } else {
                             const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid);
                             const grp = newEventi[0].gruppo || 'Tutti';
-                            // Uso il nuovo filtro globale per inviare le notifiche in modo corretto
                             shouldNotify = myFascicoli.some(myF => app.matchGruppo(myF.ruolo, grp));
                         }
-                        
-                        if(shouldNotify) {
-                            this.showNativeNotification("Nuova Convocazione", newEventi[0].titolo);
-                        }
+                        if(shouldNotify) this.showNativeNotification("Nuova Convocazione", newEventi[0].titolo);
                     }
                     this.state.eventi = newEventi; 
                     this.renderEventi();
@@ -1069,11 +1042,13 @@
                 }, (err) => { if(this.state.isAdmin) this.ui.error("Errore Dati", "Impossibile caricare la contabilità: " + err.message); }));
 
                 if(this.state.isAdmin) {
-                    this._unsubs.push(onSnapshot(collection(db, "magazzino"), (snap) => { this.state.magazzino = snap.docs.map(d => ({id: d.id, ...d.data()})); this.renderMagazzino(); }, (err) => this.ui.error("Errore Dati", "Impossibile caricare il magazzino: " + err.message)));
+                    this._unsubs.push(onSnapshot(collection(db, "magazzino"), (snap) => { 
+                        this.state.magazzino = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+                        this.renderMagazzino(); 
+                    }, (err) => this.ui.error("Errore Dati", "Impossibile caricare il magazzino: " + err.message)));
                 }
             },
 
-            // STREAMING_CHUNK:Building components for dashboard stats and finance summaries...
             requestNotificationPermission: async function() {
                 if (!("Notification" in window)) {
                     this.ui.error("Non supportato", "Il tuo dispositivo o browser non supporta le notifiche native.");
@@ -1197,7 +1172,6 @@
                 box.innerHTML = html;
             },
 
-            // STREAMING_CHUNK:Configuring the user forms and profile rendering methods...
             renderNews: function() {
                 const c = document.getElementById('newsFeed');
                 if(!this.state.news.length) return c.innerHTML = this.ui.empty('fa-wind', 'Nessuna comunicazione in bacheca.');
@@ -1295,8 +1269,10 @@
 
             renderAnagrafica: function() {
                 const tbody = document.getElementById('anagraficaTableBody');
-                const search = document.getElementById('searchAnagrafica').value.toLowerCase();
-                let filtered = this.state.atleti;
+                if(!tbody) return;
+
+                const search = (document.getElementById('searchAnagrafica')?.value || '').toLowerCase();
+                let filtered = this.state.atleti || [];
                 
                 if (this.state.isAdmin) {
                     filtered = filtered.filter(a => !!a.archiviato === this.state.mostraArchiviatiAtleti);
@@ -1304,7 +1280,7 @@
                     filtered = filtered.filter(a => !a.archiviato);
                 }
 
-                filtered = filtered.filter(a => (a.nome || '').toLowerCase().includes(search));
+                if(search) filtered = filtered.filter(a => String(a.nome || '').toLowerCase().includes(search));
                 
                 if(!filtered.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-folder-open', 'Nessun fascicolo trovato.')}</td></tr>`;
 
@@ -1360,7 +1336,6 @@
                 }).join('');
             },
             
-            // STREAMING_CHUNK:Building functions for creating and editing profiles...
             toggleTesseratoForm: function(isReadOnly) {
                 const fields = ['t_nome','t_nascita','t_ruolo','t_tel','t_genitore','t_cert_emiss','t_cert_scad','t_note_mediche','t_flag_medico','t_flag_docs'];
                 fields.forEach(f => {
@@ -1534,7 +1509,6 @@
                 document.getElementById('modalViewer').classList.add('hidden');
             },
 
-            // STREAMING_CHUNK:Implementing financial methods and transaction tracking...
             updateQuotaDropdown: function() {
                 const select = document.getElementById('q_tesserato');
                 if(!select) return;
@@ -1696,7 +1670,6 @@
                 docPdf.setFontSize(18); docPdf.setTextColor(0, 51, 160);
                 docPdf.text(formatter.format(q.versato), 125, 150);
 
-                // LEDGER TRANSAZIONI NEL PDF
                 let y = 175;
                 if(q.acconti && q.acconti.length > 0) {
                     docPdf.setFontSize(9); docPdf.setTextColor(150); docPdf.setFont("helvetica", "normal");
@@ -1711,7 +1684,6 @@
                 docPdf.setFontSize(10); docPdf.setTextColor(120); docPdf.setFont("helvetica", "normal");
                 docPdf.text("Documento generato digitalmente dal gestionale ufficiale Borgo Don Bosco APS", 105, 270, { align: "center" });
                 
-                // FIRMA ULTIMO OPERATORE
                 let signName = "Segreteria BDB";
                 let signDate = new Date(q.dataCreazione);
                 if(q.acconti && q.acconti.length > 0) {
@@ -1729,7 +1701,6 @@
                 docPdf.save(`Ricevuta_${nome.replace(/\s+/g, '_')}.pdf`);
             },
 
-            // STREAMING_CHUNK:Implementing Tessera logic and Web Share API exports...
             generaTesseraDigitale: function(tesseratoId) {
                 const a = this.state.atleti.find(x => x.id === tesseratoId);
                 if(!a) return;
@@ -1772,7 +1743,6 @@
                                 });
                                 this.ui.toast("Menu di condivisione aperto!");
                             } catch(e) {
-                                // Fallback se annullano la condivisione
                             }
                         } else {
                             const url = URL.createObjectURL(blob);
@@ -1789,7 +1759,6 @@
                 }
             },
 
-            // STREAMING_CHUNK:Implementing event controls, filtering, and report generation...
             resetYearlyPayments: async function() {
                 const r = await this.ui.confirm("Nuovo Anno Associativo", "Vuoi davvero azzerare e cancellare tutti i pagamenti registrati per iniziare un nuovo anno? Questa operazione non è reversibile.");
                 if(r.isConfirmed) {
@@ -1852,7 +1821,6 @@
                     docPdf.setTextColor(0);
                     
                     const grp = e.gruppo || 'Tutti';
-                    // Uso il filtro corretto globale!
                     let atletiTarget = this.state.atleti.filter(a => app.matchGruppo(a.ruolo, grp));
                     
                     atletiTarget.sort((a,b) => {
@@ -1909,7 +1877,6 @@
                 this.ui.toast(newState ? "Evento Archiviato" : "Evento Ripristinato");
             },
 
-            // STREAMING_CHUNK:Rendering filtered Eventi feed and Appello controls...
             renderEventi: function() {
                 const g = document.getElementById('eventiGrid');
                 
@@ -1926,7 +1893,6 @@
                     
                     eventiTarget = eventiTarget.filter(e => {
                         const grp = e.gruppo || 'Tutti';
-                        // Uso il filtro corretto e rigoroso!
                         return myFascicoli.some(myF => app.matchGruppo(myF.ruolo, grp));
                     });
                 }
@@ -1943,7 +1909,6 @@
                         const myFascicoli = this.state.atleti.filter(a => a.ownerUid === this.state.user.uid && !a.archiviato);
                         const grp = e.gruppo || 'Tutti';
                         
-                        // Uso il filtro corretto per i bottoni!
                         const eligibleFascicoli = myFascicoli.filter(myF => app.matchGruppo(myF.ruolo, grp));
 
                         if(eligibleFascicoli.length > 0) {
@@ -2026,7 +1991,6 @@
                 document.getElementById('appelloGruppo').innerText = (e.gruppo || 'Tutti');
                 
                 const grp = e.gruppo || 'Tutti';
-                // Uso il filtro corretto e rigoroso!
                 let atletiTarget = this.state.atleti.filter(a => !a.archiviato && app.matchGruppo(a.ruolo, grp));
                 
                 if(atletiTarget.length === 0) {
@@ -2080,21 +2044,38 @@
                 app.updateAppelloCounters();
             },
 
-            // STREAMING_CHUNK:Finalizing Magazzino management and concluding initialization...
             renderMagazzino: function() {
                 const tbody = document.getElementById('magazzinoTableBody');
+                if(!tbody) return;
                 
-                const search = (document.getElementById('searchMagazzino')?.value || '').toLowerCase();
-                const filterCat = document.getElementById('filterCatMagazzino')?.value || '';
-                const filterTipo = document.getElementById('filterTipoMagazzino')?.value || '';
+                const elSearch = document.getElementById('searchMagazzino');
+                const elCat = document.getElementById('filterCatMagazzino');
+                const elTipo = document.getElementById('filterTipoMagazzino');
 
-                let filtered = this.state.magazzino;
+                const search = (elSearch ? elSearch.value : '').toLowerCase().trim();
+                const filterCat = elCat ? elCat.value : '';
+                const filterTipo = elTipo ? elTipo.value : '';
 
-                if(search) filtered = filtered.filter(i => (i.nome||'').toLowerCase().includes(search) || (i.descrizione||'').toLowerCase().includes(search));
-                if(filterCat) filtered = filtered.filter(i => i.categoria === filterCat);
-                if(filterTipo) filtered = filtered.filter(i => (i.tipo || 'Assoluti') === filterTipo);
+                let filtered = this.state.magazzino || [];
 
-                if(!filtered.length) return tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Nessun articolo trovato.')}</td></tr>`;
+                if(search) {
+                    filtered = filtered.filter(i => {
+                        const n = String(i.nome || '').toLowerCase();
+                        const d = String(i.descrizione || '').toLowerCase();
+                        return n.includes(search) || d.includes(search);
+                    });
+                }
+                if(filterCat) {
+                    filtered = filtered.filter(i => i.categoria === filterCat);
+                }
+                if(filterTipo) {
+                    filtered = filtered.filter(i => (i.tipo || 'Assoluti') === filterTipo);
+                }
+
+                if(!filtered.length) {
+                    tbody.innerHTML = `<tr><td colspan="5">${this.ui.empty('fa-box-open', 'Nessun articolo trovato.')}</td></tr>`;
+                    return;
+                }
                 
                 tbody.innerHTML = filtered.map(i => {
                     let detParts = [];
@@ -2102,7 +2083,7 @@
                     if(i.categoria === 'Stivali' && i.numero) detParts.push(`Misura: <strong>${this.esc(i.numero)}</strong>`);
                     
                     if(i.proprietario) {
-                        const ass = this.state.atleti.find(a => a.id === i.proprietario);
+                        const ass = (this.state.atleti || []).find(a => a.id === i.proprietario);
                         detParts.push(`Assegnato a: <strong>${ass ? this.esc(ass.nome) : 'Atleta rimosso'}</strong>`);
                     }
                     
@@ -2110,10 +2091,10 @@
                     const tipoBadge = (i.tipo === 'Under') ? `<span class="ml-2 text-[9px] font-bold uppercase bg-purple-100 text-purple-600 px-2 py-0.5 rounded-lg border border-purple-200 whitespace-nowrap">Under</span>` : `<span class="ml-2 text-[9px] font-bold uppercase bg-gray-100 text-gray-600 px-2 py-0.5 rounded-lg border border-gray-200 whitespace-nowrap">Assoluti</span>`;
 
                     return `<tr>
-                        <td class="p-5 font-extrabold text-gray-800">${this.esc(i.nome)} ${tipoBadge}</td>
-                        <td class="p-5"><span class="text-[10px] font-bold uppercase bg-blue-50 text-bdb-blue px-3 py-1.5 rounded-lg">${i.categoria}</span></td>
+                        <td class="p-5 font-extrabold text-gray-800">${this.esc(String(i.nome || ''))} ${tipoBadge}</td>
+                        <td class="p-5"><span class="text-[10px] font-bold uppercase bg-blue-50 text-bdb-blue px-3 py-1.5 rounded-lg">${i.categoria || 'Generico'}</span></td>
                         <td class="p-5 text-gray-600 text-xs">${det}</td>
-                        <td class="p-5 text-center font-extrabold text-gray-800">${i.totale}</td>
+                        <td class="p-5 text-center font-extrabold text-gray-800">${i.totale || 0}</td>
                         <td class="p-5 text-right whitespace-nowrap">
                             <button type="button" onclick="app.editItem('${i.id}')" class="text-gray-400 hover:text-bdb-blue p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition" title="Modifica"><i class="fa-solid fa-pen"></i></button>
                             <button type="button" onclick="app.deleteDocRef('magazzino', '${i.id}')" class="text-gray-400 hover:text-red-500 p-2.5 bg-white border border-gray-100 rounded-xl group-hover:shadow-sm transition ml-1" title="Elimina"><i class="fa-solid fa-trash"></i></button>
@@ -2133,7 +2114,7 @@
                 document.getElementById('i_tot').value='1';
                 
                 const selectProp = document.getElementById('i_prop');
-                const attivi = app.state.atleti.filter(a => !a.archiviato);
+                const attivi = (app.state.atleti || []).filter(a => !a.archiviato);
                 selectProp.innerHTML = `<option value="">-- Nessuno --</option>` + attivi.map(a => `<option value="${a.id}">${a.nome}</option>`).join('');
                 document.getElementById('i_prop').value = '';
                 
@@ -2153,7 +2134,7 @@
                 document.getElementById('i_tot').value = i.totale || 1;
 
                 const selectProp = document.getElementById('i_prop');
-                const attivi = app.state.atleti.filter(a => !a.archiviato);
+                const attivi = (app.state.atleti || []).filter(a => !a.archiviato);
                 selectProp.innerHTML = `<option value="">-- Nessuno --</option>` + attivi.map(a => `<option value="${a.id}">${a.nome}</option>`).join('');
                 document.getElementById('i_prop').value = i.proprietario || '';
 
